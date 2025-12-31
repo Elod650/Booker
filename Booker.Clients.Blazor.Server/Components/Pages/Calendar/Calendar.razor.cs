@@ -10,11 +10,17 @@ public partial class Calendar
     private View currentView = View.Week;
     private int selectedCalendarId;
 
+    private string currentCalendarStarTime = "08:00";
+    private string currentCalendarEndTime = "16:00";
+
     private async Task OnCalendarChanged(int value)
     {
         selectedCalendarId = value;
         appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
         services = ServiceRepository.GetServices(selectedCalendarId);
+        var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
+        currentCalendarStarTime = selectedCalendar.StartTime;
+        currentCalendarEndTime = selectedCalendar.EndTime;
         await scheduler.RefreshAsync();
     }
 

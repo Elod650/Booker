@@ -42,7 +42,13 @@ internal static class Mapper
 
     internal static CalendarDto Map(this Calendar source)
     {
-        return new CalendarDto { Id = source.Id, Name = source.Name };
+        return new CalendarDto
+        {
+            Id = source.Id,
+            Name = source.Name,
+            StartTime = source.StartTime,
+            EndTime = source.EndTime,
+        };
     }
 
     internal static List<AppointmentDto> Map(this IEnumerable<Appointment> source)

@@ -36,12 +36,16 @@ public static class SeedData
             Id = 1,
             Code = Guid.NewGuid(),
             Name = "Calendar 1",
+            StartTime = "08:00",
+            EndTime = "16:00",
         },
         new Calendar
         {
             Id = 2,
             Code = Guid.NewGuid(),
             Name = "Calendar 2",
+            StartTime = "10:00",
+            EndTime = "18:00",
         },
     };
     public static List<Info> Infos = new()

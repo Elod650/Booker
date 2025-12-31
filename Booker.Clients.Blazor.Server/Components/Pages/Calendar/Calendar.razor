@@ -32,10 +32,10 @@
     </ScheduleTemplates>
     <ScheduleEventSettings DataSource="appointments"></ScheduleEventSettings>
     <ScheduleViews>
-        <ScheduleView Option="View.Day"></ScheduleView>
-        <ScheduleView Option="View.Week"></ScheduleView>
-        <ScheduleView Option="View.WorkWeek"></ScheduleView>
-        <ScheduleView Option="View.Month"></ScheduleView>
-        <ScheduleView Option="View.Agenda"></ScheduleView>
+        <ScheduleView Option="View.Day" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
+        <ScheduleView Option="View.Week" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
+        <ScheduleView Option="View.WorkWeek" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
+        <ScheduleView Option="View.Month" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
+        <ScheduleView Option="View.Agenda" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
     </ScheduleViews>
 </SfSchedule>
