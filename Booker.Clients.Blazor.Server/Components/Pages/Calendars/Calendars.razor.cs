@@ -1,8 +1,8 @@
 ﻿using Syncfusion.Blazor.Schedule.Internal;
 
-namespace Booker.Clients.Blazor.Server.Components.Pages.Calendar;
+namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
 
-public partial class Calendar
+public partial class Calendars
 {
     private SfSchedule<AppointmentDto> scheduler;
     private List<AppointmentDto> appointments = new();
