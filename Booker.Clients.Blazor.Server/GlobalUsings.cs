@@ -1,8 +1,10 @@
 ﻿global using Booker.Clients.Blazor.Server.Components;
 global using Booker.Clients.Blazor.Server.Extensions;
 global using Booker.Models.DTOs;
+global using Booker.Repository;
 global using Booker.Repository.Repositories;
 global using Booker.Repository.Repositories.Interfaces;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.EntityFrameworkCore;
 global using Syncfusion.Blazor;
 global using Syncfusion.Blazor.Schedule;

@@ -1,8 +1,15 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureServices();
+builder.Services.ConfigureDatabase();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated();
+}
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(builder.Configuration["LicenseKeys:Syncfusion"]);
 

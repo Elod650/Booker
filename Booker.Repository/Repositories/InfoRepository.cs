@@ -1,9 +1,9 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class InfoRepository : IInfoRepository
+public class InfoRepository(AppDbContext context) : IInfoRepository
 {
     public string GetCurrency()
     {
-        return Database.Currency;
+        return context.Infos.First(x => x.Key == "Currency").Value;
     }
 }

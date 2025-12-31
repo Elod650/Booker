@@ -1,10 +1,8 @@
 ﻿namespace Booker.Repository;
 
-internal static class Database
+public static class SeedData
 {
-    internal static readonly string Currency = "Ft";
-    internal static List<Appointment> Appointments = new List<Appointment>();
-    internal static List<Service> Services = new()
+    public static List<Service> Services = new()
     {
         new Service
         {
@@ -31,7 +29,7 @@ internal static class Database
             Price = 80,
         },
     };
-    internal static List<Calendar> Calendars = new()
+    public static List<Calendar> Calendars = new()
     {
         new Calendar
         {
@@ -45,5 +43,9 @@ internal static class Database
             Code = Guid.NewGuid(),
             Name = "Calendar 2",
         },
+    };
+    public static List<Info> Infos = new()
+    {
+        new Info { Key = "Currency", Value = "Ft" },
     };
 }
