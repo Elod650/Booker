@@ -1,0 +1,8 @@
+﻿global using Booker.Backend.Extensions;
+global using Booker.Models.DTOs;
+global using Booker.Models.Requests;
+global using Booker.Repository;
+global using Booker.Repository.Repositories;
+global using Booker.Repository.Repositories.Interfaces;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;

@@ -8,7 +8,7 @@ public partial class SchedulerEditorTemplateComponent
     [Parameter, EditorRequired]
     public List<ServiceDto> Services { get; set; }
 
-    private void onServiceChange(int value)
+    private void OnServiceChange(int value)
     {
         Appointment.ServiceId = value;
         var selectedServiceDuration = Services.First(x => x.Id == Appointment.ServiceId).Duration;
@@ -18,6 +18,6 @@ public partial class SchedulerEditorTemplateComponent
     protected override void OnParametersSet()
     {
         Appointment.ServiceId = Services.FirstOrDefault()?.Id ?? 0;
-        onServiceChange(Appointment.ServiceId);
+        OnServiceChange(Appointment.ServiceId);
     }
 }

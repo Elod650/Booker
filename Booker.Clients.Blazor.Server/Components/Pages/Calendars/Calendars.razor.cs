@@ -15,12 +15,12 @@ public partial class Calendars
     private string currentCalendarStarTime = "08:00";
     private string currentCalendarEndTime = "16:00";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        calendars = CalendarRepository.GetCalendars();
+        calendars = await CalendarApiCaller.GetCalendars();
         selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
-        appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
-        services = ServiceRepository.GetServices(selectedCalendarId);
+        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+        services = await ServiceApiCaller.GetServices(selectedCalendarId);
     }
 
     public async Task OnCellClick(CellClickEventArgs args)
@@ -31,8 +31,8 @@ public partial class Calendars
     private async Task OnCalendarChanged(int value)
     {
         selectedCalendarId = value;
-        appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
-        services = ServiceRepository.GetServices(selectedCalendarId);
+        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+        services = await ServiceApiCaller.GetServices(selectedCalendarId);
         var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
         currentCalendarStarTime = selectedCalendar.StartTime;
         currentCalendarEndTime = selectedCalendar.EndTime;
@@ -42,8 +42,8 @@ public partial class Calendars
     private async Task OnSave(AppointmentDto newAppointment)
     {
         newAppointment.CalendarId = selectedCalendarId;
-        AppointmentRepository.AddAppointment(newAppointment);
-        appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
+        await AppointmentApiCaller.AddAppointment(newAppointment);
+        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
         scheduler.CloseEditor();
         await scheduler.RefreshAsync();
     }

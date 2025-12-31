@@ -1,5 +1,18 @@
 <Solution>
-  <Project Path="Booker.Clients.Blazor.Server/Booker.Clients.Blazor.Server.csproj" />
+  <Folder Name="/Clients/" />
+  <Folder Name="/Clients/Blazor/">
+    <Project Path="Booker.Clients.Blazor.Server/Booker.Clients.Blazor.Server.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".csharpierignore" />
+    <File Path=".csharpierrc.json" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Booker.ApiCaller/Booker.ApiCaller.csproj" Id="a2231227-67d5-4200-a873-ffd942b89bea" />
+  <Project Path="Booker.Backend/Booker.Backend.csproj" Id="feb9e981-028e-4356-9c33-b43400f2fd82" />
   <Project Path="Booker.Models/Booker.Models.csproj" Id="a04cd878-0ee8-4608-9d4d-598b005e13bb" />
   <Project Path="Booker.Repository/Booker.Repository.csproj" Id="33ed7cdf-f274-4edb-a3ae-266d81d8e48d" />
 </Solution>

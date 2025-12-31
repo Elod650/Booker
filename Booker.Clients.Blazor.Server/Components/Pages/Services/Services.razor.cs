@@ -10,7 +10,7 @@ public partial class Services
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
 
-        services = ServiceRepository.GetServices();
-        currency = InfoRepository.GetCurrency();
+        services = await ServiceApiCaller.GetServices();
+        currency = await InfoApiCaller.GetCurrency();
     }
 }

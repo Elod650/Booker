@@ -1,4 +1,4 @@
-﻿namespace Booker.Clients.Blazor.Server.Extensions;
+﻿namespace Booker.Backend.Extensions;
 
 internal static class DatabaseExtensions
 {

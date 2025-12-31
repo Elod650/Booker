@@ -12,15 +12,15 @@ internal static class ServiceExtensions
 
         services.AddSyncfusionBlazor();
 
-        services.ConfigureRepositories();
+        services.ConfigureApiCallers();
     }
 
-    private static void ConfigureRepositories(this IServiceCollection services)
+    private static void ConfigureApiCallers(this IServiceCollection services)
     {
         services
-            .AddScoped<IAppointmentRepository, AppointmentRepository>()
-            .AddScoped<ICalendarRepository, CalendarRepository>()
-            .AddScoped<IInfoRepository, InfoRepository>()
-            .AddScoped<IServiceRepository, ServiceRepository>();
+            .AddScoped<IAppointmentApiCaller, AppointmentApiCaller>()
+            .AddScoped<IServiceApiCaller, ServiceApiCaller>()
+            .AddScoped<IInfoApiCaller, InfoApiCaller>()
+            .AddScoped<ICalendarApiCaller, CalendarApiCaller>();
     }
 }

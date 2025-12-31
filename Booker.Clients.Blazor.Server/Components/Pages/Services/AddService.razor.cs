@@ -5,14 +5,14 @@ public partial class AddService
     private EditServiceViewModels model = new();
     private List<CalendarDto> calendars = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        calendars = CalendarRepository.GetCalendars();
+        calendars = await CalendarApiCaller.GetCalendars();
     }
 
     private async Task Create()
     {
-        ServiceRepository.AddServices(model.ToRequest());
+        await ServiceApiCaller.AddService(model.ToRequest());
         NavigationManager.NavigateTo("services");
     }
 }
