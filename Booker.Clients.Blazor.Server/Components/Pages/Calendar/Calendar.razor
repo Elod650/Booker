@@ -18,9 +18,10 @@
     </div>
 </div>
 
-<SfSchedule @ref="scheduler" TValue="AppointmentDto" Height="650px" AllowOverlap="false"
-            @bind-SelectedDate="@currentDate"
-            @bind-CurrentView="@currentView">
+<SfSchedule @ref="scheduler" TValue="AppointmentDto" @bind-SelectedDate="@currentDate"@bind-CurrentView="@currentView"
+            AllowOverlap="false" AllowResizing="false" AllowKeyboardInteraction="false" AllowClipboard="false"
+            ShowWeekend="true" ShowWeekNumber="true"
+            Height="650px" FirstDayOfWeek="1" DateFormat="yyyy/MM/dd">
     <ScheduleTemplates>
         <EditorTemplate>
             <_SchedulerEditorTemplate Appointment="@(context as AppointmentDto)" Services="services" />
@@ -30,13 +31,19 @@
             <button class="btn btn-outline-secondary" @onclick="OnClose">Close</button>
         </EditorFooterTemplate>
     </ScheduleTemplates>
-    <ScheduleEventSettings DataSource="appointments"></ScheduleEventSettings>
+    <ScheduleEventSettings DataSource="appointments">
+        <Template>
+            <div>Subject: Subject</div>
+            <div>@((context as AppointmentDto).StartTime?.ToString("hh:mm")) - @((context as AppointmentDto).EndTime?.ToString("hh:mm"))</div>
+        </Template>
+    </ScheduleEventSettings>
     <ScheduleEvents TValue="AppointmentDto" OnCellClick="OnCellClick" />
+    <ScheduleWorkHours Highlight="true" Start="@currentCalendarStarTime" End="@currentCalendarEndTime" />
     <ScheduleViews>
-        <ScheduleView Option="View.Day" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
-        <ScheduleView Option="View.Week" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
-        <ScheduleView Option="View.WorkWeek" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
-        <ScheduleView Option="View.Month" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
-        <ScheduleView Option="View.Agenda" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
+        <ScheduleView Option="View.Day" />
+        <ScheduleView Option="View.Week" />
+        <ScheduleView Option="View.WorkWeek" />
+        <ScheduleView Option="View.Month" />
+        <ScheduleView Option="View.Agenda" />
     </ScheduleViews>
 </SfSchedule>
