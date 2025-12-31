@@ -31,6 +31,7 @@
         </EditorFooterTemplate>
     </ScheduleTemplates>
     <ScheduleEventSettings DataSource="appointments"></ScheduleEventSettings>
+    <ScheduleEvents TValue="AppointmentDto" OnCellClick="OnCellClick" />
     <ScheduleViews>
         <ScheduleView Option="View.Day" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>
         <ScheduleView Option="View.Week" StartHour="@currentCalendarStarTime" EndHour="@currentCalendarEndTime"></ScheduleView>

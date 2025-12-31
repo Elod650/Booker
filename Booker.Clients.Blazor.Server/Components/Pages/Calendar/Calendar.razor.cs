@@ -1,4 +1,6 @@
-﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Calendar;
+﻿using Syncfusion.Blazor.Schedule.Internal;
+
+namespace Booker.Clients.Blazor.Server.Components.Pages.Calendar;
 
 public partial class Calendar
 {
@@ -12,6 +14,19 @@ public partial class Calendar
 
     private string currentCalendarStarTime = "08:00";
     private string currentCalendarEndTime = "16:00";
+
+    protected override void OnInitialized()
+    {
+        calendars = CalendarRepository.GetCalendars();
+        selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
+        appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
+        services = ServiceRepository.GetServices(selectedCalendarId);
+    }
+
+    public async Task OnCellClick(CellClickEventArgs args)
+    {
+        args.Cancel = true;
+    }
 
     private async Task OnCalendarChanged(int value)
     {
@@ -36,13 +51,5 @@ public partial class Calendar
     private void OnClose()
     {
         scheduler.CloseEditor();
-    }
-
-    protected override void OnInitialized()
-    {
-        calendars = CalendarRepository.GetCalendars();
-        selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
-        appointments = AppointmentRepository.GetAppointments(selectedCalendarId);
-        services = ServiceRepository.GetServices(selectedCalendarId);
     }
 }
