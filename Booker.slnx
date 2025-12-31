@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Booker.Clients.Blazor.Server/Booker.Clients.Blazor.Server.csproj" />
   <Project Path="Booker.Models/Booker.Models.csproj" Id="a04cd878-0ee8-4608-9d4d-598b005e13bb" />
+  <Project Path="Booker.Repository/Booker.Repository.csproj" Id="33ed7cdf-f274-4edb-a3ae-266d81d8e48d" />
 </Solution>
