@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Booker.Clients.Blazor.Server/Booker.Clients.Blazor.Server.csproj" />
+  <Project Path="Booker.Models/Booker.Models.csproj" Id="a04cd878-0ee8-4608-9d4d-598b005e13bb" />
 </Solution>
