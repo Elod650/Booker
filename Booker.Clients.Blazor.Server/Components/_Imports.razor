@@ -1,11 +1,18 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Booker.Clients.Blazor.Server
+@using Booker.Clients.Blazor.Server.Components
+@using Booker.Clients.Blazor.Server.Components.Layout
+@using Booker.Clients.Blazor.Server.Components.Pages.Calendar.Components
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
-@using Booker.Clients.Blazor.Server
-@using Booker.Clients.Blazor.Server.Components
-@using Booker.Clients.Blazor.Server.Components.Layout
+@using Syncfusion.Blazor.Schedule
+
+@inject IAppointmentRepository AppointmentRepository
+@inject ICalendarRepository CalendarRepository
+@inject IInfoRepository InfoRepository
+@inject IServiceRepository ServiceRepository

@@ -7,4 +7,14 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.Blazor.Schedule" Version="32.1.21" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="32.1.21" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Booker.Models\Booker.Models.csproj" />
+    <ProjectReference Include="..\Booker.Repository\Booker.Repository.csproj" />
+  </ItemGroup>
+
 </Project>

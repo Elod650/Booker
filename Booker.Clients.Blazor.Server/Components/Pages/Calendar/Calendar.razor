@@ -1,0 +1,41 @@
+﻿@page "/calendar"
+@rendermode InteractiveServer
+
+<h3>Calendar</h3>
+
+<div class="row mb-3">
+    <div class="col">
+        <label class="form-label">Service</label>
+        <InputSelect class="form-select"
+                     Value="selectedCalendarId"
+                     ValueExpression="@(() => selectedCalendarId)"
+                     ValueChanged="@((int value) => OnCalendarChanged(value))">
+            @foreach (var calendar in calendars)
+            {
+                <option value="@calendar.Id">@calendar.Name</option>
+            }
+        </InputSelect>
+    </div>
+</div>
+
+<SfSchedule @ref="scheduler" TValue="AppointmentDto" Height="650px" AllowOverlap="false"
+            @bind-SelectedDate="@currentDate"
+            @bind-CurrentView="@currentView">
+    <ScheduleTemplates>
+        <EditorTemplate>
+            <_SchedulerEditorTemplate Appointment="@(context as AppointmentDto)" Services="services" />
+        </EditorTemplate>
+        <EditorFooterTemplate>
+            <button class="btn btn-primary" @onclick="@(() => OnSave(context as AppointmentDto))">Save</button>
+            <button class="btn btn-outline-secondary" @onclick="OnClose">Close</button>
+        </EditorFooterTemplate>
+    </ScheduleTemplates>
+    <ScheduleEventSettings DataSource="appointments"></ScheduleEventSettings>
+    <ScheduleViews>
+        <ScheduleView Option="View.Day"></ScheduleView>
+        <ScheduleView Option="View.Week"></ScheduleView>
+        <ScheduleView Option="View.WorkWeek"></ScheduleView>
+        <ScheduleView Option="View.Month"></ScheduleView>
+        <ScheduleView Option="View.Agenda"></ScheduleView>
+    </ScheduleViews>
+</SfSchedule>

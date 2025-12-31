@@ -1,11 +1,10 @@
-using Booker.Clients.Blazor.Server.Components;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.ConfigureServices();
 
 var app = builder.Build();
+
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(builder.Configuration["LicenseKeys:Syncfusion"]);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

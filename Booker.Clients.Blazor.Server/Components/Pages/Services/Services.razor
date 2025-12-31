@@ -1,0 +1,35 @@
+﻿@page "/services"
+@attribute [StreamRendering]
+
+<PageTitle>Services</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (services == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Duration</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in services)
+            {
+                <tr>
+                    <td>@service.Name</td>
+                    <td>@service.Duration</td>
+                    <td>@service.Price.ToString("F2") @currency</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
