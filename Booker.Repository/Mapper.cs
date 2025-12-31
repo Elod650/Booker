@@ -40,6 +40,18 @@ internal static class Mapper
         };
     }
 
+    internal static Service Map(this EditServiceRequest source)
+    {
+        return new Service
+        {
+            Id = source.Id ?? 0,
+            Name = source.Name,
+            Duration = TimeSpan.Parse($"{source.Duration}" ?? "00:00:00"),
+            Price = source.Price ?? 0,
+            CalendarId = source.CalendarId ?? 0,
+        };
+    }
+
     internal static CalendarDto Map(this Calendar source)
     {
         return new CalendarDto

@@ -1,0 +1,41 @@
+﻿@page "/services/add"
+@rendermode InteractiveServer
+
+<PageTitle>Create service</PageTitle>
+
+<h3>Create new service</h3>
+
+<EditForm Model="model" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Name</label>
+            <InputText class="form-control" @bind-Value="model.Name" />
+            <ValidationMessage For="() => model.Name" />
+        </div>
+        <div class="col">
+            <label class="form-label">Calendar</label>
+            <InputSelect class="form-select" @bind-Value="model.CalendarId">
+                <option value="">-- Select calendar --</option>
+                @foreach (var calendar in calendars)
+                {
+                    <option value="@calendar.Id">@calendar.Name</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => model.CalendarId" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Duration (hh:mm)</label>
+            <InputText class="form-control" @bind-Value="model.Duration" />
+            <ValidationMessage For="() => model.Duration" />
+        </div>
+        <div class="col">
+            <label class="form-label">Price</label>
+            <InputNumber TValue="decimal?" class="form-control" @bind-Value="model.Price" />
+            <ValidationMessage For="() => model.Price" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+</EditForm>

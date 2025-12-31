@@ -11,4 +11,10 @@ public class ServiceRepository(AppDbContext context) : IServiceRepository
     {
         return context.Services.Where(x => x.CalendarId == calendarId).Map();
     }
+
+    public void AddServices(EditServiceRequest newService)
+    {
+        context.Add(newService.Map());
+        context.SaveChanges();
+    }
 }

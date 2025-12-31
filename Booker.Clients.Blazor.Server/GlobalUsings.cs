@@ -1,6 +1,7 @@
 ﻿global using Booker.Clients.Blazor.Server.Components;
 global using Booker.Clients.Blazor.Server.Extensions;
 global using Booker.Models.DTOs;
+global using Booker.Models.ViewModels;
 global using Booker.Repository;
 global using Booker.Repository.Repositories;
 global using Booker.Repository.Repositories.Interfaces;
