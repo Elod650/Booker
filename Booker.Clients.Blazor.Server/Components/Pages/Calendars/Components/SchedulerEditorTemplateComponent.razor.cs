@@ -1,6 +1,6 @@
 ﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars.Components;
 
-public partial class _SchedulerEditorTemplate
+public partial class SchedulerEditorTemplateComponent
 {
     [Parameter, EditorRequired]
     public AppointmentDto Appointment { get; set; }

@@ -26,7 +26,7 @@
             Height="650px" FirstDayOfWeek="1" DateFormat="yyyy/MM/dd">
     <ScheduleTemplates>
         <EditorTemplate>
-            <_SchedulerEditorTemplate Appointment="@(context as AppointmentDto)" Services="services" />
+            <SchedulerEditorTemplateComponent Appointment="@(context as AppointmentDto)" Services="services" />
         </EditorTemplate>
         <EditorFooterTemplate>
             <button class="btn btn-primary" @onclick="@(() => OnSave(context as AppointmentDto))">Save</button>
