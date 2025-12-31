@@ -1,0 +1,7 @@
+**/Migrations
+**/bin
+**/obj
+*.sln
+*.slnx
+*.slnf
+*.csproj
