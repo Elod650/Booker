@@ -3,9 +3,9 @@
 internal static class ServiceExtensions
 {
     /// <summary>
-    /// Add services to the container.
+    /// Configures application services and registers required dependencies.
     /// </summary>
-    /// <param name="services"></param>
+    /// <param name="services">The service collection to which application services are added.</param>
     internal static void ConfigureServices(this IServiceCollection services)
     {
         services.AddRazorComponents().AddInteractiveServerComponents();

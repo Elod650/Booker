@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+    <PackageVersion Include="Syncfusion.Blazor.Schedule" Version="32.1.21" />
+    <PackageVersion Include="Syncfusion.Blazor.Themes" Version="32.1.21" />
+  </ItemGroup>
+</Project>
