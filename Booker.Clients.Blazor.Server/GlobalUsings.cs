@@ -1,4 +1,5 @@
-﻿global using Booker.ApiCaller.CallsForControllers;
+﻿global using Booker.ApiCaller;
+global using Booker.ApiCaller.CallsForControllers;
 global using Booker.ApiCaller.CallsForControllers.Interfaces;
 global using Booker.Clients.Blazor.Server.Components;
 global using Booker.Clients.Blazor.Server.Extensions;
