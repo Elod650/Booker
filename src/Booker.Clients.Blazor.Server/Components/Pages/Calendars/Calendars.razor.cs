@@ -36,7 +36,6 @@ public partial class Calendars
         var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
         currentCalendarStarTime = selectedCalendar.StartTime;
         currentCalendarEndTime = selectedCalendar.EndTime;
-        await scheduler.RefreshAsync();
     }
 
     private async Task OnSave(AppointmentDto newAppointment)
@@ -45,7 +44,6 @@ public partial class Calendars
         await AppointmentApiCaller.AddAppointment(newAppointment);
         appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
         scheduler.CloseEditor();
-        await scheduler.RefreshAsync();
     }
 
     private void OnClose()
