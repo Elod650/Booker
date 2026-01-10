@@ -22,5 +22,16 @@ internal static class DatabaseExtensions
                 }
             );
         });
+
+        services.ConfigureRepositories();
+    }
+
+    private static void ConfigureRepositories(this IServiceCollection services)
+    {
+        services
+            .AddScoped<IAppointmentRepository, AppointmentRepository>()
+            .AddScoped<ICalendarRepository, CalendarRepository>()
+            .AddScoped<IInfoRepository, InfoRepository>()
+            .AddScoped<IServiceRepository, ServiceRepository>();
     }
 }
