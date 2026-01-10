@@ -11,13 +11,13 @@ public class CalendarApiCaller : ICalendarApiCaller
 
     public async Task<List<CalendarDto>> GetCalendars()
     {
-        return await ApiCallerBase.SendAsync<List<CalendarDto>>(new ApiRequest(HttpMethod.Get, _apiUrl));
+        return await ApiCallerBase.SendWithResponseAsync<List<CalendarDto>>(ApiRequest.CreateGet(_apiUrl));
     }
 
     public async Task<List<CalendarDto>> GetCalendars(int calendarId)
     {
         string url = $"{_apiUrl}/{calendarId}";
 
-        return await ApiCallerBase.SendAsync<List<CalendarDto>>(new ApiRequest(HttpMethod.Get, url));
+        return await ApiCallerBase.SendWithResponseAsync<List<CalendarDto>>(ApiRequest.CreateGet(url));
     }
 }

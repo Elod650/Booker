@@ -13,6 +13,6 @@ public class InfoApiCaller : IInfoApiCaller
     {
         string url = $"{_apiUrl}/currency";
 
-        return await ApiCallerBase.SendAsync<string>(new ApiRequest(HttpMethod.Get, url));
+        return await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreateGet(url));
     }
 }

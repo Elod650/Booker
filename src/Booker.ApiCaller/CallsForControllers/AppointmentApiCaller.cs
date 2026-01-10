@@ -13,11 +13,11 @@ public class AppointmentApiCaller : IAppointmentApiCaller
     {
         string url = $"{_apiUrl}/{calendarId}";
 
-        return await ApiCallerBase.SendAsync<List<AppointmentDto>>(new ApiRequest(HttpMethod.Get, url));
+        return await ApiCallerBase.SendWithResponseAsync<List<AppointmentDto>>(ApiRequest.CreateGet(url));
     }
 
     public async Task AddAppointment(AppointmentDto newAppointment)
     {
-        await ApiCallerBase.SendAsync<string>(new ApiRequest(HttpMethod.Post, _apiUrl, newAppointment));
+        await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newAppointment));
     }
 }

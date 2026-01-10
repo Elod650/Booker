@@ -13,16 +13,16 @@ public class ServiceApiCaller : IServiceApiCaller
     {
         string url = $"{_apiUrl}/{calendarId}";
 
-        return await ApiCallerBase.SendAsync<List<ServiceDto>>(new ApiRequest(HttpMethod.Get, url));
+        return await ApiCallerBase.SendWithResponseAsync<List<ServiceDto>>(ApiRequest.CreateGet(url));
     }
 
     public async Task<List<ServiceDto>> GetServices()
     {
-        return await ApiCallerBase.SendAsync<List<ServiceDto>>(new ApiRequest(HttpMethod.Get, _apiUrl));
+        return await ApiCallerBase.SendWithResponseAsync<List<ServiceDto>>(ApiRequest.CreateGet(_apiUrl));
     }
 
     public async Task AddService(EditServiceRequest newService)
     {
-        await ApiCallerBase.SendAsync<string>(new ApiRequest(HttpMethod.Post, _apiUrl, newService));
+        await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newService));
     }
 }
