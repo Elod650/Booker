@@ -4,6 +4,7 @@ internal static class ApiCallerBase
 {
     private const string APPLICATION_JSON = "application/json";
     private static JsonSerializerOptions jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    private static HttpClient httpClient = new();
 
     /// <summary>
     /// Sends the specified API request asynchronously and deserializes the response content to the specified type.
@@ -12,13 +13,17 @@ internal static class ApiCallerBase
     /// <param name="request">The API request containing the neceserry data to include in the request.</param>
     /// <returns>The task result contains the deserialized response object of type T, or null if the response content is empty.</returns>
     /// <exception cref="ApiCallerException">Thrown when the there was an error during the API call.</exception>
-    internal static async Task<T> SendWithResponseAsync<T>(ApiRequest request)
+    internal static async Task<T> SendWithResponseAsync<T>(
+        ApiRequest request,
+        CancellationToken cancellationToken = default
+    )
         where T : class, new()
     {
         try
         {
-            var responseContent = await SendWithResponseAsync(request);
-            return JsonSerializer.Deserialize<T>(responseContent, jsonOptions) ?? new();
+            var responseMessage = await SendMessageAsync(request, cancellationToken);
+            var responseContentStream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken);
+            return JsonSerializer.Deserialize<T>(responseContentStream, jsonOptions) ?? new();
         }
         catch (ApiCallerException)
         {
@@ -36,12 +41,15 @@ internal static class ApiCallerBase
     /// <param name="request">The API request containing the neceserry data to include in the request.</param>
     /// <returns>The task result contains the respons content as string.</returns>
     /// <exception cref="ApiCallerException">Thrown when the there was an error during the API call.</exception>
-    internal static async Task<string> SendWithResponseAsync(ApiRequest request)
+    internal static async Task<string> SendWithResponseAsync(
+        ApiRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
         try
         {
-            var responseMessage = await SendMessageAsync(request);
-            return await responseMessage.Content.ReadAsStringAsync();
+            var responseMessage = await SendMessageAsync(request, cancellationToken);
+            return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
         catch (ApiCallerException)
         {
@@ -58,11 +66,11 @@ internal static class ApiCallerBase
     /// </summary>
     /// <param name="request">The API request containing the neceserry data to include in the request.</param>
     /// <exception cref="ApiCallerException">Thrown when the there was an error during the API call.</exception>
-    internal static async Task SendAsync(ApiRequest request)
+    internal static async Task SendAsync(ApiRequest request, CancellationToken cancellationToken = default)
     {
         try
         {
-            await SendMessageAsync(request);
+            await SendMessageAsync(request, cancellationToken);
         }
         catch (ApiCallerException)
         {
@@ -79,10 +87,11 @@ internal static class ApiCallerBase
     /// </summary>
     /// <param name="request">The API request containing the neceserry data to include in the request.</param>
     /// <exception cref="ApiCallerException">Thrown when the server responds with a non-OK status.</exception>
-    private static async Task<HttpResponseMessage> SendMessageAsync(ApiRequest request)
+    private static async Task<HttpResponseMessage> SendMessageAsync(
+        ApiRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
-        HttpClient _httpClient = new HttpClient();
-
         HttpRequestMessage message = new(request.Method, request.Url);
         message.Headers.Add("Accept", APPLICATION_JSON);
 
@@ -95,7 +104,7 @@ internal static class ApiCallerBase
             );
         }
 
-        HttpResponseMessage responseMessage = await _httpClient.SendAsync(message);
+        HttpResponseMessage responseMessage = await httpClient.SendAsync(message, cancellationToken);
 
         if (!responseMessage.IsSuccessStatusCode)
         {

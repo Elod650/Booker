@@ -2,7 +2,7 @@
 {
     public interface IAppointmentApiCaller
     {
-        Task AddAppointment(AppointmentDto newAppointment);
-        Task<List<AppointmentDto>> GetAppointments(int calendarId);
+        Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default);
+        Task<List<AppointmentDto>> GetAppointments(int calendarId, CancellationToken cancellationToken = default);
     }
 }

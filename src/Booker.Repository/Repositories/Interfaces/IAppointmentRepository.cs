@@ -2,7 +2,7 @@
 {
     public interface IAppointmentRepository
     {
-        Task AddAppointment(AppointmentDto newAppointment);
+        Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default);
         List<AppointmentDto> GetAppointments(int calendarId);
     }
 }

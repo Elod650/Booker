@@ -9,9 +9,9 @@ public class AppointmentRepository(AppDbContext context, IMapper mapper) : IAppo
         );
     }
 
-    public async Task AddAppointment(AppointmentDto newAppointment)
+    public async Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default)
     {
-        await context.Appointments.AddAsync(mapper.Map<Appointment>(newAppointment));
-        await context.SaveChangesAsync();
+        await context.Appointments.AddAsync(mapper.Map<Appointment>(newAppointment), cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

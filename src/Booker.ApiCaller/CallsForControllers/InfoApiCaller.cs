@@ -9,10 +9,10 @@ public class InfoApiCaller : IInfoApiCaller
         _apiUrl = options.Value.InfoApiUrl;
     }
 
-    public async Task<string> GetCurrency()
+    public async Task<string> GetCurrency(CancellationToken cancellationToken = default)
     {
         string url = $"{_apiUrl}/currency";
 
-        return await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreateGet(url));
+        return await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreateGet(url), cancellationToken);
     }
 }

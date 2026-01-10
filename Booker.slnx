@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/Clients/" />
+  <Folder Name="/Clients/">
+    <Project Path="src/Booker.ApiCaller/Booker.ApiCaller.csproj" />
+  </Folder>
   <Folder Name="/Clients/Blazor/">
     <Project Path="src/Booker.Clients.Blazor.Server/Booker.Clients.Blazor.Server.csproj" />
   </Folder>
@@ -11,7 +13,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="docs/README.md" />
   </Folder>
-  <Project Path="src/Booker.ApiCaller/Booker.ApiCaller.csproj" />
   <Project Path="src/Booker.Backend/Booker.Backend.csproj" />
   <Project Path="src/Booker.Models/Booker.Models.csproj" />
   <Project Path="src/Booker.Repository/Booker.Repository.csproj" />

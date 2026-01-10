@@ -2,6 +2,6 @@
 {
     public interface IInfoApiCaller
     {
-        Task<string> GetCurrency();
+        Task<string> GetCurrency(CancellationToken cancellationToken = default);
     }
 }

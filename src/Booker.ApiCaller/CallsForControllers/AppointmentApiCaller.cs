@@ -9,15 +9,21 @@ public class AppointmentApiCaller : IAppointmentApiCaller
         _apiUrl = options.Value.AppointmentApiUrl;
     }
 
-    public async Task<List<AppointmentDto>> GetAppointments(int calendarId)
+    public async Task<List<AppointmentDto>> GetAppointments(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
     {
         string url = $"{_apiUrl}/{calendarId}";
 
-        return await ApiCallerBase.SendWithResponseAsync<List<AppointmentDto>>(ApiRequest.CreateGet(url));
+        return await ApiCallerBase.SendWithResponseAsync<List<AppointmentDto>>(
+            ApiRequest.CreateGet(url),
+            cancellationToken
+        );
     }
 
-    public async Task AddAppointment(AppointmentDto newAppointment)
+    public async Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default)
     {
-        await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newAppointment));
+        await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newAppointment), cancellationToken);
     }
 }
