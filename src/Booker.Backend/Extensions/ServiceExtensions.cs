@@ -13,5 +13,7 @@ internal static class ServiceExtensions
             cfg.LicenseKey = configuration["LicenseKeys:LuckyPenny"];
             cfg.AddProfile<AutoMapperConfig>();
         });
+
+        services.AddSerilog((s, lc) => lc.ReadFrom.Configuration(configuration));
     }
 }

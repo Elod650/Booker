@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Syncfusion.Blazor.Schedule" />
     <PackageReference Include="Syncfusion.Blazor.Themes" />
   </ItemGroup>

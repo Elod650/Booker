@@ -6,5 +6,6 @@ global using Booker.Clients.Blazor.Server.Extensions;
 global using Booker.Models.DTOs;
 global using Booker.Models.ViewModels;
 global using Microsoft.AspNetCore.Components;
+global using Serilog;
 global using Syncfusion.Blazor;
 global using Syncfusion.Blazor.Schedule;

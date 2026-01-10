@@ -1,4 +1,6 @@
-﻿namespace Booker.Clients.Blazor.Server.Extensions;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Booker.Clients.Blazor.Server.Extensions;
 
 internal static class ServiceExtensions
 {
@@ -6,11 +8,13 @@ internal static class ServiceExtensions
     /// Configures application services and registers required dependencies.
     /// </summary>
     /// <param name="services">The service collection to which application services are added.</param>
-    internal static void ConfigureServices(this IServiceCollection services)
+    internal static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddRazorComponents().AddInteractiveServerComponents();
 
         services.AddSyncfusionBlazor();
+
+        services.AddSerilog((s, lc) => lc.ReadFrom.Configuration(configuration));
 
         services.ConfigureApiCallers();
     }
