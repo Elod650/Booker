@@ -21,7 +21,7 @@ public class ServiceController(IServiceRepository serviceRepository) : Controlle
     [HttpPost]
     public async Task<IActionResult> AddService([FromBody] EditServiceRequest newService)
     {
-        serviceRepository.AddServices(newService);
+        await serviceRepository.AddServices(newService);
         return Ok();
     }
 }

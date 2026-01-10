@@ -24,7 +24,7 @@ internal static class ApiCallerBase
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new ApiCallerException("An unhandled exception occured during the deserialization.");
         }

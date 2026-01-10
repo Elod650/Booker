@@ -2,7 +2,7 @@
 {
     public interface IAppointmentRepository
     {
-        void AddAppointment(AppointmentDto newAppointment);
+        Task AddAppointment(AppointmentDto newAppointment);
         List<AppointmentDto> GetAppointments(int calendarId);
     }
 }

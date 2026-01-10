@@ -4,12 +4,14 @@ public class AppointmentRepository(AppDbContext context, IMapper mapper) : IAppo
 {
     public List<AppointmentDto> GetAppointments(int calendarId)
     {
-        return mapper.Map<List<AppointmentDto>>(context.Appointments.Where(x => x.CalendarId == calendarId));
+        return mapper.Map<List<AppointmentDto>>(
+            context.Appointments.Where(x => x.CalendarId == calendarId).AsNoTracking()
+        );
     }
 
-    public void AddAppointment(AppointmentDto newAppointment)
+    public async Task AddAppointment(AppointmentDto newAppointment)
     {
-        context.Appointments.Add(mapper.Map<Appointment>(newAppointment));
-        context.SaveChanges();
+        await context.Appointments.AddAsync(mapper.Map<Appointment>(newAppointment));
+        await context.SaveChangesAsync();
     }
 }

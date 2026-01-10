@@ -12,9 +12,9 @@ public class ServiceRepository(AppDbContext context, IMapper mapper) : IServiceR
         return mapper.Map<List<ServiceDto>>(context.Services.Where(x => x.CalendarId == calendarId));
     }
 
-    public void AddServices(EditServiceRequest newService)
+    public async Task AddServices(EditServiceRequest newService)
     {
-        context.Add(mapper.Map<Service>(newService));
-        context.SaveChanges();
+        await context.AddAsync(mapper.Map<Service>(newService));
+        await context.SaveChangesAsync();
     }
 }

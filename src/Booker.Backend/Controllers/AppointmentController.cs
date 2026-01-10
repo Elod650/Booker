@@ -14,7 +14,7 @@ public class AppointmentController(IAppointmentRepository appointmentRepository)
     [HttpPost]
     public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto newAppointment)
     {
-        appointmentRepository.AddAppointment(newAppointment);
+        await appointmentRepository.AddAppointment(newAppointment);
         return Ok();
     }
 }

@@ -4,6 +4,6 @@ public class CalendarRepository(AppDbContext context, IMapper mapper) : ICalenda
 {
     public List<CalendarDto> GetCalendars()
     {
-        return mapper.Map<List<CalendarDto>>(context.Calendars);
+        return mapper.Map<List<CalendarDto>>(context.Calendars.AsNoTracking());
     }
 }
