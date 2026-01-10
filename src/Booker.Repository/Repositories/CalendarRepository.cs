@@ -1,9 +1,9 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class CalendarRepository(AppDbContext context) : ICalendarRepository
+public class CalendarRepository(AppDbContext context, IMapper mapper) : ICalendarRepository
 {
     public List<CalendarDto> GetCalendars()
     {
-        return context.Calendars.Map();
+        return mapper.Map<List<CalendarDto>>(context.Calendars);
     }
 }

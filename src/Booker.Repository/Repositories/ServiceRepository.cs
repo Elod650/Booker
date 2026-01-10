@@ -1,20 +1,20 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class ServiceRepository(AppDbContext context) : IServiceRepository
+public class ServiceRepository(AppDbContext context, IMapper mapper) : IServiceRepository
 {
     public List<ServiceDto> GetServices()
     {
-        return context.Services.Map();
+        return mapper.Map<List<ServiceDto>>(context.Services);
     }
 
     public List<ServiceDto> GetServices(int calendarId)
     {
-        return context.Services.Where(x => x.CalendarId == calendarId).Map();
+        return mapper.Map<List<ServiceDto>>(context.Services.Where(x => x.CalendarId == calendarId));
     }
 
     public void AddServices(EditServiceRequest newService)
     {
-        context.Add(newService.Map());
+        context.Add(mapper.Map<Service>(newService));
         context.SaveChanges();
     }
 }

@@ -6,5 +6,12 @@ internal static class ServiceExtensions
     /// Configures application services and registers required dependencies.
     /// </summary>
     /// <param name="services">The service collection to which application services are added.</param>
-    internal static void ConfigureServices(this IServiceCollection services) { }
+    internal static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.LicenseKey = configuration["LicenseKeys:LuckyPenny"];
+            cfg.AddProfile<AutoMapperConfig>();
+        });
+    }
 }
