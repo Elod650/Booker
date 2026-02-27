@@ -14,6 +14,7 @@ public partial class AddService
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(AddService)} during {nameof(OnInitializedAsync)}");
+            await JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
 
@@ -27,6 +28,7 @@ public partial class AddService
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(AddService)} during {nameof(Create)}");
+            await JSRuntime.ErrorToast("An error occured during the creation of the service");
         }
     }
 }

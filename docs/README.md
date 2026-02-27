@@ -1,13 +1,10 @@
 # Booker
 
 # TODO
-- Logging
-- Error handling
-  - ToastR
+
 - Tests
   - Unit tests
   - Integration tests
-- Http files
 
 # Projects
 

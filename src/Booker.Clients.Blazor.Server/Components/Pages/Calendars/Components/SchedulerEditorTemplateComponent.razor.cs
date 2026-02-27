@@ -8,7 +8,7 @@ public partial class SchedulerEditorTemplateComponent
     [Parameter, EditorRequired]
     public List<ServiceDto> Services { get; set; }
 
-    private void OnServiceChange(int value)
+    private async Task OnServiceChange(int value)
     {
         try
         {
@@ -22,15 +22,16 @@ public partial class SchedulerEditorTemplateComponent
                 ex,
                 $"An error occurred in {nameof(SchedulerEditorTemplateComponent)} during {nameof(OnServiceChange)}"
             );
+            await JSRuntime.ErrorToast("An error occured during service change");
         }
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
             Appointment.ServiceId = Services.FirstOrDefault()?.Id ?? 0;
-            OnServiceChange(Appointment.ServiceId);
+            await OnServiceChange(Appointment.ServiceId);
         }
         catch (Exception ex)
         {
@@ -38,6 +39,7 @@ public partial class SchedulerEditorTemplateComponent
                 ex,
                 $"An error occurred in {nameof(SchedulerEditorTemplateComponent)} during {nameof(OnParametersSet)}"
             );
+            await JSRuntime.ErrorToast("An error occured during the loading of the appointment editor");
         }
     }
 }

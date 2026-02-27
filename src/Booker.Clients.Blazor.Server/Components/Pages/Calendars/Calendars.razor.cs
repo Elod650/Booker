@@ -25,6 +25,7 @@ public partial class Calendars
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnInitializedAsync)}");
+            await JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
 
@@ -47,6 +48,7 @@ public partial class Calendars
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnCalendarChanged)}");
+            await JSRuntime.ErrorToast("An error occured during the calendar change");
         }
     }
 
@@ -58,10 +60,13 @@ public partial class Calendars
             await AppointmentApiCaller.AddAppointment(newAppointment);
             appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
             scheduler.CloseEditor();
+
+            await JSRuntime.SuccessToast("New appointment added");
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnSave)}");
+            await JSRuntime.ErrorToast("An error occured during the createion of the new appointment");
         }
     }
 

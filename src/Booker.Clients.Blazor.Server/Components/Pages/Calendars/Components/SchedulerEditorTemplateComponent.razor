@@ -5,7 +5,7 @@
             <InputSelect class="form-select"
                          Value="Appointment.ServiceId"
                          ValueExpression="@(() => Appointment.ServiceId)"
-                         ValueChanged="@((int value) => OnServiceChange(value))">
+                         ValueChanged="@(async (int value) => await OnServiceChange(value))">
                 @foreach (var service in Services)
                 {
                     <option value="@service.Id">@service.Name</option>

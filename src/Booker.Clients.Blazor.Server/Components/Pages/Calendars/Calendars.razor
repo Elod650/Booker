@@ -1,5 +1,5 @@
 ﻿@page "/calendars"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Calendars</PageTitle>
 
@@ -11,7 +11,7 @@
         <InputSelect class="form-select"
                      Value="selectedCalendarId"
                      ValueExpression="@(() => selectedCalendarId)"
-                     ValueChanged="@((int value) => OnCalendarChanged(value))">
+                     ValueChanged="@(async (int value) => await OnCalendarChanged(value))">
             @foreach (var calendar in calendars)
             {
                 <option value="@calendar.Id">@calendar.Name</option>

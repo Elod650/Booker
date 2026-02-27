@@ -18,6 +18,7 @@ public partial class Services
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnInitializedAsync)}");
+            await JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
 }
