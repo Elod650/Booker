@@ -1,5 +1,6 @@
 ﻿global using AutoMapper;
 global using Booker.Backend.Extensions;
+global using Booker.Backend.Middlewares;
 global using Booker.Models.DTOs;
 global using Booker.Models.Requests;
 global using Booker.Repository;

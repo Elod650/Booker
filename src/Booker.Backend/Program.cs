@@ -34,6 +34,8 @@ try
         app.MapScalarApiReference();
     }
 
+    app.ConfigureMidlewares();
+
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
