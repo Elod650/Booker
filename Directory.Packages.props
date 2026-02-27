@@ -8,6 +8,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.48" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Syncfusion.Blazor.Schedule" Version="32.1.21" />
     <PackageVersion Include="Syncfusion.Blazor.Themes" Version="32.1.21" />

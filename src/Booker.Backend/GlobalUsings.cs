@@ -8,4 +8,5 @@ global using Booker.Repository.Repositories;
 global using Booker.Repository.Repositories.Interfaces;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
+global using Scalar.AspNetCore;
 global using Serilog;
