@@ -1,10 +1,11 @@
-﻿global using Booker.ApiCaller;
+﻿global using System.ComponentModel.DataAnnotations;
+global using Booker.ApiCaller;
 global using Booker.ApiCaller.CallsForControllers;
 global using Booker.ApiCaller.CallsForControllers.Interfaces;
 global using Booker.Clients.Blazor.Server.Components;
 global using Booker.Clients.Blazor.Server.Extensions;
 global using Booker.Models.DTOs;
-global using Booker.Models.ViewModels;
+global using Booker.Models.Requests;
 global using Microsoft.AspNetCore.Components;
 global using Serilog;
 global using Syncfusion.Blazor;

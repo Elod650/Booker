@@ -1,4 +1,4 @@
-﻿namespace Booker.Models.ViewModels;
+﻿namespace Booker.Clients.Blazor.Server.ViewModels;
 
 public class EditServiceViewModels
 {

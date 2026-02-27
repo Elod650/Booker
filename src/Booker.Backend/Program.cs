@@ -20,6 +20,7 @@ try
 
     app.UseSerilogRequestLogging();
 
+    //Need fot seeding the database on startup, can be removed when using a real database with migrations
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
