@@ -1,6 +1,4 @@
-﻿using Syncfusion.Blazor.Schedule.Internal;
-
-namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
+﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
 
 public partial class Calendars
 {
@@ -17,10 +15,17 @@ public partial class Calendars
 
     protected override async Task OnInitializedAsync()
     {
-        calendars = await CalendarApiCaller.GetCalendars();
-        selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
-        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-        services = await ServiceApiCaller.GetServices(selectedCalendarId);
+        try
+        {
+            calendars = await CalendarApiCaller.GetCalendars();
+            selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
+            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            services = await ServiceApiCaller.GetServices(selectedCalendarId);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnInitializedAsync)}");
+        }
     }
 
     public async Task OnCellClick(CellClickEventArgs args)
@@ -30,20 +35,34 @@ public partial class Calendars
 
     private async Task OnCalendarChanged(int value)
     {
-        selectedCalendarId = value;
-        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-        services = await ServiceApiCaller.GetServices(selectedCalendarId);
-        var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
-        currentCalendarStarTime = selectedCalendar.StartTime;
-        currentCalendarEndTime = selectedCalendar.EndTime;
+        try
+        {
+            selectedCalendarId = value;
+            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            services = await ServiceApiCaller.GetServices(selectedCalendarId);
+            var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
+            currentCalendarStarTime = selectedCalendar.StartTime;
+            currentCalendarEndTime = selectedCalendar.EndTime;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnCalendarChanged)}");
+        }
     }
 
     private async Task OnSave(AppointmentDto newAppointment)
     {
-        newAppointment.CalendarId = selectedCalendarId;
-        await AppointmentApiCaller.AddAppointment(newAppointment);
-        appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-        scheduler.CloseEditor();
+        try
+        {
+            newAppointment.CalendarId = selectedCalendarId;
+            await AppointmentApiCaller.AddAppointment(newAppointment);
+            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            scheduler.CloseEditor();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnSave)}");
+        }
     }
 
     private void OnClose()

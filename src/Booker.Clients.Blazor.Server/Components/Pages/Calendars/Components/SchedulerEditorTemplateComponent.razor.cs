@@ -10,14 +10,34 @@ public partial class SchedulerEditorTemplateComponent
 
     private void OnServiceChange(int value)
     {
-        Appointment.ServiceId = value;
-        var selectedServiceDuration = Services.First(x => x.Id == Appointment.ServiceId).Duration;
-        Appointment.EndTime = Appointment.StartTime?.Add(selectedServiceDuration);
+        try
+        {
+            Appointment.ServiceId = value;
+            var selectedServiceDuration = Services.First(x => x.Id == Appointment.ServiceId).Duration;
+            Appointment.EndTime = Appointment.StartTime?.Add(selectedServiceDuration);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(
+                ex,
+                $"An error occurred in {nameof(SchedulerEditorTemplateComponent)} during {nameof(OnServiceChange)}"
+            );
+        }
     }
 
     protected override void OnParametersSet()
     {
-        Appointment.ServiceId = Services.FirstOrDefault()?.Id ?? 0;
-        OnServiceChange(Appointment.ServiceId);
+        try
+        {
+            Appointment.ServiceId = Services.FirstOrDefault()?.Id ?? 0;
+            OnServiceChange(Appointment.ServiceId);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(
+                ex,
+                $"An error occurred in {nameof(SchedulerEditorTemplateComponent)} during {nameof(OnParametersSet)}"
+            );
+        }
     }
 }

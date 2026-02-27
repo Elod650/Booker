@@ -7,12 +7,26 @@ public partial class AddService
 
     protected override async Task OnInitializedAsync()
     {
-        calendars = await CalendarApiCaller.GetCalendars();
+        try
+        {
+            calendars = await CalendarApiCaller.GetCalendars();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(AddService)} during {nameof(OnInitializedAsync)}");
+        }
     }
 
     private async Task Create()
     {
-        await ServiceApiCaller.AddService(model.ToRequest());
-        NavigationManager.NavigateTo("services");
+        try
+        {
+            await ServiceApiCaller.AddService(model.ToRequest());
+            NavigationManager.NavigateTo("services");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(AddService)} during {nameof(Create)}");
+        }
     }
 }

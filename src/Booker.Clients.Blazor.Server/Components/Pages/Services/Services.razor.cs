@@ -10,7 +10,14 @@ public partial class Services
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
 
-        services = await ServiceApiCaller.GetServices();
-        currency = await InfoApiCaller.GetCurrency();
+        try
+        {
+            services = await ServiceApiCaller.GetServices();
+            currency = await InfoApiCaller.GetCurrency();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnInitializedAsync)}");
+        }
     }
 }
