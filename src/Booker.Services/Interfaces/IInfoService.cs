@@ -2,5 +2,5 @@
 
 public interface IInfoService
 {
-    Task<string> GetCurrency();
+    Task<string> GetCurrency(CancellationToken cancellationToken = default);
 }

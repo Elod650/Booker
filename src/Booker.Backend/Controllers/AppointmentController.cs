@@ -6,17 +6,23 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
 {
     [HttpGet("{calendarId:int}")]
     [ProducesResponseType(typeof(List<AppointmentDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<AppointmentDto>>> GetAppointments(int calendarId)
+    public async Task<ActionResult<List<AppointmentDto>>> GetAppointments(
+        int calendarId,
+        CancellationToken cancellationToken
+    )
     {
-        var appointments = await appointmentService.GetAppointments(calendarId);
+        var appointments = await appointmentService.GetAppointments(calendarId, cancellationToken);
         return Ok(appointments);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto newAppointment)
+    public async Task<IActionResult> AddAppointment(
+        [FromBody] AppointmentDto newAppointment,
+        CancellationToken cancellationToken
+    )
     {
-        await appointmentService.AddAppointment(newAppointment);
+        await appointmentService.AddAppointment(newAppointment, cancellationToken);
         return Ok();
     }
 }

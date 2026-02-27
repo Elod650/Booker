@@ -6,9 +6,9 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
 {
     [HttpGet]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<CalendarDto>>> GetCalendars()
+    public async Task<ActionResult<List<CalendarDto>>> GetCalendars(CancellationToken cancellationToken)
     {
-        var calendars = await calendarService.GetCalendars();
+        var calendars = await calendarService.GetCalendars(cancellationToken);
         return Ok(calendars);
     }
 }

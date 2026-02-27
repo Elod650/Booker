@@ -2,5 +2,5 @@
 
 public interface ICalendarService
 {
-    Task<List<CalendarDto>> GetCalendars();
+    Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default);
 }

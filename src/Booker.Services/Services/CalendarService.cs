@@ -2,8 +2,8 @@
 
 public class CalendarService(ICalendarRepository calendarRepository, IMapper mapper) : ICalendarService
 {
-    public async Task<List<CalendarDto>> GetCalendars()
+    public async Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<List<CalendarDto>>(await calendarRepository.GetCalendarsAsync());
+        return mapper.Map<List<CalendarDto>>(await calendarRepository.GetCalendarsAsync(cancellationToken));
     }
 }
