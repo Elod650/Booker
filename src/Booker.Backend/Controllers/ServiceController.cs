@@ -5,6 +5,7 @@
 public class ServiceController(IServiceRepository serviceRepository) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ServiceDto>>> GetServices()
     {
         var services = serviceRepository.GetServices();
@@ -12,6 +13,7 @@ public class ServiceController(IServiceRepository serviceRepository) : Controlle
     }
 
     [HttpGet("{calendarId:int}")]
+    [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ServiceDto>>> GetServices(int calendarId)
     {
         var services = serviceRepository.GetServices(calendarId);
@@ -19,6 +21,7 @@ public class ServiceController(IServiceRepository serviceRepository) : Controlle
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddService([FromBody] EditServiceRequest newService)
     {
         await serviceRepository.AddServices(newService);
