@@ -1,7 +1,6 @@
-﻿namespace Booker.Repository.Repositories.Interfaces
+﻿namespace Booker.Repository.Repositories.Interfaces;
+
+public interface ICalendarRepository
 {
-    public interface ICalendarRepository
-    {
-        List<CalendarDto> GetCalendars();
-    }
+    Task<List<Calendar>> GetCalendarsAsync(CancellationToken cancellationToken = default);
 }

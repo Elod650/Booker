@@ -4,6 +4,7 @@ public class InfoService(IInfoRepository infoRepository) : IInfoService
 {
     public async Task<string> GetCurrency()
     {
-        return infoRepository.GetCurrency();
+        var currencyInfo = await infoRepository.GetInfoAsync("Currency");
+        return currencyInfo.Value;
     }
 }

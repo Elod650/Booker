@@ -1,7 +1,6 @@
-﻿namespace Booker.Repository.Repositories.Interfaces
+﻿namespace Booker.Repository.Repositories.Interfaces;
+
+public interface IInfoRepository
 {
-    public interface IInfoRepository
-    {
-        string GetCurrency();
-    }
+    Task<Info> GetInfoAsync(string key, CancellationToken cancellationToken = default);
 }

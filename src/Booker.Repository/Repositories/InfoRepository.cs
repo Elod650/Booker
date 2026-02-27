@@ -2,8 +2,8 @@
 
 public class InfoRepository(AppDbContext context) : IInfoRepository
 {
-    public string GetCurrency()
+    public async Task<Info> GetInfoAsync(string key, CancellationToken cancellationToken = default)
     {
-        return context.Infos.AsNoTracking().First(x => x.Key == "Currency").Value;
+        return await context.Infos.AsNoTracking().FirstAsync(x => x.Key == key, cancellationToken);
     }
 }

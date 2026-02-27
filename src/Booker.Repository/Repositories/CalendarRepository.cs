@@ -1,9 +1,9 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class CalendarRepository(AppDbContext context, IMapper mapper) : ICalendarRepository
+public class CalendarRepository(AppDbContext context) : ICalendarRepository
 {
-    public List<CalendarDto> GetCalendars()
+    public async Task<List<Calendar>> GetCalendarsAsync(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<List<CalendarDto>>(context.Calendars.AsNoTracking());
+        return await context.Calendars.AsNoTracking().ToListAsync(cancellationToken);
     }
 }

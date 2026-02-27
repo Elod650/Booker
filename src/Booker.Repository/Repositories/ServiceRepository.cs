@@ -1,20 +1,26 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class ServiceRepository(AppDbContext context, IMapper mapper) : IServiceRepository
+public class ServiceRepository(AppDbContext context) : IServiceRepository
 {
-    public List<ServiceDto> GetServices()
+    public async Task<List<Service>> GetServicesAsync(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<List<ServiceDto>>(context.Services);
+        return await context.Services.AsNoTracking().ToListAsync(cancellationToken);
     }
 
-    public List<ServiceDto> GetServices(int calendarId)
+    public async Task<List<Service>> GetServicesForCalendarAsync(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return mapper.Map<List<ServiceDto>>(context.Services.Where(x => x.CalendarId == calendarId));
+        return await context
+            .Services.AsNoTracking()
+            .Where(x => x.CalendarId == calendarId)
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task AddService(EditServiceRequest newService, CancellationToken cancellationToken = default)
+    public async Task AddService(Service newService, CancellationToken cancellationToken = default)
     {
-        await context.AddAsync(mapper.Map<Service>(newService), cancellationToken);
+        await context.AddAsync(newService, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

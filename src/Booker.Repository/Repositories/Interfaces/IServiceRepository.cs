@@ -2,8 +2,8 @@
 {
     public interface IServiceRepository
     {
-        Task AddService(EditServiceRequest newService, CancellationToken cancellationToken = default);
-        List<ServiceDto> GetServices();
-        List<ServiceDto> GetServices(int calendarId);
+        Task AddService(Service newService, CancellationToken cancellationToken = default);
+        Task<List<Service>> GetServicesAsync(CancellationToken cancellationToken = default);
+        Task<List<Service>> GetServicesForCalendarAsync(int calendarId, CancellationToken cancellationToken = default);
     }
 }

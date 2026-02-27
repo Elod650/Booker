@@ -1,8 +1,10 @@
-﻿namespace Booker.Repository.Repositories.Interfaces
+﻿namespace Booker.Repository.Repositories.Interfaces;
+
+public interface IAppointmentRepository
 {
-    public interface IAppointmentRepository
-    {
-        Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default);
-        List<AppointmentDto> GetAppointments(int calendarId);
-    }
+    Task AddAppointmentAsync(Appointment newAppointment, CancellationToken cancellationToken = default);
+    Task<List<Appointment>> GetAppointmentsForCalendarAsync(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    );
 }

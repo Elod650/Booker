@@ -1,17 +1,21 @@
 ﻿namespace Booker.Repository.Repositories;
 
-public class AppointmentRepository(AppDbContext context, IMapper mapper) : IAppointmentRepository
+public class AppointmentRepository(AppDbContext context) : IAppointmentRepository
 {
-    public List<AppointmentDto> GetAppointments(int calendarId)
+    public async Task<List<Appointment>> GetAppointmentsForCalendarAsync(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
     {
-        return mapper.Map<List<AppointmentDto>>(
-            context.Appointments.Where(x => x.CalendarId == calendarId).AsNoTracking()
-        );
+        return await context
+            .Appointments.Where(x => x.CalendarId == calendarId)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default)
+    public async Task AddAppointmentAsync(Appointment newAppointment, CancellationToken cancellationToken = default)
     {
-        await context.Appointments.AddAsync(mapper.Map<Appointment>(newAppointment), cancellationToken);
+        await context.Appointments.AddAsync(newAppointment, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 }
