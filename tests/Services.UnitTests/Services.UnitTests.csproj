@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="TUnit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Booker.Models\Booker.Models.csproj" />
+    <ProjectReference Include="..\..\src\Booker.Repository\Booker.Repository.csproj" />
+    <ProjectReference Include="..\..\src\Booker.Services\Booker.Services.csproj" />
+  </ItemGroup>
+
+</Project>
