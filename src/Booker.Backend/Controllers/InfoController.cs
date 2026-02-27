@@ -2,13 +2,13 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class InfoController(IInfoRepository infoRepository) : ControllerBase
+public class InfoController(IInfoService infoService) : ControllerBase
 {
     [HttpGet("currency")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    public async Task<ActionResult<string>> GetCurency()
+    public async Task<ActionResult<string>> GetCurrency()
     {
-        var info = infoRepository.GetCurrency();
+        var info = await infoService.GetCurrency();
         return Ok(info);
     }
 }

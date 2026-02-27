@@ -2,13 +2,13 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class ServiceController(IServiceRepository serviceRepository) : ControllerBase
+public class ServiceController(IServiceService serviceService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ServiceDto>>> GetServices()
     {
-        var services = serviceRepository.GetServices();
+        var services = await serviceService.GetServices();
         return Ok(services);
     }
 
@@ -16,7 +16,7 @@ public class ServiceController(IServiceRepository serviceRepository) : Controlle
     [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ServiceDto>>> GetServices(int calendarId)
     {
-        var services = serviceRepository.GetServices(calendarId);
+        var services = await serviceService.GetServices(calendarId);
         return Ok(services);
     }
 
@@ -24,7 +24,7 @@ public class ServiceController(IServiceRepository serviceRepository) : Controlle
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddService([FromBody] EditServiceRequest newService)
     {
-        await serviceRepository.AddServices(newService);
+        await serviceService.AddService(newService);
         return Ok();
     }
 }

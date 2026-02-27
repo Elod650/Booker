@@ -2,13 +2,13 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class AppointmentController(IAppointmentRepository appointmentRepository) : ControllerBase
+public class AppointmentController(IAppointmentService appointmentService) : ControllerBase
 {
     [HttpGet("{calendarId:int}")]
     [ProducesResponseType(typeof(List<AppointmentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<AppointmentDto>>> GetAppointments(int calendarId)
     {
-        var appointments = appointmentRepository.GetAppointments(calendarId);
+        var appointments = await appointmentService.GetAppointments(calendarId);
         return Ok(appointments);
     }
 
@@ -16,7 +16,7 @@ public class AppointmentController(IAppointmentRepository appointmentRepository)
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto newAppointment)
     {
-        await appointmentRepository.AddAppointment(newAppointment);
+        await appointmentService.AddAppointment(newAppointment);
         return Ok();
     }
 }

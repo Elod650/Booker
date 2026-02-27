@@ -7,6 +7,8 @@ global using Booker.Repository;
 global using Booker.Repository.Entities;
 global using Booker.Repository.Repositories;
 global using Booker.Repository.Repositories.Interfaces;
+global using Booker.Services.Interfaces;
+global using Booker.Services.Services;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Scalar.AspNetCore;

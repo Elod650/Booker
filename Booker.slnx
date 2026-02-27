@@ -16,4 +16,5 @@
   <Project Path="src/Booker.Backend/Booker.Backend.csproj" />
   <Project Path="src/Booker.Models/Booker.Models.csproj" />
   <Project Path="src/Booker.Repository/Booker.Repository.csproj" />
+  <Project Path="src/Booker.Services/Booker.Services.csproj" Id="d867b911-f72a-437f-bc27-b2ac2e25c1f4" />
 </Solution>

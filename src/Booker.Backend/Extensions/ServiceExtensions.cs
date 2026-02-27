@@ -15,5 +15,11 @@ internal static class ServiceExtensions
         });
 
         services.AddSerilog((s, lc) => lc.ReadFrom.Configuration(configuration));
+
+        services
+            .AddScoped<IAppointmentService, AppointmentService>()
+            .AddScoped<ICalendarService, CalendarService>()
+            .AddScoped<IInfoService, InfoService>()
+            .AddScoped<IServiceService, ServiceService>();
     }
 }

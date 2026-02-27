@@ -2,13 +2,13 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class CalendarController(ICalendarRepository calendarRepository) : ControllerBase
+public class CalendarController(ICalendarService calendarService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<CalendarDto>>> GetCalendars()
     {
-        var calendars = calendarRepository.GetCalendars();
+        var calendars = await calendarService.GetCalendars();
         return Ok(calendars);
     }
 }

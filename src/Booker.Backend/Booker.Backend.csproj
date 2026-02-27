@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Booker.Models\Booker.Models.csproj" />
     <ProjectReference Include="..\Booker.Repository\Booker.Repository.csproj" />
+    <ProjectReference Include="..\Booker.Services\Booker.Services.csproj" />
   </ItemGroup>
 
 </Project>
