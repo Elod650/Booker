@@ -1,0 +1,22 @@
+﻿namespace Services.UnitTests.TestData;
+
+internal static class ServiceTestData
+{
+    internal static readonly List<Service> Services = new List<Service>
+    {
+        new Service
+        {
+            Id = 1,
+            Name = "Service 1",
+            Duration = TimeSpan.FromMinutes(30),
+            Price = 100,
+        },
+        new Service
+        {
+            Id = 2,
+            Name = "Service 2",
+            Duration = TimeSpan.FromMinutes(60),
+            Price = 200,
+        },
+    };
+}

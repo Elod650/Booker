@@ -1,6 +1,4 @@
-﻿using Booker.Models.DTOs;
-
-namespace Services.UnitTests;
+﻿namespace Services.UnitTests;
 
 public class AppointmentServiceTests
 {
@@ -25,6 +23,18 @@ public class AppointmentServiceTests
     }
 
     [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task GetAppointments_ShouldReturnEmptyList_WhenCalendarIdIsInvalid(int calendarId)
+    {
+        var result = await appointmentService.GetAppointments(calendarId);
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Count).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task AddAppointment_ShouldPass()
     {
         var newAppointment = Substitute.For<AppointmentDto>();
@@ -43,9 +53,7 @@ public class AppointmentServiceTests
             .Returns(callInfo =>
             {
                 var calendarId = callInfo.ArgAt<int>(0);
-                return Task.FromResult(
-                    AppointmentTestData.Appointments.Where(a => a.CalendarId == calendarId).ToList()
-                );
+                return AppointmentTestData.Appointments.Where(a => a.CalendarId == calendarId).ToList();
             });
     }
 
