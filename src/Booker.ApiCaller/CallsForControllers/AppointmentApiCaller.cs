@@ -26,4 +26,11 @@ public class AppointmentApiCaller : IAppointmentApiCaller
     {
         await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newAppointment), cancellationToken);
     }
+
+    public async Task DeleteAppointment(int id, CancellationToken cancellationToken = default)
+    {
+        string url = $"{_apiUrl}/{id}";
+
+        await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreateDelete(url), cancellationToken);
+    }
 }

@@ -31,6 +31,10 @@
         <EditorFooterTemplate>
             <button class="btn btn-primary" @onclick="@(() => OnSave(context as AppointmentDto))">Save</button>
             <button class="btn btn-outline-secondary" @onclick="OnClose">Close</button>
+            @if ((context as AppointmentDto).Id != 0)
+            {
+                <button class="btn btn-outline-danger ms-1" @onclick="@(() => OnDelete((context as AppointmentDto).Id))">Delete</button>
+            }
         </EditorFooterTemplate>
     </ScheduleTemplates>
     <ScheduleEventSettings DataSource="appointments">

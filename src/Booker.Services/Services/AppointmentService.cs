@@ -16,4 +16,18 @@ public class AppointmentService(IAppointmentRepository appointmentRepository, IM
     {
         await appointmentRepository.AddAppointmentAsync(mapper.Map<Appointment>(newAppointment), cancellationToken);
     }
+
+    public async Task<string?> DeleteAppointment(int appointmentId, CancellationToken cancellationToken = default)
+    {
+        var appointmentToDelete = await appointmentRepository.GetAppointmentById(appointmentId, cancellationToken);
+
+        if (appointmentToDelete is null)
+        {
+            return "There is no appointment with the provided Id.";
+        }
+
+        await appointmentRepository.DeleteAppointmentAsync(appointmentToDelete, cancellationToken);
+
+        return null;
+    }
 }

@@ -25,4 +25,19 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
         await appointmentService.AddAppointment(newAppointment, cancellationToken);
         return Ok();
     }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteAppointment(int id, CancellationToken cancellationToken)
+    {
+        var errorMessage = await appointmentService.DeleteAppointment(id, cancellationToken);
+
+        if (errorMessage is not null)
+        {
+            return BadRequest(errorMessage);
+        }
+
+        return Ok();
+    }
 }

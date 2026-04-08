@@ -48,4 +48,14 @@ internal class ApiRequest
     {
         return new ApiRequest { Method = HttpMethod.Get, Url = url };
     }
+
+    /// <summary>
+    /// Creates a new API request configured to send a DELETE request to the specified URL.
+    /// </summary>
+    /// <param name="url">The destination URL.</param>
+    /// <returns>An <see cref="ApiRequest"/> instance representing the configured DELETE request.</returns>
+    internal static ApiRequest CreateDelete(string url)
+    {
+        return new ApiRequest { Method = HttpMethod.Delete, Url = url };
+    }
 }

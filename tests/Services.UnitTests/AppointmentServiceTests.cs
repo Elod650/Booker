@@ -44,6 +44,30 @@ public class AppointmentServiceTests
         await appointmentRepository.Received(1).AddAppointmentAsync(Arg.Any<Appointment>());
     }
 
+    [Test]
+    [Arguments(1)]
+    [Arguments(2)]
+    [Arguments(3)]
+    public async Task DeleteAppointmentAsync_ShouldDeleteAppointment_WhenIdIsValid(int id)
+    {
+        var appointmentToDelete = AppointmentTestData.Appointments.First(a => a.Id == id);
+
+        var result = await appointmentService.DeleteAppointment(id);
+
+        await appointmentRepository.Received(1).DeleteAppointmentAsync(appointmentToDelete);
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task DeleteAppointmentAsync_ShouldReturnErrorMessage_WhenThereIsNoAppointmentWithId(int id)
+    {
+        var result = await appointmentService.DeleteAppointment(id);
+
+        await Assert.That(result).IsEqualTo("There is no appointment with the provided Id.");
+    }
+
     private void SetUpRepository()
     {
         appointmentRepository = Substitute.For<IAppointmentRepository>();
@@ -54,6 +78,14 @@ public class AppointmentServiceTests
             {
                 var calendarId = callInfo.ArgAt<int>(0);
                 return AppointmentTestData.Appointments.Where(a => a.CalendarId == calendarId).ToList();
+            });
+
+        appointmentRepository
+            .GetAppointmentById(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var id = callInfo.ArgAt<int>(0);
+                return AppointmentTestData.Appointments.FirstOrDefault(a => a.Id == id);
             });
     }
 

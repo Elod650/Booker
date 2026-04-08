@@ -72,7 +72,25 @@ public partial class Calendars
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnSave)}");
-            await JSRuntime.ErrorToast("An error occured during the createion of the new appointment");
+            await JSRuntime.ErrorToast("An error occured during the creation of the new appointment");
+        }
+    }
+
+    private async Task OnDelete(int id)
+    {
+        try
+        {
+            await AppointmentApiCaller.DeleteAppointment(id);
+
+            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            scheduler.CloseEditor();
+
+            await JSRuntime.SuccessToast("Appointment deleted");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnDelete)}");
+            await JSRuntime.ErrorToast("An error occured during the delete of the appointment");
         }
     }
 
