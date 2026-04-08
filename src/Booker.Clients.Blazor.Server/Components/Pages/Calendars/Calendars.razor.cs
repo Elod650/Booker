@@ -56,6 +56,12 @@ public partial class Calendars
     {
         try
         {
+            if (!IsAppointmentWithinWorkHours(newAppointment))
+            {
+                await JSRuntime.ErrorToast("Appointment must be within work hours");
+                return;
+            }
+
             newAppointment.CalendarId = selectedCalendarId;
             await AppointmentApiCaller.AddAppointment(newAppointment);
             appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
@@ -68,6 +74,27 @@ public partial class Calendars
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnSave)}");
             await JSRuntime.ErrorToast("An error occured during the createion of the new appointment");
         }
+    }
+
+    private bool IsAppointmentWithinWorkHours(AppointmentDto appointment)
+    {
+        if (appointment.StartTime is null || appointment.EndTime is null)
+        {
+            return false;
+        }
+
+        if (
+            !TimeOnly.TryParse(currentCalendarStarTime, out var workStart)
+            || !TimeOnly.TryParse(currentCalendarEndTime, out var workEnd)
+        )
+        {
+            return false;
+        }
+
+        var appointmentStart = TimeOnly.FromDateTime(appointment.StartTime.Value);
+        var appointmentEnd = TimeOnly.FromDateTime(appointment.EndTime.Value);
+
+        return appointmentStart >= workStart && appointmentEnd <= workEnd;
     }
 
     private void OnClose()
