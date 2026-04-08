@@ -5,6 +5,13 @@
 - Tests
   - Unit tests
   - Integration tests
+- SignalR
+- Clean architecture
+- Authentication and authorization
+- Background services (for email sending)
+- Caching 
+- Row versioning for concurrency control
+- Service edit functionality
 
 # Projects
 
