@@ -21,4 +21,21 @@ public partial class Services
             await JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
+
+    private async Task OnDelete(int id)
+    {
+        try
+        {
+            await ServiceApiCaller.DeleteServices(id);
+
+            services = await ServiceApiCaller.GetServices();
+
+            await JSRuntime.SuccessToast("Service deleted");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnDelete)}");
+            await JSRuntime.ErrorToast("An error occured during the delete of the service");
+        }
+    }
 }

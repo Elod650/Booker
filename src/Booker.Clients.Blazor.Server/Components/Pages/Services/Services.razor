@@ -20,6 +20,7 @@ else
                 <th>Name</th>
                 <th>Duration</th>
                 <th>Price</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,7 @@ else
                     <td>@service.Name</td>
                     <td>@service.Duration</td>
                     <td>@service.Price.ToString("F2") @currency</td>
+                    <td><button class="btn btn-outline-danger" @onclick="@(() => OnDelete(service.Id))">Delete</button></td>
                 </tr>
             }
         </tbody>

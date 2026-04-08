@@ -30,4 +30,19 @@ public class ServiceController(IServiceService serviceService) : ControllerBase
         await serviceService.AddService(newService, cancellationToken);
         return Ok();
     }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteService(int id, CancellationToken cancellationToken)
+    {
+        var errorMessage = await serviceService.DeleteService(id, cancellationToken);
+
+        if (errorMessage is not null)
+        {
+            return BadRequest(errorMessage);
+        }
+
+        return Ok();
+    }
 }

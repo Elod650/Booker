@@ -19,7 +19,7 @@ public class AppointmentService(IAppointmentRepository appointmentRepository, IM
 
     public async Task<string?> DeleteAppointment(int appointmentId, CancellationToken cancellationToken = default)
     {
-        var appointmentToDelete = await appointmentRepository.GetAppointmentById(appointmentId, cancellationToken);
+        var appointmentToDelete = await appointmentRepository.GetAppointmentByIdAsync(appointmentId, cancellationToken);
 
         if (appointmentToDelete is null)
         {

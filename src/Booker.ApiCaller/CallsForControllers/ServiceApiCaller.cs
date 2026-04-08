@@ -31,4 +31,11 @@ public class ServiceApiCaller : IServiceApiCaller
     {
         await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newService), cancellationToken);
     }
+
+    public async Task DeleteServices(int id, CancellationToken cancellationToken = default)
+    {
+        string url = $"{_apiUrl}/{id}";
+
+        await ApiCallerBase.SendAsync(ApiRequest.CreateDelete(url), cancellationToken);
+    }
 }

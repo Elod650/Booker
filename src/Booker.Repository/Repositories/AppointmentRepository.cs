@@ -13,7 +13,7 @@ public class AppointmentRepository(AppDbContext context) : IAppointmentRepositor
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Appointment?> GetAppointmentById(int id, CancellationToken cancellationToken = default)
+    public async Task<Appointment?> GetAppointmentByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await context.Appointments.FindAsync(keyValues: [id], cancellationToken: cancellationToken);
     }

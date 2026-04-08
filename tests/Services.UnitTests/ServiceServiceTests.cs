@@ -1,4 +1,6 @@
-﻿namespace Services.UnitTests;
+﻿using Booker.Repository.Repositories;
+
+namespace Services.UnitTests;
 
 public class ServiceServiceTests
 {
@@ -32,6 +34,29 @@ public class ServiceServiceTests
         await serviceRepository.Received(1).AddService(Arg.Any<Service>());
     }
 
+    [Test]
+    [Arguments(1)]
+    [Arguments(2)]
+    public async Task DeleteServiceAsync_ShouldDeleteService_WhenIdIsValid(int id)
+    {
+        var serviceToDelete = ServiceTestData.Services.First(a => a.Id == id);
+
+        var result = await serviceService.DeleteService(id);
+
+        await serviceRepository.Received(1).DeleteServiceAsync(serviceToDelete);
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task DeleteAppointmentAsync_ShouldReturnErrorMessage_WhenThereIsNoServiceWithId(int id)
+    {
+        var result = await serviceService.DeleteService(id);
+
+        await Assert.That(result).IsEqualTo("There is no service with the provided Id.");
+    }
+
     private void SetUpRepository()
     {
         serviceRepository = Substitute.For<IServiceRepository>();
@@ -44,6 +69,14 @@ public class ServiceServiceTests
             {
                 var calendarId = callInfo.ArgAt<int>(0);
                 return ServiceTestData.Services.Where(s => s.CalendarId == calendarId).ToList();
+            });
+
+        serviceRepository
+            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var id = callInfo.ArgAt<int>(0);
+                return ServiceTestData.Services.FirstOrDefault(a => a.Id == id);
             });
     }
 

@@ -18,4 +18,18 @@ public class ServiceService(IServiceRepository serviceRepository, IMapper mapper
     {
         await serviceRepository.AddService(mapper.Map<Service>(newService), cancellationToken);
     }
+
+    public async Task<string?> DeleteService(int serviceId, CancellationToken cancellationToken = default)
+    {
+        var serviceToDelete = await serviceRepository.GetServiceByIdAsync(serviceId, cancellationToken);
+
+        if (serviceToDelete is null)
+        {
+            return "There is no service with the provided Id.";
+        }
+
+        await serviceRepository.DeleteServiceAsync(serviceToDelete, cancellationToken);
+
+        return null;
+    }
 }

@@ -81,7 +81,7 @@ public class AppointmentServiceTests
             });
 
         appointmentRepository
-            .GetAppointmentById(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
