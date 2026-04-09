@@ -12,6 +12,7 @@
 - Caching 
 - Row versioning for concurrency control
 - Repository tests
+- CreatedAt/ModifiedAt properties for entities
 
 # Projects
 
