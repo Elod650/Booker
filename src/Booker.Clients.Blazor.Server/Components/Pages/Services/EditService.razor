@@ -1,9 +1,9 @@
-﻿@page "/services/add"
+﻿@page "/services/edit/{id:int}"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 
-<PageTitle>Create service</PageTitle>
+<PageTitle>Edit service</PageTitle>
 
-<h3>Create new service</h3>
+<h3>Edit service</h3>
 
 <EditServiceComponent Model="model" OnSaveEvent="Save" />

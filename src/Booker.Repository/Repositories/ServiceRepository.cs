@@ -20,10 +20,10 @@ public class ServiceRepository(AppDbContext context) : IServiceRepository
 
     public async Task<Service?> GetServiceByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await context.Services.FindAsync(keyValues: [id], cancellationToken: cancellationToken);
+        return await context.Services.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task AddService(Service newService, CancellationToken cancellationToken = default)
+    public async Task AddServiceAsync(Service newService, CancellationToken cancellationToken = default)
     {
         await context.AddAsync(newService, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
@@ -32,6 +32,12 @@ public class ServiceRepository(AppDbContext context) : IServiceRepository
     public async Task DeleteServiceAsync(Service serviceToDelete, CancellationToken cancellationToken = default)
     {
         context.Services.Remove(serviceToDelete);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateServiceAsync(Service serviceToUpdate, CancellationToken cancellationToken = default)
+    {
+        context.Services.Update(serviceToUpdate);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

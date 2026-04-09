@@ -9,9 +9,12 @@ public class ServiceApiCaller : IServiceApiCaller
         _apiUrl = options.Value.ServiceApiUrl;
     }
 
-    public async Task<List<ServiceDto>> GetServices(int calendarId, CancellationToken cancellationToken = default)
+    public async Task<List<ServiceDto>> GetServicesForCalendar(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
     {
-        string url = $"{_apiUrl}/{calendarId}";
+        string url = $"{_apiUrl}/calendar/{calendarId}";
 
         return await ApiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
             ApiRequest.CreateGet(url),
@@ -27,9 +30,21 @@ public class ServiceApiCaller : IServiceApiCaller
         );
     }
 
+    public async Task<ServiceDto> GetServiceById(int serviceId, CancellationToken cancellationToken = default)
+    {
+        string url = $"{_apiUrl}/{serviceId}";
+
+        return await ApiCallerBase.SendWithResponseAsync<ServiceDto>(ApiRequest.CreateGet(url), cancellationToken);
+    }
+
     public async Task AddService(EditServiceRequest newService, CancellationToken cancellationToken = default)
     {
         await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newService), cancellationToken);
+    }
+
+    public async Task UpdateService(EditServiceRequest updatedService, CancellationToken cancellationToken = default)
+    {
+        await ApiCallerBase.SendAsync(ApiRequest.CreatePut(_apiUrl, updatedService), cancellationToken);
     }
 
     public async Task DeleteServices(int id, CancellationToken cancellationToken = default)

@@ -2,7 +2,7 @@
 
 public class EditServiceViewModels
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage = "Calendar is required")]
     public int? CalendarId { get; set; }
@@ -19,6 +19,18 @@ public class EditServiceViewModels
 
     [Required(ErrorMessage = "Price is required")]
     public decimal? Price { get; set; }
+
+    public static EditServiceViewModels FromRequest(ServiceDto service)
+    {
+        return new EditServiceViewModels
+        {
+            Id = service.Id,
+            CalendarId = service.CalendarId,
+            Name = service.Name,
+            Duration = service.Duration.ToString(@"hh\:mm"),
+            Price = service.Price,
+        };
+    }
 
     public EditServiceRequest ToRequest()
     {

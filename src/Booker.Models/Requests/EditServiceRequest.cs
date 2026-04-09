@@ -2,7 +2,7 @@
 
 public class EditServiceRequest
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage = "Calendar is required")]
     public int? CalendarId { get; set; }

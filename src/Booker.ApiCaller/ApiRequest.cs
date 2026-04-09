@@ -40,6 +40,22 @@ internal class ApiRequest
     }
 
     /// <summary>
+    /// Creates a new API request configured to send a PUT request to the specified URL with the provided data as the request body.
+    /// </summary>
+    /// <param name="url">The destination URL.</param>
+    /// <param name="data">The body of the request.</param>
+    /// <returns>An <see cref="ApiRequest"/> instance representing the configured PUT request.</returns>
+    internal static ApiRequest CreatePut(string url, object data)
+    {
+        return new ApiRequest
+        {
+            Method = HttpMethod.Put,
+            Url = url,
+            Data = data,
+        };
+    }
+
+    /// <summary>
     /// Creates a new API request configured to send a GET request to the specified URL.
     /// </summary>
     /// <param name="url">The destination URL.</param>

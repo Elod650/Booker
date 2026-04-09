@@ -10,6 +10,7 @@ internal static class ServiceTestData
             Name = "Service 1",
             Duration = TimeSpan.FromMinutes(30),
             Price = 100,
+            CalendarId = 1,
         },
         new Service
         {
@@ -17,6 +18,7 @@ internal static class ServiceTestData
             Name = "Service 2",
             Duration = TimeSpan.FromMinutes(60),
             Price = 200,
+            CalendarId = 2,
         },
     };
 }

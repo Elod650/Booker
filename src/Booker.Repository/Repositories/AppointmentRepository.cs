@@ -15,7 +15,7 @@ public class AppointmentRepository(AppDbContext context) : IAppointmentRepositor
 
     public async Task<Appointment?> GetAppointmentByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await context.Appointments.FindAsync(keyValues: [id], cancellationToken: cancellationToken);
+        return await context.Appointments.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task AddAppointmentAsync(Appointment newAppointment, CancellationToken cancellationToken = default)

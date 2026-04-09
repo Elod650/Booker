@@ -20,7 +20,7 @@ public partial class Calendars
             calendars = await CalendarApiCaller.GetCalendars();
             selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
             appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-            services = await ServiceApiCaller.GetServices(selectedCalendarId);
+            services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
         }
         catch (Exception ex)
         {
@@ -40,7 +40,7 @@ public partial class Calendars
         {
             selectedCalendarId = value;
             appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-            services = await ServiceApiCaller.GetServices(selectedCalendarId);
+            services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
             var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
             currentCalendarStarTime = selectedCalendar.StartTime;
             currentCalendarEndTime = selectedCalendar.EndTime;

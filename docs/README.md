@@ -11,7 +11,7 @@
 - Background services (for email sending)
 - Caching 
 - Row versioning for concurrency control
-- Service edit functionality
+- Repository tests
 
 # Projects
 
