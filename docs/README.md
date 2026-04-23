@@ -13,6 +13,7 @@
 - Row versioning for concurrency control
 - Repository tests
 - CreatedAt/ModifiedAt properties for entities
+- User handling
 
 # Projects
 
