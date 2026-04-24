@@ -9,6 +9,7 @@ global using Booker.Clients.Blazor.Server.ViewModels;
 global using Booker.Models.DTOs;
 global using Booker.Models.Requests;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 global using Microsoft.JSInterop;
 global using Serilog;
 global using Syncfusion.Blazor;

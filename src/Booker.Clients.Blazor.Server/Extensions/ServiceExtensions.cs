@@ -17,6 +17,7 @@ internal static class ServiceExtensions
         services.AddSerilog((s, lc) => lc.ReadFrom.Configuration(configuration));
 
         services.ConfigureApiCallers();
+        services.ConfigureAuth();
     }
 
     private static void ConfigureApiCallers(this IServiceCollection services)
@@ -26,5 +27,10 @@ internal static class ServiceExtensions
             .AddScoped<IServiceApiCaller, ServiceApiCaller>()
             .AddScoped<IInfoApiCaller, InfoApiCaller>()
             .AddScoped<ICalendarApiCaller, CalendarApiCaller>();
+    }
+
+    private static void ConfigureAuth(this IServiceCollection services)
+    {
+        services.AddScoped<IStorageManager, SessionStorageManager>();
     }
 }
