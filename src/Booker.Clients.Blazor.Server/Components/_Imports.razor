@@ -3,6 +3,7 @@
 @using Booker.Clients.Blazor.Server
 @using Booker.Clients.Blazor.Server.Components
 @using Booker.Clients.Blazor.Server.Components.Layout
+@using Booker.Clients.Blazor.Server.Components.Pages.Auth
 @using Booker.Clients.Blazor.Server.Components.Pages.Calendars.Components
 @using Booker.Clients.Blazor.Server.Components.Pages.Services.Components
 @using Booker.Clients.Blazor.Server.Services
@@ -20,6 +21,7 @@
 @inject IJSRuntime JSRuntime
 
 @inject ICustomAuthStateProvider AuthStateProvider
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @inject IAppointmentApiCaller AppointmentApiCaller
 @inject ICalendarApiCaller CalendarApiCaller

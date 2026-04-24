@@ -25,6 +25,14 @@ public class CustomAuthStateProvider(IStorageManager storageManager)
         NotifyAuthenticationStateChanged(Task.FromResult(state));
     }
 
+    public async Task LogoutAsync()
+    {
+        await storageManager.DeleteAsync(ACCESS_TOKEN);
+
+        var state = new AuthenticationState(new());
+        NotifyAuthenticationStateChanged(Task.FromResult(state));
+    }
+
     private async Task<ClaimsPrincipal> GetUserPrincipal()
     {
         string? token = await storageManager.GetAsync<string>(ACCESS_TOKEN);
