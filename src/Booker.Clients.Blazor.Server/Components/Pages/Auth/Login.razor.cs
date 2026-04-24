@@ -2,9 +2,6 @@ namespace Booker.Clients.Blazor.Server.Components.Pages.Auth;
 
 public partial class Login
 {
-    [Inject]
-    private TokenAuthStateProvider AuthStateProvider { get; set; } = default!;
-
     private LoginRequest loginModel = new() { Email = "admin@booker.com", Password = "Admin123!" };
     private string? errorMessage;
     private bool isLoading;
@@ -24,6 +21,7 @@ public partial class Login
                 return;
             }
 
+            await AuthStateProvider.LoginAsync(response);
             NavigationManager.NavigateTo("/calendars");
         }
         catch (ApiCallerException)

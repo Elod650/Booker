@@ -31,6 +31,10 @@ internal static class ServiceExtensions
 
     private static void ConfigureAuth(this IServiceCollection services)
     {
+        services.AddAuthentication();
+        services.AddCascadingAuthenticationState();
         services.AddScoped<IStorageManager, SessionStorageManager>();
+        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+        services.AddScoped<ICustomAuthStateProvider, CustomAuthStateProvider>();
     }
 }
