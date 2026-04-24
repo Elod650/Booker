@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Booker.Clients.Blazor.Server.Extensions;
+﻿namespace Booker.Clients.Blazor.Server.Extensions;
 
 internal static class ServiceExtensions
 {
@@ -24,6 +22,7 @@ internal static class ServiceExtensions
     {
         services
             .AddScoped<IAppointmentApiCaller, AppointmentApiCaller>()
+            .AddScoped<IAuthApiCaller, AuthApiCaller>()
             .AddScoped<IServiceApiCaller, ServiceApiCaller>()
             .AddScoped<IInfoApiCaller, InfoApiCaller>()
             .AddScoped<ICalendarApiCaller, CalendarApiCaller>();
