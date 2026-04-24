@@ -15,21 +15,22 @@ try
 
     builder.Services.ConfigureDatabase();
     builder.Services.ConfigureServices(builder.Configuration);
+    builder.Services.ConfigureAuthentication(builder.Configuration);
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
 
-    //Need fot seeding the database on startup, can be removed when using a real database with migrations
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        context.Database.EnsureCreated();
-    }
-
-    // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
+        //Need for seeding the database on startup, can be removed when using a real database with migrations
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            context.Database.EnsureCreated();
+            await SeedData.SeedRolesAndAdminAsync(scope.ServiceProvider);
+        }
+
         app.MapOpenApi();
         app.MapScalarApiReference();
     }
@@ -38,6 +39,7 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

@@ -2,6 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CalendarController(ICalendarService calendarService) : ControllerBase
 {
     [HttpGet]

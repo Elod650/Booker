@@ -2,6 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class InfoController(IInfoService infoService) : ControllerBase
 {
     [HttpGet("currency")]
