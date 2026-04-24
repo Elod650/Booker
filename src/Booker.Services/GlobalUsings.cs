@@ -4,6 +4,7 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using AutoMapper;
 global using Booker.Models.DTOs;
+global using Booker.Models.Enums;
 global using Booker.Models.Requests;
 global using Booker.Repository.Entities;
 global using Booker.Repository.Repositories.Interfaces;

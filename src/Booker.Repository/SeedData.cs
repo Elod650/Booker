@@ -2,7 +2,12 @@
 
 public static class SeedData
 {
-    public static readonly string[] Roles = ["Admin", "Provider", "Customer"];
+    public static readonly string[] Roles =
+    [
+        RolesEnum.Admin.ToString(),
+        RolesEnum.Provider.ToString(),
+        RolesEnum.Customer.ToString(),
+    ];
 
     public static List<Service> Services =
     [
@@ -85,6 +90,6 @@ public static class SeedData
         };
 
         await userManager.CreateAsync(adminUser, "Admin123!");
-        await userManager.AddToRoleAsync(adminUser, "Admin");
+        await userManager.AddToRoleAsync(adminUser, RolesEnum.Admin.ToString());
     }
 }

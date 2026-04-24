@@ -131,7 +131,8 @@ public class AuthServiceTests
         this.userManager.CheckPasswordAsync(UserTestData.Users.First(), "Test123!").Returns(true);
         this.userManager.CheckPasswordAsync(UserTestData.Users.First(), "WrongPassword!").Returns(false);
 
-        this.userManager.GetRolesAsync(UserTestData.Users.First()).Returns(new List<string> { "Customer" });
+        this.userManager.GetRolesAsync(UserTestData.Users.First())
+            .Returns(new List<string> { RolesEnum.Customer.ToString() });
 
         this.userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
 

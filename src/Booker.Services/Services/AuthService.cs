@@ -61,7 +61,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
             return string.Join("; ", result.Errors.Select(e => e.Description));
         }
 
-        await userManager.AddToRoleAsync(user, "Customer");
+        await userManager.AddToRoleAsync(user, RolesEnum.Customer.ToString());
 
         return null;
     }
