@@ -3,7 +3,7 @@
 /// <summary>
 /// The class for collect necessary data for the HTTP request.
 /// </summary>
-internal class ApiRequest
+public class ApiRequest
 {
     /// <summary>
     /// The HTTP method of the request.
@@ -11,17 +11,24 @@ internal class ApiRequest
     /// <remarks>
     /// Eg.: GET, POST
     /// </remarks>
-    internal HttpMethod Method { get; private set; }
+    public HttpMethod Method { get; private set; }
 
     /// <summary>
     /// The destination URL.
     /// </summary>
-    internal string Url { get; private set; }
+    public string Url { get; private set; }
 
     /// <summary>
     /// The body of the request if there is any.
     /// </summary>
-    internal object? Data { get; private set; }
+    public object? Data { get; private set; }
+
+    private ApiRequest(HttpMethod method, string url, object? data = null)
+    {
+        Method = method;
+        Url = url;
+        Data = data;
+    }
 
     /// <summary>
     /// Creates a new API request configured to send a POST request to the specified URL with the provided data as the request body.
@@ -29,15 +36,7 @@ internal class ApiRequest
     /// <param name="url">The destination URL.</param>
     /// <param name="data">The body of the request.</param>
     /// <returns>An <see cref="ApiRequest"/> instance representing the configured POST request.</returns>
-    internal static ApiRequest CreatePost(string url, object data)
-    {
-        return new ApiRequest
-        {
-            Method = HttpMethod.Post,
-            Url = url,
-            Data = data,
-        };
-    }
+    public static ApiRequest CreatePost(string url, object data) => new ApiRequest(HttpMethod.Post, url, data);
 
     /// <summary>
     /// Creates a new API request configured to send a PUT request to the specified URL with the provided data as the request body.
@@ -45,33 +44,19 @@ internal class ApiRequest
     /// <param name="url">The destination URL.</param>
     /// <param name="data">The body of the request.</param>
     /// <returns>An <see cref="ApiRequest"/> instance representing the configured PUT request.</returns>
-    internal static ApiRequest CreatePut(string url, object data)
-    {
-        return new ApiRequest
-        {
-            Method = HttpMethod.Put,
-            Url = url,
-            Data = data,
-        };
-    }
+    public static ApiRequest CreatePut(string url, object data) => new ApiRequest(HttpMethod.Put, url, data);
 
     /// <summary>
     /// Creates a new API request configured to send a GET request to the specified URL.
     /// </summary>
     /// <param name="url">The destination URL.</param>
     /// <returns>An <see cref="ApiRequest"/> instance representing the configured GET request.</returns>
-    internal static ApiRequest CreateGet(string url)
-    {
-        return new ApiRequest { Method = HttpMethod.Get, Url = url };
-    }
+    public static ApiRequest CreateGet(string url) => new ApiRequest(HttpMethod.Get, url);
 
     /// <summary>
     /// Creates a new API request configured to send a DELETE request to the specified URL.
     /// </summary>
     /// <param name="url">The destination URL.</param>
     /// <returns>An <see cref="ApiRequest"/> instance representing the configured DELETE request.</returns>
-    internal static ApiRequest CreateDelete(string url)
-    {
-        return new ApiRequest { Method = HttpMethod.Delete, Url = url };
-    }
+    public static ApiRequest CreateDelete(string url) => new ApiRequest(HttpMethod.Delete, url);
 }

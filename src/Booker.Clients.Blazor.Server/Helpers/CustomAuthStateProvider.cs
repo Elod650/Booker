@@ -1,10 +1,11 @@
 ﻿namespace Booker.Clients.Blazor.Server.Helpers;
 
-public class CustomAuthStateProvider(IStorageManager storageManager)
+public class CustomAuthStateProvider(IStorageManager storageManager, NavigationManager navigationManager)
     : AuthenticationStateProvider,
         ICustomAuthStateProvider
 {
     private const string ACCESS_TOKEN = "accessToken";
+    private const string REFRESH_TOKEN = "refreshToken";
 
     private readonly ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
 
@@ -18,7 +19,7 @@ public class CustomAuthStateProvider(IStorageManager storageManager)
 
     public async Task LoginAsync(AuthResponse authResponse)
     {
-        await storageManager.SetAsync(ACCESS_TOKEN, authResponse.AccessToken);
+        await this.SetTokens(authResponse.AccessToken, authResponse.RefreshToken);
 
         var principal = await GetUserPrincipal();
         var state = new AuthenticationState(principal);
@@ -31,6 +32,24 @@ public class CustomAuthStateProvider(IStorageManager storageManager)
 
         var state = new AuthenticationState(new());
         NotifyAuthenticationStateChanged(Task.FromResult(state));
+
+        navigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    public async Task<string?> GetAccessToken()
+    {
+        return await storageManager.GetAsync<string>(ACCESS_TOKEN);
+    }
+
+    public async Task<string?> GetRefreshToken()
+    {
+        return await storageManager.GetAsync<string>(REFRESH_TOKEN);
+    }
+
+    public async Task SetTokens(string accessToken, string refreshToken)
+    {
+        await storageManager.SetAsync(ACCESS_TOKEN, accessToken);
+        await storageManager.SetAsync(REFRESH_TOKEN, refreshToken);
     }
 
     private async Task<ClaimsPrincipal> GetUserPrincipal()

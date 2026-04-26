@@ -1,21 +1,17 @@
 namespace Booker.ApiCaller.CallsForControllers;
 
-public class AuthApiCaller : IAuthApiCaller
+public class AuthApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerOptions> options) : IAuthApiCaller
 {
-    private readonly string _apiUrl;
-
-    public AuthApiCaller(IOptions<ApiCallerOptions> options)
-    {
-        this._apiUrl = options.Value.AuthApiUrl;
-    }
+    private readonly string _apiUrl = options.Value.AuthApiUrl;
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         string url = $"{this._apiUrl}/login";
 
-        return await ApiCallerBase.SendWithResponseAsync<AuthResponse>(
+        return await apiCallerBase.SendWithResponseAsync<AuthResponse>(
             ApiRequest.CreatePost(url, request),
-            cancellationToken
+            withBearer: false,
+            cancellationToken: cancellationToken
         );
     }
 
@@ -23,7 +19,11 @@ public class AuthApiCaller : IAuthApiCaller
     {
         string url = $"{this._apiUrl}/register";
 
-        return await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreatePost(url, request), cancellationToken);
+        return await apiCallerBase.SendWithResponseAsync(
+            ApiRequest.CreatePost(url, request),
+            withBearer: false,
+            cancellationToken: cancellationToken
+        );
     }
 
     public async Task<AuthResponse> RefreshTokenAsync(
@@ -33,9 +33,10 @@ public class AuthApiCaller : IAuthApiCaller
     {
         string url = $"{this._apiUrl}/refresh";
 
-        return await ApiCallerBase.SendWithResponseAsync<AuthResponse>(
+        return await apiCallerBase.SendWithResponseAsync<AuthResponse>(
             ApiRequest.CreatePost(url, request),
-            cancellationToken
+            withBearer: false,
+            cancellationToken: cancellationToken
         );
     }
 }

@@ -1,19 +1,17 @@
 ﻿namespace Booker.ApiCaller.CallsForControllers;
 
-public class InfoApiCaller : IInfoApiCaller
+public class InfoApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerOptions> options) : IInfoApiCaller
 {
-    private readonly string _apiUrl;
-
-    public InfoApiCaller(IOptions<ApiCallerOptions> options)
-    {
-        _apiUrl = options.Value.InfoApiUrl;
-    }
+    private readonly string _apiUrl = options.Value.InfoApiUrl;
 
     public async Task<string> GetCurrency(CancellationToken cancellationToken = default)
     {
         string url = $"{_apiUrl}/currency";
 
-        var currency = await ApiCallerBase.SendWithResponseAsync(ApiRequest.CreateGet(url), cancellationToken);
+        var currency = await apiCallerBase.SendWithResponseAsync(
+            ApiRequest.CreateGet(url),
+            cancellationToken: cancellationToken
+        );
 
         return currency.Replace("\"", "");
     }

@@ -21,11 +21,14 @@ internal static class ServiceExtensions
     private static void ConfigureApiCallers(this IServiceCollection services)
     {
         services
+            .AddScoped<IApiCallerBase, ApiCallerBase>()
             .AddScoped<IAppointmentApiCaller, AppointmentApiCaller>()
             .AddScoped<IAuthApiCaller, AuthApiCaller>()
             .AddScoped<IServiceApiCaller, ServiceApiCaller>()
             .AddScoped<IInfoApiCaller, InfoApiCaller>()
             .AddScoped<ICalendarApiCaller, CalendarApiCaller>();
+
+        services.AddScoped<ApiCallerMediator>();
     }
 
     private static void ConfigureAuth(this IServiceCollection services)
