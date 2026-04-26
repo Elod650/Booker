@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Booker.Clients.Blazor.Server.Extensions;
+﻿namespace Booker.Clients.Blazor.Server.Extensions;
 
 internal static class ServiceExtensions
 {
@@ -17,14 +15,28 @@ internal static class ServiceExtensions
         services.AddSerilog((s, lc) => lc.ReadFrom.Configuration(configuration));
 
         services.ConfigureApiCallers();
+        services.ConfigureAuth();
     }
 
     private static void ConfigureApiCallers(this IServiceCollection services)
     {
         services
+            .AddScoped<IApiCallerBase, ApiCallerBase>()
             .AddScoped<IAppointmentApiCaller, AppointmentApiCaller>()
+            .AddScoped<IAuthApiCaller, AuthApiCaller>()
             .AddScoped<IServiceApiCaller, ServiceApiCaller>()
             .AddScoped<IInfoApiCaller, InfoApiCaller>()
             .AddScoped<ICalendarApiCaller, CalendarApiCaller>();
+
+        services.AddScoped<ApiCallerMediator>();
+    }
+
+    private static void ConfigureAuth(this IServiceCollection services)
+    {
+        services.AddAuthentication();
+        services.AddCascadingAuthenticationState();
+        services.AddScoped<IStorageManager, SessionStorageManager>();
+        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+        services.AddScoped<ICustomAuthStateProvider, CustomAuthStateProvider>();
     }
 }

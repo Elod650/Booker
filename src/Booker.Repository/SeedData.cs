@@ -2,8 +2,15 @@
 
 public static class SeedData
 {
-    public static List<Service> Services = new()
-    {
+    public static readonly string[] Roles =
+    [
+        RolesEnum.Admin.ToString(),
+        RolesEnum.Provider.ToString(),
+        RolesEnum.Customer.ToString(),
+    ];
+
+    public static List<Service> Services =
+    [
         new Service
         {
             Id = 1,
@@ -28,9 +35,10 @@ public static class SeedData
             Duration = new TimeSpan(0, 30, 0),
             Price = 80,
         },
-    };
-    public static List<Calendar> Calendars = new()
-    {
+    ];
+
+    public static List<Calendar> Calendars =
+    [
         new Calendar
         {
             Id = 1,
@@ -47,9 +55,41 @@ public static class SeedData
             StartTime = "10:00",
             EndTime = "18:00",
         },
-    };
-    public static List<Info> Infos = new()
+    ];
+
+    public static List<Info> Infos = [new Info { Key = "Currency", Value = "Ft" }];
+
+    public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
     {
-        new Info { Key = "Currency", Value = "Ft" },
-    };
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        foreach (string role in Roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+        string adminEmail = "admin@booker.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser is not null)
+        {
+            return;
+        }
+
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FirstName = "Admin",
+            LastName = "User",
+            EmailConfirmed = true,
+        };
+
+        await userManager.CreateAsync(adminUser, "Admin123!");
+        await userManager.AddToRoleAsync(adminUser, RolesEnum.Admin.ToString());
+    }
 }

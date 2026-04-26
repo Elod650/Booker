@@ -1,13 +1,8 @@
 ﻿namespace Booker.ApiCaller.CallsForControllers;
 
-public class ServiceApiCaller : IServiceApiCaller
+public class ServiceApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerOptions> options) : IServiceApiCaller
 {
-    private readonly string _apiUrl;
-
-    public ServiceApiCaller(IOptions<ApiCallerOptions> options)
-    {
-        _apiUrl = options.Value.ServiceApiUrl;
-    }
+    private readonly string _apiUrl = options.Value.ServiceApiUrl;
 
     public async Task<List<ServiceDto>> GetServicesForCalendar(
         int calendarId,
@@ -16,17 +11,17 @@ public class ServiceApiCaller : IServiceApiCaller
     {
         string url = $"{_apiUrl}/calendar/{calendarId}";
 
-        return await ApiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
+        return await apiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
             ApiRequest.CreateGet(url),
-            cancellationToken
+            cancellationToken: cancellationToken
         );
     }
 
     public async Task<List<ServiceDto>> GetServices(CancellationToken cancellationToken = default)
     {
-        return await ApiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
+        return await apiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
             ApiRequest.CreateGet(_apiUrl),
-            cancellationToken
+            cancellationToken: cancellationToken
         );
     }
 
@@ -34,23 +29,29 @@ public class ServiceApiCaller : IServiceApiCaller
     {
         string url = $"{_apiUrl}/{serviceId}";
 
-        return await ApiCallerBase.SendWithResponseAsync<ServiceDto>(ApiRequest.CreateGet(url), cancellationToken);
+        return await apiCallerBase.SendWithResponseAsync<ServiceDto>(
+            ApiRequest.CreateGet(url),
+            cancellationToken: cancellationToken
+        );
     }
 
     public async Task AddService(EditServiceRequest newService, CancellationToken cancellationToken = default)
     {
-        await ApiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newService), cancellationToken);
+        await apiCallerBase.SendAsync(ApiRequest.CreatePost(_apiUrl, newService), cancellationToken: cancellationToken);
     }
 
     public async Task UpdateService(EditServiceRequest updatedService, CancellationToken cancellationToken = default)
     {
-        await ApiCallerBase.SendAsync(ApiRequest.CreatePut(_apiUrl, updatedService), cancellationToken);
+        await apiCallerBase.SendAsync(
+            ApiRequest.CreatePut(_apiUrl, updatedService),
+            cancellationToken: cancellationToken
+        );
     }
 
     public async Task DeleteServices(int id, CancellationToken cancellationToken = default)
     {
         string url = $"{_apiUrl}/{id}";
 
-        await ApiCallerBase.SendAsync(ApiRequest.CreateDelete(url), cancellationToken);
+        await apiCallerBase.SendAsync(ApiRequest.CreateDelete(url), cancellationToken: cancellationToken);
     }
 }

@@ -2,6 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AppointmentController(IAppointmentService appointmentService) : ControllerBase
 {
     [HttpGet("{calendarId:int}")]

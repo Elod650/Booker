@@ -39,3 +39,4 @@ dotnet csharpier format .
 - **Test class naming:** `<ClassUnderTest>Tests`.
 - **Test method naming:** `MethodName_ShouldExpectedBehavior_WhenCondition`.
 - **Helper methods:** Use private helper methods within the test class for setup and common assertions. Do not create separate utility classes for test helpers. Always place helper methods at the bottom of the test class, after all test methods.
+- **Test data:** Use the `<ClassName>TestData` class for generating test data. Do not hardcode test data in test methods. Always use the `<ClassName>TestData` class to create consistent and reusable test data across all tests.

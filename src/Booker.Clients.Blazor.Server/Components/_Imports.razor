@@ -3,8 +3,12 @@
 @using Booker.Clients.Blazor.Server
 @using Booker.Clients.Blazor.Server.Components
 @using Booker.Clients.Blazor.Server.Components.Layout
+@using Booker.Clients.Blazor.Server.Components.Pages.Auth
 @using Booker.Clients.Blazor.Server.Components.Pages.Calendars.Components
 @using Booker.Clients.Blazor.Server.Components.Pages.Services.Components
+@using Booker.Clients.Blazor.Server.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -16,7 +20,12 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
+@inject ICustomAuthStateProvider AuthStateProvider
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @inject IAppointmentApiCaller AppointmentApiCaller
+@inject IAuthApiCaller AuthApiCaller
 @inject ICalendarApiCaller CalendarApiCaller
 @inject IInfoApiCaller InfoApiCaller
 @inject IServiceApiCaller ServiceApiCaller
+@inject ApiCallerMediator ApiCallerMediator

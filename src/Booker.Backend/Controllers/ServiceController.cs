@@ -1,7 +1,10 @@
-﻿namespace Booker.Backend.Controllers;
+﻿using Booker.Models.Enums;
+
+namespace Booker.Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ServiceController(IServiceService serviceService) : ControllerBase
 {
     [HttpGet]
@@ -31,7 +34,7 @@ public class ServiceController(IServiceService serviceService) : ControllerBase
         return Ok(services);
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddService(
@@ -49,7 +52,7 @@ public class ServiceController(IServiceService serviceService) : ControllerBase
         return Ok();
     }
 
-    [HttpPut]
+    [HttpPut, Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateService(
@@ -67,7 +70,7 @@ public class ServiceController(IServiceService serviceService) : ControllerBase
         return Ok();
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:int}"), Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteService(int id, CancellationToken cancellationToken)
