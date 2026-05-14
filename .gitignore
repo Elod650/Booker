@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Ignore per-developer appsettings files across all projects
 **/appsettings.*.json
+
+# Misc
+DESIGN.md
