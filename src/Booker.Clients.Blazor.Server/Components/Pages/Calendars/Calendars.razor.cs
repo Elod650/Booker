@@ -1,4 +1,4 @@
-﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
+namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
 
 public partial class Calendars
 {
@@ -12,6 +12,8 @@ public partial class Calendars
 
     private string currentCalendarStarTime = "08:00";
     private string currentCalendarEndTime = "16:00";
+    private bool isDeleteModalOpen;
+    private int? appointmentIdToDelete;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,22 +78,44 @@ public partial class Calendars
         }
     }
 
-    private async Task OnDelete(int id)
+    private void OnDelete(int id)
     {
+        this.appointmentIdToDelete = id;
+        this.isDeleteModalOpen = true;
+    }
+
+    private async Task OnDeleteConfirmed()
+    {
+        this.isDeleteModalOpen = false;
+        if (this.appointmentIdToDelete is null)
+        {
+            return;
+        }
+
         try
         {
-            await AppointmentApiCaller.DeleteAppointment(id);
+            await this.AppointmentApiCaller.DeleteAppointment(this.appointmentIdToDelete.Value);
 
-            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
-            scheduler.CloseEditor();
+            this.appointments = await this.AppointmentApiCaller.GetAppointments(this.selectedCalendarId);
+            this.scheduler.CloseEditor();
 
-            await JSRuntime.SuccessToast("Appointment deleted");
+            await this.JSRuntime.SuccessToast("Appointment deleted");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnDelete)}");
-            await JSRuntime.ErrorToast("An error occured during the delete of the appointment");
+            Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnDeleteConfirmed)}");
+            await this.JSRuntime.ErrorToast("An error occured during the delete of the appointment");
         }
+        finally
+        {
+            this.appointmentIdToDelete = null;
+        }
+    }
+
+    private void OnDeleteCancelled()
+    {
+        this.isDeleteModalOpen = false;
+        this.appointmentIdToDelete = null;
     }
 
     private bool IsAppointmentWithinWorkHours(AppointmentDto appointment)

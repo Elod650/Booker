@@ -1,4 +1,4 @@
-﻿@page "/services"
+@page "/services"
 @attribute [StreamRendering]
 
 <PageTitle>Services</PageTitle>
@@ -38,3 +38,9 @@ else
         </tbody>
     </table>
 }
+
+<ConfirmationModal IsOpen="@this.isDeleteModalOpen"
+                   Title="Delete Service"
+                   Message="Are you sure you want to delete this service?"
+                   OnConfirm="this.OnDeleteConfirmed"
+                   OnCancel="this.OnDeleteCancelled" />

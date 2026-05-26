@@ -1,4 +1,4 @@
-﻿@page "/calendars"
+@page "/calendars"
 
 <PageTitle>Calendars</PageTitle>
 
@@ -52,3 +52,9 @@
         <ScheduleView Option="View.Agenda" />
     </ScheduleViews>
 </SfSchedule>
+
+<ConfirmationModal IsOpen="@this.isDeleteModalOpen"
+                   Title="Delete Appointment"
+                   Message="Are you sure you want to delete this appointment?"
+                   OnConfirm="this.OnDeleteConfirmed"
+                   OnCancel="this.OnDeleteCancelled" />

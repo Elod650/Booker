@@ -1,9 +1,11 @@
-﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Services;
+namespace Booker.Clients.Blazor.Server.Components.Pages.Services;
 
 public partial class Services
 {
     private List<ServiceDto> services;
     private string currency;
+    private bool isDeleteModalOpen;
+    private int? serviceIdToDelete;
 
     protected override async Task OnInitializedAsync()
     {
@@ -12,30 +14,52 @@ public partial class Services
 
         try
         {
-            services = await ServiceApiCaller.GetServices();
-            currency = await InfoApiCaller.GetCurrency();
+            this.services = await this.ServiceApiCaller.GetServices();
+            this.currency = await this.InfoApiCaller.GetCurrency();
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnInitializedAsync)}");
-            await JSRuntime.ErrorToast("An error occured during the loading of the page");
+            await this.JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
 
-    private async Task OnDelete(int id)
+    private void OnDelete(int id)
     {
+        this.serviceIdToDelete = id;
+        this.isDeleteModalOpen = true;
+    }
+
+    private async Task OnDeleteConfirmed()
+    {
+        this.isDeleteModalOpen = false;
+        if (this.serviceIdToDelete is null)
+        {
+            return;
+        }
+
         try
         {
-            await ServiceApiCaller.DeleteServices(id);
+            await this.ServiceApiCaller.DeleteServices(this.serviceIdToDelete.Value);
 
-            services = await ServiceApiCaller.GetServices();
+            this.services = await this.ServiceApiCaller.GetServices();
 
-            await JSRuntime.SuccessToast("Service deleted");
+            await this.JSRuntime.SuccessToast("Service deleted");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnDelete)}");
-            await JSRuntime.ErrorToast("An error occured during the delete of the service");
+            Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnDeleteConfirmed)}");
+            await this.JSRuntime.ErrorToast("An error occured during the delete of the service");
         }
+        finally
+        {
+            this.serviceIdToDelete = null;
+        }
+    }
+
+    private void OnDeleteCancelled()
+    {
+        this.isDeleteModalOpen = false;
+        this.serviceIdToDelete = null;
     }
 }

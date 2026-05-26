@@ -1,0 +1,20 @@
+@if (this.IsOpen)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0, 0, 0, 0.5); z-index: @int.MaxValue !important;" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark">@this.Title</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="this.Cancel"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="text-secondary mb-0">@this.Message</p>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary px-4" @onclick="this.Cancel">@this.CancelButtonText</button>
+                    <button type="button" class="btn btn-danger px-4" @onclick="this.Confirm">@this.ConfirmButtonText</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
