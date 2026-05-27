@@ -19,30 +19,30 @@
     </div>
 </div>
 
-<SfSchedule @ref="scheduler" TValue="AppointmentDto" @bind-SelectedDate="@currentDate"@bind-CurrentView="@currentView"
+<SfSchedule @ref="scheduler" TValue="SchedulerAppointmentViewModel" @bind-SelectedDate="@currentDate" @bind-CurrentView="@currentView"
             AllowOverlap="false" AllowResizing="false" AllowKeyboardInteraction="false" AllowClipboard="false"
             ShowWeekend="true" ShowWeekNumber="true"
             Height="650px" FirstDayOfWeek="1" DateFormat="yyyy/MM/dd">
     <ScheduleTemplates>
         <EditorTemplate>
-            <SchedulerEditorTemplateComponent Appointment="@(context as AppointmentDto)" Services="services" />
+            <SchedulerEditorTemplateComponent Appointment="@(context as SchedulerAppointmentViewModel)" Services="services" />
         </EditorTemplate>
         <EditorFooterTemplate>
-            <button class="btn btn-primary" @onclick="@(() => OnSave(context as AppointmentDto))">Save</button>
+            <button class="btn btn-primary" @onclick="@(() => OnSave(context as SchedulerAppointmentViewModel))">Save</button>
             <button class="btn btn-outline-secondary" @onclick="OnClose">Close</button>
-            @if ((context as AppointmentDto).Id != 0)
+            @if ((context as SchedulerAppointmentViewModel).Id != 0)
             {
-                <button class="btn btn-outline-danger ms-1" @onclick="@(() => OnDelete((context as AppointmentDto).Id))">Delete</button>
+                <button class="btn btn-outline-danger ms-1" @onclick="@(() => OnDelete((context as SchedulerAppointmentViewModel).Id))">Delete</button>
             }
         </EditorFooterTemplate>
     </ScheduleTemplates>
     <ScheduleEventSettings DataSource="appointments">
         <Template>
             <div>Subject: Subject</div>
-            <div>@((context as AppointmentDto).StartTime?.ToString("hh:mm")) - @((context as AppointmentDto).EndTime?.ToString("hh:mm"))</div>
+            <div>@((context as SchedulerAppointmentViewModel).StartTime.ToString("hh:mm")) - @((context as SchedulerAppointmentViewModel).EndTime.ToString("hh:mm"))</div>
         </Template>
     </ScheduleEventSettings>
-    <ScheduleEvents TValue="AppointmentDto" OnCellClick="OnCellClick" />
+    <ScheduleEvents TValue="SchedulerAppointmentViewModel" OnCellClick="OnCellClick" />
     <ScheduleWorkHours Highlight="true" Start="@currentCalendarStarTime" End="@currentCalendarEndTime" />
     <ScheduleViews>
         <ScheduleView Option="View.Day" />

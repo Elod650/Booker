@@ -1,6 +1,6 @@
-﻿namespace Booker.Models.DTOs;
+﻿namespace Booker.Models.Requests;
 
-public class AppointmentDto
+public class EditAppointmentRequest
 {
     public int Id { get; set; }
     public DateTime StartTime { get; set; }
@@ -9,5 +9,7 @@ public class AppointmentDto
 
     public int ServiceId { get; set; }
     public int CalendarId { get; set; }
-    public string BookingUser { get; set; } = null!;
+
+    [Required]
+    public string UserId { get; set; } = null!;
 }

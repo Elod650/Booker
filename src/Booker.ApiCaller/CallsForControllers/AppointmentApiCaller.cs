@@ -18,7 +18,10 @@ public class AppointmentApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCall
         );
     }
 
-    public async Task AddAppointment(AppointmentDto newAppointment, CancellationToken cancellationToken = default)
+    public async Task AddAppointment(
+        EditAppointmentRequest newAppointment,
+        CancellationToken cancellationToken = default
+    )
     {
         await apiCallerBase.SendAsync(
             ApiRequest.CreatePost(_apiUrl, newAppointment),

@@ -2,8 +2,8 @@ namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars;
 
 public partial class Calendars
 {
-    private SfSchedule<AppointmentDto> scheduler;
-    private List<AppointmentDto> appointments = new();
+    private SfSchedule<SchedulerAppointmentViewModel> scheduler;
+    private IEnumerable<SchedulerAppointmentViewModel> appointments;
     private List<CalendarDto> calendars = new();
     private List<ServiceDto> services = new();
     private DateTime currentDate = DateTime.Now;
@@ -21,7 +21,9 @@ public partial class Calendars
         {
             calendars = await CalendarApiCaller.GetCalendars();
             selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
-            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            appointments = SchedulerAppointmentViewModel.CreateList(
+                await AppointmentApiCaller.GetAppointments(selectedCalendarId)
+            );
             services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
         }
         catch (Exception ex)
@@ -41,7 +43,9 @@ public partial class Calendars
         try
         {
             selectedCalendarId = value;
-            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            appointments = SchedulerAppointmentViewModel.CreateList(
+                await AppointmentApiCaller.GetAppointments(selectedCalendarId)
+            );
             services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
             var selectedCalendar = calendars.First(c => c.Id == selectedCalendarId);
             currentCalendarStarTime = selectedCalendar.StartTime;
@@ -54,7 +58,7 @@ public partial class Calendars
         }
     }
 
-    private async Task OnSave(AppointmentDto newAppointment)
+    private async Task OnSave(SchedulerAppointmentViewModel newAppointment)
     {
         try
         {
@@ -65,8 +69,11 @@ public partial class Calendars
             }
 
             newAppointment.CalendarId = selectedCalendarId;
-            await AppointmentApiCaller.AddAppointment(newAppointment);
-            appointments = await AppointmentApiCaller.GetAppointments(selectedCalendarId);
+            newAppointment.UserId = await AuthStateProvider.GetUserId();
+            await AppointmentApiCaller.AddAppointment(newAppointment.ToRequest());
+            appointments = SchedulerAppointmentViewModel.CreateList(
+                await AppointmentApiCaller.GetAppointments(selectedCalendarId)
+            );
             scheduler.CloseEditor();
 
             await JSRuntime.SuccessToast("New appointment added");
@@ -94,17 +101,19 @@ public partial class Calendars
 
         try
         {
-            await this.AppointmentApiCaller.DeleteAppointment(this.appointmentIdToDelete.Value);
+            await AppointmentApiCaller.DeleteAppointment(this.appointmentIdToDelete.Value);
 
-            this.appointments = await this.AppointmentApiCaller.GetAppointments(this.selectedCalendarId);
+            this.appointments = SchedulerAppointmentViewModel.CreateList(
+                await AppointmentApiCaller.GetAppointments(selectedCalendarId)
+            );
             this.scheduler.CloseEditor();
 
-            await this.JSRuntime.SuccessToast("Appointment deleted");
+            await JSRuntime.SuccessToast("Appointment deleted");
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Calendars)} during {nameof(OnDeleteConfirmed)}");
-            await this.JSRuntime.ErrorToast("An error occured during the delete of the appointment");
+            await JSRuntime.ErrorToast("An error occured during the delete of the appointment");
         }
         finally
         {
@@ -118,13 +127,8 @@ public partial class Calendars
         this.appointmentIdToDelete = null;
     }
 
-    private bool IsAppointmentWithinWorkHours(AppointmentDto appointment)
+    private bool IsAppointmentWithinWorkHours(SchedulerAppointmentViewModel appointment)
     {
-        if (appointment.StartTime is null || appointment.EndTime is null)
-        {
-            return false;
-        }
-
         if (
             !TimeOnly.TryParse(currentCalendarStarTime, out var workStart)
             || !TimeOnly.TryParse(currentCalendarEndTime, out var workEnd)
@@ -133,8 +137,8 @@ public partial class Calendars
             return false;
         }
 
-        var appointmentStart = TimeOnly.FromDateTime(appointment.StartTime.Value);
-        var appointmentEnd = TimeOnly.FromDateTime(appointment.EndTime.Value);
+        var appointmentStart = TimeOnly.FromDateTime(appointment.StartTime);
+        var appointmentEnd = TimeOnly.FromDateTime(appointment.EndTime);
 
         return appointmentStart >= workStart && appointmentEnd <= workEnd;
     }

@@ -6,6 +6,7 @@ public class CustomAuthStateProvider(IStorageManager storageManager, NavigationM
 {
     private const string ACCESS_TOKEN = "accessToken";
     private const string REFRESH_TOKEN = "refreshToken";
+    private const string SUB = "sub";
 
     private readonly ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
 
@@ -34,6 +35,17 @@ public class CustomAuthStateProvider(IStorageManager storageManager, NavigationM
         NotifyAuthenticationStateChanged(Task.FromResult(state));
 
         navigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    public async Task<string> GetUserId()
+    {
+        var principal = await GetUserPrincipal();
+        if (principal.Identity is not { IsAuthenticated: true })
+        {
+            return string.Empty;
+        }
+        Claim? userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == SUB);
+        return userIdClaim?.Value ?? string.Empty;
     }
 
     public async Task<string?> GetAccessToken()

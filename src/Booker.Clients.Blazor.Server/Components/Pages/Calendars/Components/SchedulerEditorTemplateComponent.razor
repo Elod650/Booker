@@ -1,4 +1,10 @@
 ﻿<div class="container">
+    @if(!string.IsNullOrWhiteSpace(Appointment.BookingUser))
+    {
+        <div class="row mb-3">
+            <label><b>Booked for:</b> @Appointment.BookingUser</label>
+        </div>
+    }    
     <div class="row mb-3">
         <div class="col">
             <label class="form-label">Service</label>

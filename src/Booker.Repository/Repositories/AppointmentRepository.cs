@@ -10,6 +10,7 @@ public class AppointmentRepository(AppDbContext context) : IAppointmentRepositor
         return await context
             .Appointments.Where(x => x.CalendarId == calendarId)
             .AsNoTracking()
+            .Include(x => x.User)
             .ToListAsync(cancellationToken);
     }
 

@@ -19,7 +19,7 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddAppointment(
-        [FromBody] AppointmentDto newAppointment,
+        [FromBody] EditAppointmentRequest newAppointment,
         CancellationToken cancellationToken
     )
     {

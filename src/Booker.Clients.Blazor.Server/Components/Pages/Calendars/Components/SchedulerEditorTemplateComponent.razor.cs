@@ -3,7 +3,7 @@
 public partial class SchedulerEditorTemplateComponent
 {
     [Parameter, EditorRequired]
-    public AppointmentDto Appointment { get; set; }
+    public SchedulerAppointmentViewModel Appointment { get; set; }
 
     [Parameter, EditorRequired]
     public List<ServiceDto> Services { get; set; }
@@ -14,7 +14,7 @@ public partial class SchedulerEditorTemplateComponent
         {
             Appointment.ServiceId = value;
             var selectedServiceDuration = Services.First(x => x.Id == Appointment.ServiceId).Duration;
-            Appointment.EndTime = Appointment.StartTime?.Add(selectedServiceDuration);
+            Appointment.EndTime = Appointment.StartTime.Add(selectedServiceDuration);
         }
         catch (Exception ex)
         {
