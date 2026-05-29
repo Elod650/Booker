@@ -1,0 +1,325 @@
+# Severity levels: silent (hidden), suggestion (dots in IDE), warning (yellow squiggle), error (red squiggle / build error).
+
+# Tells editors this is the top-level .editorconfig — stop searching parent directories.
+root = true
+
+#Config for .cs files
+[*.cs]
+
+# Recommended maximum line length is 120 characters.
+max_line_length = 120
+
+# Must use namespace Foo; (file-scoped) — not namespace Foo { }. Build error if violated.
+csharp_style_namespace_declarations = file_scoped:error
+
+# using directives go outside the namespace declaration.
+csharp_using_directive_placement = outside_namespace:silent
+
+# Each member of an anonymous type goes on its own line.
+csharp_new_line_before_members_in_anonymous_types = true
+
+# Opening braces { always go on a new line (Allman style).
+csharp_new_line_before_open_brace = all
+
+# System.* usings are sorted first, then other namespaces
+dotnet_sort_system_directives_first = true
+
+# Allow short blocks { get; set; } to stay on one line.
+csharp_preserve_single_line_blocks = true
+
+# Always use braces {} even for single-line if/for bodies.
+csharp_prefer_braces = true:suggestion
+
+# Use int.Parse() not Int32.Parse(). 
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# Use string not String, int not Int32.
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+
+# Prefer local functions over anonymous delegates (takes precedence).
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+
+# Always declare public, private, etc. (except on interface members).
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+
+# The required ordering of modifiers on declarations.
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async
+
+# Prefer using var stream = ...; over using (var stream = ...) { }.	
+csharp_prefer_simple_using_statement = true:suggestion
+
+# Prefer list.ForEach(Print) over list.ForEach(x => Print(x)).
+csharp_style_prefer_method_group_conversion = true:silent
+
+# Prefer top-level statements (no Main method) for program entry.
+csharp_style_prefer_top_level_statements = true:silent
+
+# Must use primary constructors where possible. Build error if violated.
+csharp_style_prefer_primary_constructors = true:error
+
+# Use before_and_after for binary operators: a + b, not a+b or a +b.
+csharp_space_around_binary_operators = before_and_after
+
+# Prefer _field = value ?? throw new ... inline throw.
+csharp_style_throw_expression = true:suggestion
+
+# Prefer is null over GetType() checks.
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+
+# Prefer default over default(T).
+csharp_prefer_simple_default_expression = true:suggestion
+
+# Prefer new() over new Type() when the type is apparent.
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+
+# Prefer array[^1] over array[array.Length - 1].
+csharp_style_prefer_index_operator = true:suggestion
+
+# Prefer array[1..^1] over array.Skip(1).Take(array.Length - 2).
+csharp_style_prefer_range_operator = true:suggestion
+
+# Assign unused values to _ (discard).
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+
+# Unused expression results assigned to _.
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+
+# Local functions should be static when they don't capture variables. Warning severity.
+csharp_prefer_static_local_function = true:warning
+
+# Prefer conditional delegate call: handler?.Invoke() over if (handler != null) handler.Invoke().
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Prefer pattern matching over as with null check: obj is Type t instead of obj as Type t followed by t != null.
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+
+# Prefer pattern matching over is with cast check: obj is Type t instead of obj is Type followed by (Type)obj.
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+
+# Prefer pattern matching over GetType() checks: obj is Type instead of obj.GetType() == typeof(Type).
+csharp_style_prefer_pattern_matching = true:silent
+
+# Prefer switch expressions over switch statements when possible.
+csharp_style_prefer_switch_expression = true:suggestion
+
+# Prefer extended property patterns: obj is { Prop: 1 } instead of obj is Type t && t.Prop == 1.
+csharp_style_prefer_extended_property_pattern = true:suggestion
+
+# Prefer not patterns: obj is not Type instead of !(obj is Type).
+csharp_style_prefer_not_pattern = true:suggestion
+
+# Prefer System.Threading.Lock over object for locking (.NET 9+).
+csharp_prefer_system_threading_lock = true:suggestion
+
+# When wrapping long expressions, put operator at start of new line.
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+
+# Use Windows-style line endings (\r\n).
+end_of_line = crlf
+
+# Files must end with a newline character.
+insert_final_newline = true
+
+# Prefer null propagation: obj?.Method() instead of if (obj != null) obj.Method();.
+dotnet_style_null_propagation = true:suggestion
+
+# Prefer coalesce expression: x ?? y instead of x != null ? x : y.
+dotnet_style_coalesce_expression = true:suggestion
+
+# Prefer is null check: x is null instead of x == null.
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+
+# Prefer object initializers: new Type { Prop = value } instead of new Type(); type.Prop = value;.
+dotnet_style_object_initializer = true:suggestion
+
+# Prefer collection initializers: new List<int> { 1, 2, 3 } instead of new List<int>(); list.Add(1); list.Add(2); list.Add(3);.
+dotnet_style_collection_initializer = true:suggestion
+
+# Prefer auto-properties: public int X { get; set; } instead of public int X { get { return _x; } set { _x = value; } }.
+dotnet_style_prefer_auto_properties = true:silent
+
+# Prefer simplified boolean expressions: if (flag) instead of if (flag == true) and if (!flag) instead of if (flag == false).
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+
+# Prefer conditional expressions over assignment: x = condition ? value1 : value2; instead of if (condition) { x = value1; } else { x = value2; }.
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+
+# Prefer conditional expressions over return: return condition ? value1 : value2; instead of if (condition) { return value1; } else { return value2; }.
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+
+# Use named tuple elements: tuple.Name not tuple.Item1.
+dotnet_style_explicit_tuple_names = true:suggestion
+
+# Prefer (name, age) when variable names match tuple element names.
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+
+# Be explicit in anonymous types: new { Name = name } not new { name }
+dotnet_style_prefer_inferred_anonymous_type_member_names = false:suggestion
+
+# Prefer compound assignment: x += 1 instead of x = x + 1.
+dotnet_style_prefer_compound_assignment = true:suggestion
+
+# Prefer simplified interpolation: $"Value: {x}" instead of $"Value: {x.ToString()}".
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+
+# Namespace should match folder structure.
+dotnet_style_namespace_match_folder = true:suggestion
+
+# Fields that are never reassigned should be readonly.
+dotnet_style_readonly_field = true:suggestion
+
+# Warning if there are multiple consecutive blank lines.
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+
+# Prefer parentheses in arithmetic binary expressions for clarity: a + b * c should be (a + b) * c if the intention is to add a and b first.
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
+
+# Prefer parentheses in relational binary expressions for clarity: a < b && b < c should be (a < b) && (b < c) if the intention is to compare a, b, and c.
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
+
+# Prefer parentheses in other binary expressions for clarity: a && b || c should be (a && b) || c if the intention is to evaluate a and b together before combining with c.
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:silent
+
+# Don't add unnecessary parens elsewhere.
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
+
+# Flag all unused parameters (not just non-public).
+dotnet_code_quality_unused_parameters = all:suggestion
+
+
+# ===Spacing===
+
+# Space after : in class Foo : Bar.
+csharp_space_after_colon_in_inheritance_clause = true
+
+# Space after if, for, while, etc.: if (x) not if(x).
+csharp_space_after_keywords_in_control_flow_statements = true
+
+# Space before : in class Foo : Bar.
+csharp_space_before_colon_in_inheritance_clause = true
+
+# No space in Method().
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+
+# No space in Method( — not Method (.	
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+
+# No space inside Method(a, b) — not Method( a, b ).
+csharp_space_between_method_call_parameter_list_parentheses = false
+
+# No space in void Method().
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+
+# No space inside void Method(int a)
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+
+
+# ===Expression bodies===
+
+# refer get => _field; over get { return _field; }.	
+csharp_style_expression_bodied_accessors = true:suggestion
+
+# Prefer block body { } for constructors.
+csharp_style_expression_bodied_constructors = false:suggestion
+
+# Prefer block body { } for methods.
+csharp_style_expression_bodied_methods = false:suggestion
+
+# Prefer public int X => _x; over block body.
+csharp_style_expression_bodied_properties = true:suggestion
+
+# Prefer block body for operators.
+csharp_style_expression_bodied_operators = false:silent
+
+# Prefer expression body for indexers.
+sharp_style_expression_bodied_indexers = true:silent
+
+# Use expression body for lambdas only when single-line.
+csharp_style_expression_bodied_lambdas = when_on_single_line:silent
+
+# Prefer block body for local functions.
+csharp_style_expression_bodied_local_functions = false:silent
+
+
+# ===Var===
+
+# Prefer Method(out var x) over declaring x beforehand.
+csharp_style_inlined_variable_declaration = true:suggestion
+
+# Use var in most cases.
+csharp_style_var_elsewhere = true:suggestion
+
+# Use explicit type for built-in types: int x = 5; not var x = 5;.
+csharp_style_var_for_built_in_types = false:suggestion
+
+# Use var when type is obvious: var list = new List<int>();.
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+
+# ===this.===
+
+# Warning if events aren't prefixed with this..
+#dotnet_style_qualification_for_event = true:warning
+
+# Warning if methods aren't prefixed with this..
+#dotnet_style_qualification_for_method = true:warning
+
+# Warning if properties aren't prefixed with this..
+#dotnet_style_qualification_for_property = true:warning
+
+# Warning if fields aren't prefixed with this..
+#dotnet_style_qualification_for_field = true:warning
+
+
+# ===Symbol groups===
+# Speccify the target of naming rules and naming styles.
+
+# The target of 'interface'. All interface
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = *
+dotnet_naming_symbols.interface.required_modifiers = 
+
+# The target of 'non_field_members'. All class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = *
+dotnet_naming_symbols.types.required_modifiers = 
+
+# The target of 'non_field_members'. All property, event, method
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
+dotnet_naming_symbols.non_field_members.applicable_accessibilities = *
+dotnet_naming_symbols.non_field_members.required_modifiers = 
+
+
+# ===Naming rules===
+# Specify the naming rules to apply to the symbol groups. Each rule has a severity, a symbol group, and a naming style.
+
+# Interfaces should be prefixed with I. Build error if violated.
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = error
+dotnet_naming_rule.interface_should_be_begins_with_i.symbol = interface
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+
+# Types should be PascalCase. Suggestion severity. Class, struct, interface, enum
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.symbol = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+# Non-field members should be PascalCase. Suggestion severity. Property, event, method
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbol = non_field_members
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+
+
+# ===Naming styles===
+# The actual naming styles to applied in Naming rules. Each style has a required prefix, suffix, word separator, and capitalization. 
+
+# Starts with I, then PascalCase: IMyInterface.
+dotnet_naming_style.begins_with_i.required_prefix = I
+dotnet_naming_style.begins_with_i.required_suffix = 
+dotnet_naming_style.begins_with_i.word_separator = 
+dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+# PascalCase with no prefix or suffix: MyClass, MyProperty
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
