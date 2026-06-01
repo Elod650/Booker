@@ -21,7 +21,7 @@ public partial class Calendars
         {
             calendars = await CalendarApiCaller.GetCalendars();
             selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
-            appointments = SchedulerAppointmentViewModel.CreateList(
+            appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)
             );
             services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
@@ -43,7 +43,7 @@ public partial class Calendars
         try
         {
             selectedCalendarId = value;
-            appointments = SchedulerAppointmentViewModel.CreateList(
+            appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)
             );
             services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
@@ -71,7 +71,7 @@ public partial class Calendars
             newAppointment.CalendarId = selectedCalendarId;
             newAppointment.UserId = await AuthStateProvider.GetUserId();
             await AppointmentApiCaller.AddAppointment(newAppointment.ToRequest());
-            appointments = SchedulerAppointmentViewModel.CreateList(
+            appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)
             );
             scheduler.CloseEditor();
@@ -103,7 +103,7 @@ public partial class Calendars
         {
             await AppointmentApiCaller.DeleteAppointment(this.appointmentIdToDelete.Value);
 
-            this.appointments = SchedulerAppointmentViewModel.CreateList(
+            this.appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)
             );
             this.scheduler.CloseEditor();

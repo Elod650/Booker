@@ -20,7 +20,7 @@ public class EditServiceViewModels
     [Required(ErrorMessage = "Price is required")]
     public decimal? Price { get; set; }
 
-    public static EditServiceViewModels FromRequest(ServiceDto service)
+    public static EditServiceViewModels Create(ServiceDto service)
     {
         return new EditServiceViewModels
         {

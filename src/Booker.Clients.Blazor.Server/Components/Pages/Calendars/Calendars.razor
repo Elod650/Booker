@@ -4,6 +4,16 @@
 
 <h1>Calendar</h1>
 
+<AuthorizeView Roles="Admin,Provider">
+    <Authorized>
+        <div class="row mb-3">
+            <div class="col">
+                <a class="btn btn-primary" href="calendars/add">Add new calendar</a>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
 <div class="row mb-3">
     <div class="col">
         <label class="form-label">Service</label>

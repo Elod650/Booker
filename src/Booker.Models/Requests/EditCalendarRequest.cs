@@ -1,7 +1,8 @@
-﻿namespace Booker.Repository.Entities;
+﻿namespace Booker.Models.Requests;
 
-public class Calendar : EntityBase
+public class EditCalendarRequest
 {
+    public int Id { get; set; }
     public Guid Code { get; set; }
     public string Name { get; set; }
     public string StartTime { get; set; }
@@ -9,6 +10,4 @@ public class Calendar : EntityBase
 
     [Required]
     public string OwnerId { get; set; } = null!;
-
-    public virtual ApplicationUser? Owner { get; set; }
 }

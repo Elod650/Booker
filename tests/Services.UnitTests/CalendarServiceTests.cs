@@ -1,4 +1,6 @@
-﻿namespace Services.UnitTests;
+﻿using Booker.Repository.Repositories;
+
+namespace Services.UnitTests;
 
 public class CalendarServiceTests
 {
@@ -20,6 +22,30 @@ public class CalendarServiceTests
         var result = await calendarService.GetCalendars();
 
         await Assert.That(result.Count).IsEqualTo(2);
+    }
+
+    [Test]
+    public async Task AddCalendar_ShouldPass_WhenIdIsZero()
+    {
+        var newCalendar = Substitute.For<EditCalendarRequest>();
+
+        var result = await calendarService.AddCalendar(newCalendar);
+
+        await Assert.That(result).IsNull();
+        await calendarRepository.Received(1).AddCalendarAsync(Arg.Any<Calendar>());
+    }
+
+    [Test]
+    [Arguments(1)]
+    [Arguments(-1)]
+    public async Task AddCalendar_ShouldReturnError_WhenIdIsNotZero(int id)
+    {
+        var newCalendar = Substitute.For<EditCalendarRequest>();
+        newCalendar.Id = id;
+
+        var result = await calendarService.AddCalendar(newCalendar);
+
+        await Assert.That(result).EqualTo("The Id has to be 0 when adding a new calendar.");
     }
 
     private void SetUpRepository()

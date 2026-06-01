@@ -1,0 +1,27 @@
+﻿<EditForm Model="Model" OnValidSubmit="OnSaveEvent">
+    <DataAnnotationsValidator />
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Name</label>
+            <InputText class="form-control" @bind-Value="Model.Name" />
+            <ValidationMessage For="() => Model.Name" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Start time</label>
+            <InputDate class="form-control"
+                       Type="InputDateType.Time"
+                       @bind-Value="Model.StartTime" />
+            <ValidationMessage For="() => Model.StartTime" />
+        </div>
+        <div class="col">
+            <label class="form-label">End time</label>
+            <InputDate class="form-control"
+                       Type="InputDateType.Time"
+                       @bind-Value="Model.EndTime" b />
+            <ValidationMessage For="() => Model.EndTime" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</EditForm>

@@ -12,7 +12,7 @@ public partial class EditService
         try
         {
             var service = await ServiceApiCaller.GetServiceById(Id);
-            model = EditServiceViewModels.FromRequest(service);
+            model = EditServiceViewModels.Create(service);
         }
         catch (Exception ex)
         {

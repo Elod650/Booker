@@ -6,4 +6,10 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
     {
         return await context.Calendars.AsNoTracking().ToListAsync(cancellationToken);
     }
+
+    public async Task AddCalendarAsync(Calendar newCalendar, CancellationToken cancellationToken = default)
+    {
+        await context.AddAsync(newCalendar, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

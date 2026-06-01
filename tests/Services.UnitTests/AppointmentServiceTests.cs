@@ -37,7 +37,7 @@ public class AppointmentServiceTests
     [Test]
     public async Task AddAppointment_ShouldPass()
     {
-        var newAppointment = Substitute.For<AppointmentDto>();
+        var newAppointment = Substitute.For<EditAppointmentRequest>();
 
         await appointmentService.AddAppointment(newAppointment);
 

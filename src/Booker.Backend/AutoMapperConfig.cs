@@ -12,6 +12,7 @@ public class AutoMapperConfig : Profile
         CreateMap<EditAppointmentRequest, Appointment>();
 
         CreateMap<Calendar, CalendarDto>();
+        CreateMap<EditCalendarRequest, Calendar>();
 
         CreateMap<Service, ServiceDto>();
         CreateMap<EditServiceRequest, Service>();

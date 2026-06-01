@@ -28,7 +28,7 @@ public class SchedulerAppointmentViewModel
         };
     }
 
-    public static IEnumerable<SchedulerAppointmentViewModel> CreateList(List<AppointmentDto> appointments)
+    public static IEnumerable<SchedulerAppointmentViewModel> Create(List<AppointmentDto> appointments)
     {
         foreach (AppointmentDto appointment in appointments)
         {

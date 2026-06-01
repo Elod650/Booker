@@ -12,4 +12,22 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
         var calendars = await calendarService.GetCalendars(cancellationToken);
         return Ok(calendars);
     }
+
+    [HttpPost, Authorize(Roles = "Admin, Provider")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddService(
+        [FromBody] EditCalendarRequest newCalendar,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await calendarService.AddCalendar(newCalendar, cancellationToken);
+
+        if (result is not null)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok();
+    }
 }
