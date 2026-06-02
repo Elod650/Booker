@@ -1,0 +1,70 @@
+@page "/booking"
+
+<PageTitle>Booking</PageTitle>
+
+<h1>Booking</h1>
+
+<AuthorizeView Roles="Admin,Provider">
+    <Authorized>
+        <div class="row mb-3">
+            <div class="col">
+                <a class="btn btn-primary" href="calendars/add">Add new calendar</a>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+<div class="row mb-3">
+    <div class="col">
+        <label class="form-label">Service</label>
+        <InputSelect class="form-select"
+                     Value="selectedCalendarId"
+                     ValueExpression="@(() => selectedCalendarId)"
+                     ValueChanged="@(async (int value) => await OnCalendarChanged(value))">
+            @foreach (var calendar in calendars)
+            {
+                <option value="@calendar.Id">@calendar.Name</option>
+            }
+        </InputSelect>
+    </div>
+</div>
+
+<SfSchedule @ref="scheduler" TValue="SchedulerAppointmentViewModel" @bind-SelectedDate="@currentDate" @bind-CurrentView="@currentView"
+            AllowOverlap="false" AllowResizing="false" AllowKeyboardInteraction="false" AllowClipboard="false"
+            ShowWeekend="true" ShowWeekNumber="true"
+            Height="650px" FirstDayOfWeek="1" DateFormat="yyyy/MM/dd">
+    <ScheduleTemplates>
+        <EditorTemplate>
+            <SchedulerEditorTemplateComponent Appointment="@(context as SchedulerAppointmentViewModel)" Services="services" />
+        </EditorTemplate>
+        <EditorFooterTemplate>
+            <button class="btn btn-primary" @onclick="@(() => OnSave(context as SchedulerAppointmentViewModel))">Save</button>
+            <button class="btn btn-outline-secondary" @onclick="OnClose">Close</button>
+            @if ((context as SchedulerAppointmentViewModel).Id != 0)
+            {
+                <button class="btn btn-outline-danger ms-1" @onclick="@(() => OnDelete((context as SchedulerAppointmentViewModel).Id))">Delete</button>
+            }
+        </EditorFooterTemplate>
+    </ScheduleTemplates>
+    <ScheduleEventSettings DataSource="appointments">
+        <Template>
+            <div>Subject: Subject</div>
+            <div>@((context as SchedulerAppointmentViewModel).StartTime.ToString("hh:mm")) - @((context as SchedulerAppointmentViewModel).EndTime.ToString("hh:mm"))</div>
+        </Template>
+    </ScheduleEventSettings>
+    <ScheduleEvents TValue="SchedulerAppointmentViewModel" OnCellClick="OnCellClick" />
+    <ScheduleWorkHours Highlight="true" Start="@currentCalendarStarTime" End="@currentCalendarEndTime" />
+    <ScheduleViews>
+        <ScheduleView Option="View.Day" />
+        <ScheduleView Option="View.Week" />
+        <ScheduleView Option="View.WorkWeek" />
+        <ScheduleView Option="View.Month" />
+        <ScheduleView Option="View.Agenda" />
+    </ScheduleViews>
+</SfSchedule>
+
+<ConfirmationModal IsOpen="@this.isDeleteModalOpen"
+                   Title="Delete Appointment"
+                   Message="Are you sure you want to delete this appointment?"
+                   OnConfirm="this.OnDeleteConfirmed"
+                   OnCancel="this.OnDeleteCancelled" />

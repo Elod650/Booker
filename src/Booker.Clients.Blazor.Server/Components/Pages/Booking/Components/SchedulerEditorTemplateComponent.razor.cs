@@ -1,4 +1,4 @@
-﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Calendars.Components;
+﻿namespace Booker.Clients.Blazor.Server.Components.Pages.Booking.Components;
 
 public partial class SchedulerEditorTemplateComponent
 {

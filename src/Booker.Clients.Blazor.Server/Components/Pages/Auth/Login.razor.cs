@@ -31,7 +31,7 @@ public partial class Login
             }
 
             await AuthStateProvider.LoginAsync(response);
-            NavigationManager.NavigateTo("/calendars");
+            NavigationManager.NavigateTo("/booking");
         }
         catch (ApiCallerException)
         {
