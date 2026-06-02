@@ -1,3 +1,5 @@
+using Booker.Models.Enums;
+
 namespace Booker.Clients.Blazor.Server.Components.Pages.Auth;
 
 public partial class Login
@@ -5,6 +7,13 @@ public partial class Login
     private LoginRequest loginModel = new() { Email = "admin@booker.com", Password = "Admin123!" };
     private string? errorMessage;
     private bool isLoading;
+
+    private static List<(string email, string password)> users =
+    [
+        new("admin@booker.com", "Admin123!"),
+        new("provider@booker.com", "Provider123!"),
+        new("customer@booker.com", "Customer123!"),
+    ];
 
     private async Task HandleLogin()
     {
@@ -36,5 +45,12 @@ public partial class Login
         {
             this.isLoading = false;
         }
+    }
+
+    private async Task DevLogin((string email, string password) user)
+    {
+        loginModel.Email = user.email;
+        loginModel.Password = user.password;
+        await HandleLogin();
     }
 }

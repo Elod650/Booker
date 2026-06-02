@@ -61,6 +61,13 @@ public static class SeedData
 
     public static List<Info> Infos = [new Info { Key = "Currency", Value = "Ft" }];
 
+    private static List<(string email, string password, string firstName, string lastName, string role)> users =
+    [
+        new("admin@booker.com", "Admin123!", "Admin", "User", RolesEnum.Admin.ToString()),
+        new("provider@booker.com", "Provider123!", "Provider", "User", RolesEnum.Provider.ToString()),
+        new("customer@booker.com", "Customer123!", "Customer", "User", RolesEnum.Customer.ToString()),
+    ];
+
     public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -74,24 +81,19 @@ public static class SeedData
             }
         }
 
-        string adminEmail = "admin@booker.com";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-        if (adminUser is not null)
+        foreach (var user in users)
         {
-            return;
+            var adminUser = new ApplicationUser
+            {
+                UserName = user.email,
+                Email = user.email,
+                FirstName = user.firstName,
+                LastName = user.lastName,
+                EmailConfirmed = true,
+            };
+
+            await userManager.CreateAsync(adminUser, user.password);
+            await userManager.AddToRoleAsync(adminUser, user.role);
         }
-
-        adminUser = new ApplicationUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            FirstName = "Admin",
-            LastName = "User",
-            EmailConfirmed = true,
-        };
-
-        await userManager.CreateAsync(adminUser, "Admin123!");
-        await userManager.AddToRoleAsync(adminUser, RolesEnum.Admin.ToString());
     }
 }

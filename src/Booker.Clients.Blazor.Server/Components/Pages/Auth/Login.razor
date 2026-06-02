@@ -50,5 +50,13 @@
                 </div>
             </div>
         </div>
+        @if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
+        {
+            <div class="row mt-2">
+                <button class="btn btn-primary mb-1" @onclick="() => DevLogin(users[0])">Admin</button>
+                <button class="btn btn-primary mb-1" @onclick="() => DevLogin(users[1])">Provider</button>
+                <button class="btn btn-primary" @onclick="() => DevLogin(users[2])">Customer</button>
+            </div>
+        }
     </div>
 </div>
