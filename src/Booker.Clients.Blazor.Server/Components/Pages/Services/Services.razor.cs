@@ -14,52 +14,52 @@ public partial class Services
 
         try
         {
-            this.services = await this.ServiceApiCaller.GetServices();
-            this.currency = await this.InfoApiCaller.GetCurrency();
+            services = await ServiceApiCaller.GetServicesForUser(await AuthStateProvider.GetUserId());
+            currency = await InfoApiCaller.GetCurrency();
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnInitializedAsync)}");
-            await this.JSRuntime.ErrorToast("An error occured during the loading of the page");
+            await JSRuntime.ErrorToast("An error occured during the loading of the page");
         }
     }
 
     private void OnDelete(int id)
     {
-        this.serviceIdToDelete = id;
-        this.isDeleteModalOpen = true;
+        serviceIdToDelete = id;
+        isDeleteModalOpen = true;
     }
 
     private async Task OnDeleteConfirmed()
     {
-        this.isDeleteModalOpen = false;
-        if (this.serviceIdToDelete is null)
+        isDeleteModalOpen = false;
+        if (serviceIdToDelete is null)
         {
             return;
         }
 
         try
         {
-            await this.ServiceApiCaller.DeleteServices(this.serviceIdToDelete.Value);
+            await ServiceApiCaller.DeleteServices(serviceIdToDelete.Value);
 
-            this.services = await this.ServiceApiCaller.GetServices();
+            services = await ServiceApiCaller.GetServicesForUser(await AuthStateProvider.GetUserId());
 
-            await this.JSRuntime.SuccessToast("Service deleted");
+            await JSRuntime.SuccessToast("Service deleted");
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"An error occurred in {nameof(Services)} during {nameof(OnDeleteConfirmed)}");
-            await this.JSRuntime.ErrorToast("An error occured during the delete of the service");
+            await JSRuntime.ErrorToast("An error occured during the delete of the service");
         }
         finally
         {
-            this.serviceIdToDelete = null;
+            serviceIdToDelete = null;
         }
     }
 
     private void OnDeleteCancelled()
     {
-        this.isDeleteModalOpen = false;
-        this.serviceIdToDelete = null;
+        isDeleteModalOpen = false;
+        serviceIdToDelete = null;
     }
 }

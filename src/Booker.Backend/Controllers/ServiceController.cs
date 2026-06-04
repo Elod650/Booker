@@ -1,6 +1,4 @@
-﻿using Booker.Models.Enums;
-
-namespace Booker.Backend.Controllers;
+﻿namespace Booker.Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -8,10 +6,14 @@ namespace Booker.Backend.Controllers;
 public class ServiceController(IServiceService serviceService) : ControllerBase
 {
     [HttpGet]
+    [Route("{userId}")]
     [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<ServiceDto>>> GetServices(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<ServiceDto>>> GetServicesForUser(
+        [FromRoute] string userId,
+        CancellationToken cancellationToken
+    )
     {
-        var services = await serviceService.GetServices(cancellationToken);
+        var services = await serviceService.GetServicesForUser(userId, cancellationToken);
         return Ok(services);
     }
 

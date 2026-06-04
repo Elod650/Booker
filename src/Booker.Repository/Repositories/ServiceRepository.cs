@@ -2,20 +2,19 @@
 
 public class ServiceRepository(AppDbContext context) : IServiceRepository
 {
-    public async Task<List<Service>> GetServicesAsync(CancellationToken cancellationToken = default)
-    {
-        return await context.Services.AsNoTracking().ToListAsync(cancellationToken);
-    }
-
-    public async Task<List<Service>> GetServicesForCalendarAsync(
-        int calendarId,
+    public async Task<List<Service>> GetServicesAsync(
+        Expression<Func<Service, bool>>? predicate = null,
         CancellationToken cancellationToken = default
     )
     {
-        return await context
-            .Services.AsNoTracking()
-            .Where(x => x.CalendarId == calendarId)
-            .ToListAsync(cancellationToken);
+        var query = context.Services.AsNoTracking();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     public async Task<Service?> GetServiceByIdAsync(int id, CancellationToken cancellationToken = default)

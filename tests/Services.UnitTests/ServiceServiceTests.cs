@@ -1,11 +1,10 @@
-﻿using Booker.Repository.Repositories;
-
-namespace Services.UnitTests;
+﻿namespace Services.UnitTests;
 
 public class ServiceServiceTests
 {
     private ServiceService serviceService = null!;
     private IServiceRepository serviceRepository = null!;
+    private ICalendarRepository calendarRepository = null!;
 
     [Before(Test)]
     public void SetUp()
@@ -13,15 +12,27 @@ public class ServiceServiceTests
         SetUpRepository();
         var mapper = SetUpMapper();
 
-        serviceService = new ServiceService(serviceRepository, mapper);
+        serviceService = new ServiceService(serviceRepository, calendarRepository, mapper);
     }
 
     [Test]
-    public async Task GetServices_ShouldReturnDTOs()
+    [Arguments("1")]
+    [Arguments("2")]
+    public async Task GetServicesForUser_ShouldReturnList_WhenOwnerExists(string userId)
     {
-        var result = await serviceService.GetServices();
+        var result = await serviceService.GetServicesForUser(userId);
 
-        await Assert.That(result.Count).IsEqualTo(2);
+        await Assert.That(result.Count).IsEqualTo(1);
+        await Assert.That(result[0].Name).IsEqualTo($"Service {userId}");
+    }
+
+    [Test]
+    [Arguments("0")]
+    public async Task GetServicesForUser_ShouldReturnEmptyList_WhenOwnerDoesNotExists(string userId)
+    {
+        var result = await serviceService.GetServicesForUser(userId);
+
+        await Assert.That(result.Count).IsEqualTo(0);
     }
 
     [Test]
@@ -144,7 +155,21 @@ public class ServiceServiceTests
     {
         serviceRepository = Substitute.For<IServiceRepository>();
 
-        serviceRepository.GetServicesAsync(Arg.Any<CancellationToken>()).Returns(ServiceTestData.Services);
+        serviceRepository
+            .GetServicesAsync(Arg.Any<Expression<Func<Service, bool>>>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var predicate = callInfo.ArgAt<Expression<Func<Service, bool>>>(0);
+
+                var result = ServiceTestData.Services.AsEnumerable();
+
+                if (predicate is not null)
+                {
+                    result = result.Where(predicate.Compile());
+                }
+
+                return result.ToList();
+            });
 
         serviceRepository
             .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
@@ -154,12 +179,38 @@ public class ServiceServiceTests
                 return ServiceTestData.Services.FirstOrDefault(a => a.Id == id);
             });
 
-        serviceRepository
-            .GetServicesForCalendarAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+        calendarRepository = Substitute.For<ICalendarRepository>();
+
+        calendarRepository
+            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
-                var calendarId = callInfo.ArgAt<int>(0);
-                return ServiceTestData.Services.Where(s => s.CalendarId == calendarId).ToList();
+                var predicate = callInfo.ArgAt<Expression<Func<Calendar, bool>>>(0);
+
+                var result = CalendarTestData.Calendars.AsEnumerable();
+
+                if (predicate is not null)
+                {
+                    result = result.Where(predicate.Compile());
+                }
+
+                return result.ToList();
+            });
+
+        calendarRepository
+            .GetCalendarIdsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var predicate = callInfo.ArgAt<Expression<Func<Calendar, bool>>>(0);
+
+                var result = CalendarTestData.Calendars.AsEnumerable();
+
+                if (predicate is not null)
+                {
+                    result = result.Where(predicate.Compile());
+                }
+
+                return result.Select(x => x.Id).ToList();
             });
     }
 

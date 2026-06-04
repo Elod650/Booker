@@ -1,10 +1,26 @@
 ﻿namespace Booker.Services.Services;
 
-public class ServiceService(IServiceRepository serviceRepository, IMapper mapper) : IServiceService
+public class ServiceService(
+    IServiceRepository serviceRepository,
+    ICalendarRepository calendarRepository,
+    IMapper mapper
+) : IServiceService
 {
-    public async Task<List<ServiceDto>> GetServices(CancellationToken cancellationToken = default)
+    public async Task<List<ServiceDto>> GetServicesForUser(string userId, CancellationToken cancellationToken = default)
     {
-        return mapper.Map<List<ServiceDto>>(await serviceRepository.GetServicesAsync(cancellationToken));
+        var calendarsForUser = await calendarRepository.GetCalendarIdsAsync(
+            x => x.OwnerId == userId,
+            cancellationToken
+        );
+
+        if (calendarsForUser.Count == 0)
+        {
+            return new();
+        }
+
+        return mapper.Map<List<ServiceDto>>(
+            await serviceRepository.GetServicesAsync(x => calendarsForUser.Contains(x.CalendarId), cancellationToken)
+        );
     }
 
     public async Task<List<ServiceDto>> GetServicesForCalendar(
@@ -13,7 +29,7 @@ public class ServiceService(IServiceRepository serviceRepository, IMapper mapper
     )
     {
         return mapper.Map<List<ServiceDto>>(
-            await serviceRepository.GetServicesForCalendarAsync(calendarId, cancellationToken)
+            await serviceRepository.GetServicesAsync(x => x.CalendarId == calendarId, cancellationToken)
         );
     }
 
