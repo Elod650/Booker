@@ -1,4 +1,5 @@
-﻿global using AutoMapper;
+﻿global using System.Linq.Expressions;
+global using AutoMapper;
 global using Booker.Models.DTOs;
 global using Booker.Models.Enums;
 global using Booker.Models.Requests;

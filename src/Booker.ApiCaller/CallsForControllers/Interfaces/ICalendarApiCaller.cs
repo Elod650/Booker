@@ -1,9 +1,8 @@
-﻿namespace Booker.ApiCaller.CallsForControllers.Interfaces
+﻿namespace Booker.ApiCaller.CallsForControllers.Interfaces;
+
+public interface ICalendarApiCaller
 {
-    public interface ICalendarApiCaller
-    {
-        Task AddCalendar(EditCalendarRequest newCalendar, CancellationToken cancellationToken = default);
-        Task<List<CalendarDto>> GetCalendars(int calendarId, CancellationToken cancellationToken = default);
-        Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default);
-    }
+    Task AddCalendar(EditCalendarRequest newCalendar, CancellationToken cancellationToken = default);
+    Task<List<CalendarDto>> GetCalendarsByOwnerId(string ownerId, CancellationToken cancellationToken = default);
+    Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default);
 }

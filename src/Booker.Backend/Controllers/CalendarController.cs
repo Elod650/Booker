@@ -13,6 +13,18 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
         return Ok(calendars);
     }
 
+    [HttpGet]
+    [Route("{ownerId}")]
+    [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsByOwnerId(
+        [FromRoute] string ownerId,
+        CancellationToken cancellationToken
+    )
+    {
+        var calendars = await calendarService.GetCalendarsByOwnerId(ownerId, cancellationToken);
+        return Ok(calendars);
+    }
+
     [HttpPost, Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

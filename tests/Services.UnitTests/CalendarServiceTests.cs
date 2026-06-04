@@ -1,6 +1,4 @@
-﻿using Booker.Repository.Repositories;
-
-namespace Services.UnitTests;
+﻿namespace Services.UnitTests;
 
 public class CalendarServiceTests
 {
@@ -48,11 +46,46 @@ public class CalendarServiceTests
         await Assert.That(result).EqualTo("The Id has to be 0 when adding a new calendar.");
     }
 
+    [Test]
+    [Arguments("1")]
+    [Arguments("2")]
+    public async Task GetCalendarsByOwnerId_ShouldReturnCorrectResult_WhenOwnerHasCalendar(string ownerId)
+    {
+        var result = await calendarService.GetCalendarsByOwnerId(ownerId);
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    [Arguments("0")]
+    [Arguments(null)]
+    public async Task GetCalendarsByOwnerId_ShouldReturnEmptyList_WhenOwnerHasNoCalendar(string? ownerId)
+    {
+        var result = await calendarService.GetCalendarsByOwnerId(ownerId);
+
+        await Assert.That(result.Count).IsEqualTo(0);
+    }
+
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();
 
-        calendarRepository.GetCalendarsAsync(Arg.Any<CancellationToken>()).Returns(CalendarTestData.Calendars);
+        calendarRepository
+            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var predicate = callInfo.ArgAt<Expression<Func<Calendar, bool>>>(0);
+
+                var result = CalendarTestData.Calendars.AsEnumerable();
+
+                if (predicate is not null)
+                {
+                    result = result.Where(predicate.Compile());
+                }
+
+                return result.ToList();
+            });
     }
 
     private IMapper SetUpMapper()

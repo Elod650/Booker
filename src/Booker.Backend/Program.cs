@@ -28,7 +28,9 @@ try
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             context.Database.EnsureCreated();
+
             await SeedData.SeedRolesAndAdminAsync(scope.ServiceProvider);
+            await SeedData.SeedCalendarsAsync(scope.ServiceProvider, context);
         }
 
         app.MapOpenApi();

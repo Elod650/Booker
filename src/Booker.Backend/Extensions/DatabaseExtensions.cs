@@ -15,7 +15,6 @@ internal static class DatabaseExtensions
             options.UseSeeding(
                 (context, _) =>
                 {
-                    context.AddRange(SeedData.Calendars);
                     context.AddRange(SeedData.Services);
                     context.AddRange(SeedData.Infos);
                     context.SaveChanges();

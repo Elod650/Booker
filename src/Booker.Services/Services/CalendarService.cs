@@ -4,7 +4,19 @@ public class CalendarService(ICalendarRepository calendarRepository, IMapper map
 {
     public async Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<List<CalendarDto>>(await calendarRepository.GetCalendarsAsync(cancellationToken));
+        return mapper.Map<List<CalendarDto>>(
+            await calendarRepository.GetCalendarsAsync(cancellationToken: cancellationToken)
+        );
+    }
+
+    public async Task<List<CalendarDto>> GetCalendarsByOwnerId(
+        string ownerId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return mapper.Map<List<CalendarDto>>(
+            await calendarRepository.GetCalendarsAsync(x => x.OwnerId == ownerId, cancellationToken)
+        );
     }
 
     public async Task<string?> AddCalendar(

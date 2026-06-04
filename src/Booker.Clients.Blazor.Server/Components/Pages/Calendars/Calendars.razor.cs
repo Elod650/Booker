@@ -8,7 +8,7 @@ public partial class Calendars
     {
         try
         {
-            calendars = await CalendarApiCaller.GetCalendars();
+            calendars = await CalendarApiCaller.GetCalendarsByOwnerId(await AuthStateProvider.GetUserId());
         }
         catch (Exception ex)
         {

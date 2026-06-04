@@ -12,9 +12,12 @@ public class CalendarApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerO
         );
     }
 
-    public async Task<List<CalendarDto>> GetCalendars(int calendarId, CancellationToken cancellationToken = default)
+    public async Task<List<CalendarDto>> GetCalendarsByOwnerId(
+        string ownerId,
+        CancellationToken cancellationToken = default
+    )
     {
-        string url = $"{_apiUrl}/{calendarId}";
+        string url = $"{_apiUrl}/{ownerId}";
 
         return await apiCallerBase.SendWithResponseAsync<List<CalendarDto>>(
             ApiRequest.CreateGet(url),

@@ -1,7 +1,6 @@
-﻿namespace Booker.ApiCaller.CallsForControllers.Interfaces
+﻿namespace Booker.ApiCaller.CallsForControllers.Interfaces;
+
+public interface IInfoApiCaller
 {
-    public interface IInfoApiCaller
-    {
-        Task<string> GetCurrency(CancellationToken cancellationToken = default);
-    }
+    Task<string> GetCurrency(CancellationToken cancellationToken = default);
 }

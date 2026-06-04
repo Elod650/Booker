@@ -11,6 +11,7 @@ internal static class CalendarTestData
             Name = "Calendar 1",
             StartTime = "08:00",
             EndTime = "17:00",
+            OwnerId = "1",
         },
         new Calendar
         {
@@ -19,6 +20,7 @@ internal static class CalendarTestData
             Name = "Calendar 2",
             StartTime = "09:00",
             EndTime = "18:00",
+            OwnerId = "2",
         },
     };
 }

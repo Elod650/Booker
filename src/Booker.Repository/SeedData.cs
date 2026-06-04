@@ -37,28 +37,6 @@ public static class SeedData
         },
     ];
 
-    public static List<Calendar> Calendars =
-    [
-        new Calendar
-        {
-            Id = 1,
-            Code = Guid.NewGuid(),
-            Name = "Calendar 1",
-            StartTime = "08:00",
-            EndTime = "16:00",
-            OwnerId = "1",
-        },
-        new Calendar
-        {
-            Id = 2,
-            Code = Guid.NewGuid(),
-            Name = "Calendar 2",
-            StartTime = "10:00",
-            EndTime = "18:00",
-            OwnerId = "1",
-        },
-    ];
-
     public static List<Info> Infos = [new Info { Key = "Currency", Value = "Ft" }];
 
     private static List<(string email, string password, string firstName, string lastName, string role)> users =
@@ -95,5 +73,35 @@ public static class SeedData
             await userManager.CreateAsync(adminUser, user.password);
             await userManager.AddToRoleAsync(adminUser, user.role);
         }
+    }
+
+    public static async Task SeedCalendarsAsync(IServiceProvider serviceProvider, DbContext context)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        List<Calendar> calendars =
+        [
+            new Calendar
+            {
+                Id = 1,
+                Code = Guid.NewGuid(),
+                Name = "Admin's calendar",
+                StartTime = "08:00",
+                EndTime = "16:00",
+                OwnerId = (await userManager.FindByEmailAsync(users[0].email)).Id,
+            },
+            new Calendar
+            {
+                Id = 2,
+                Code = Guid.NewGuid(),
+                Name = "Provider's calendar",
+                StartTime = "10:00",
+                EndTime = "18:00",
+                OwnerId = (await userManager.FindByEmailAsync(users[1].email)).Id,
+            },
+        ];
+
+        await context.AddRangeAsync(calendars);
+        await context.SaveChangesAsync();
     }
 }

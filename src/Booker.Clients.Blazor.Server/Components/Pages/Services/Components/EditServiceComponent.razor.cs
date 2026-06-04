@@ -14,7 +14,7 @@ public partial class EditServiceComponent
     {
         try
         {
-            calendars = await CalendarApiCaller.GetCalendars();
+            calendars = await CalendarApiCaller.GetCalendarsByOwnerId(await AuthStateProvider.GetUserId());
         }
         catch (Exception ex)
         {
