@@ -29,8 +29,11 @@ try
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             context.Database.EnsureCreated();
 
-            await SeedData.SeedRolesAndAdminAsync(scope.ServiceProvider);
-            await SeedData.SeedCalendarsAsync(scope.ServiceProvider, context);
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            await SeedData.SeedRolesAndAdminAsync(scope.ServiceProvider, userManager);
+            await SeedData.SeedCalendarsAsync(scope.ServiceProvider, context, userManager);
+            await SeedData.SeedCalendarsXCustomersAsync(scope.ServiceProvider, context, userManager);
         }
 
         app.MapOpenApi();

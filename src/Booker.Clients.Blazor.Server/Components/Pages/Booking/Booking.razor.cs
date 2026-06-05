@@ -14,17 +14,20 @@ public partial class Booking
     private string currentCalendarEndTime = "16:00";
     private bool isDeleteModalOpen;
     private int? appointmentIdToDelete;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            calendars = await CalendarApiCaller.GetCalendars();
+            calendars = await CalendarApiCaller.GetCalendarsForCustomer(await AuthStateProvider.GetUserId());
             selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
             appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)
             );
             services = await ServiceApiCaller.GetServicesForCalendar(selectedCalendarId);
+
+            isLoading = false;
         }
         catch (Exception ex)
         {

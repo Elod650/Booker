@@ -11,4 +11,5 @@ public interface ICalendarRepository
         Expression<Func<Calendar, bool>>? predicate = null,
         CancellationToken cancellationToken = default
     );
+    Task<List<Calendar>> GetCalendarsForCustomerAsync(string customerId, CancellationToken cancellationToken = default);
 }

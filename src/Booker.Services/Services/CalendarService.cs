@@ -19,6 +19,16 @@ public class CalendarService(ICalendarRepository calendarRepository, IMapper map
         );
     }
 
+    public async Task<List<CalendarDto>> GetCalendarsForCustomer(
+        string customerId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return mapper.Map<List<CalendarDto>>(
+            await calendarRepository.GetCalendarsForCustomerAsync(customerId, cancellationToken)
+        );
+    }
+
     public async Task<string?> AddCalendar(
         EditCalendarRequest newCalendar,
         CancellationToken cancellationToken = default

@@ -17,6 +17,21 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<List<Calendar>> GetCalendarsForCustomerAsync(
+        string customerId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var calendarIdsForCustomer = context
+            .CalendarsXCustomers.AsNoTracking()
+            .Where(x => x.CustomerId == customerId)
+            .Select(x => x.CalendarId);
+
+        var query = context.Calendars.AsNoTracking().Where(x => calendarIdsForCustomer.Contains(x.Id));
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<List<int>> GetCalendarIdsAsync(
         Expression<Func<Calendar, bool>>? predicate = null,
         CancellationToken cancellationToken = default

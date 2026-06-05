@@ -46,10 +46,12 @@ public static class SeedData
         new("customer@booker.com", "Customer123!", "Customer", "User", RolesEnum.Customer.ToString()),
     ];
 
-    public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
+    public static async Task SeedRolesAndAdminAsync(
+        IServiceProvider serviceProvider,
+        UserManager<ApplicationUser> userManager
+    )
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         foreach (string role in Roles)
         {
@@ -75,10 +77,12 @@ public static class SeedData
         }
     }
 
-    public static async Task SeedCalendarsAsync(IServiceProvider serviceProvider, DbContext context)
+    public static async Task SeedCalendarsAsync(
+        IServiceProvider serviceProvider,
+        DbContext context,
+        UserManager<ApplicationUser> userManager
+    )
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
         List<Calendar> calendars =
         [
             new Calendar
@@ -98,6 +102,39 @@ public static class SeedData
                 StartTime = "10:00",
                 EndTime = "18:00",
                 OwnerId = (await userManager.FindByEmailAsync(users[1].email)).Id,
+            },
+            new Calendar
+            {
+                Id = 3,
+                Code = Guid.NewGuid(),
+                Name = "Provider's calendar 2",
+                StartTime = "10:00",
+                EndTime = "18:00",
+                OwnerId = (await userManager.FindByEmailAsync(users[1].email)).Id,
+            },
+        ];
+
+        await context.AddRangeAsync(calendars);
+        await context.SaveChangesAsync();
+    }
+
+    public static async Task SeedCalendarsXCustomersAsync(
+        IServiceProvider serviceProvider,
+        DbContext context,
+        UserManager<ApplicationUser> userManager
+    )
+    {
+        List<CalendarsXCustomers> calendars =
+        [
+            new CalendarsXCustomers
+            {
+                CustomerId = (await userManager.FindByEmailAsync(users[2].email)).Id,
+                CalendarId = 2,
+            },
+            new CalendarsXCustomers
+            {
+                CustomerId = (await userManager.FindByEmailAsync(users[2].email)).Id,
+                CalendarId = 3,
             },
         ];
 

@@ -14,7 +14,7 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     }
 
     [HttpGet]
-    [Route("{ownerId}")]
+    [Route("forOwner/{ownerId}")]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<CalendarDto>>> GetCalendarsByOwnerId(
         [FromRoute] string ownerId,
@@ -22,6 +22,18 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     )
     {
         var calendars = await calendarService.GetCalendarsByOwnerId(ownerId, cancellationToken);
+        return Ok(calendars);
+    }
+
+    [HttpGet]
+    [Route("forCustomer/{customerId}")]
+    [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsForCustomer(
+        [FromRoute] string customerId,
+        CancellationToken cancellationToken
+    )
+    {
+        var calendars = await calendarService.GetCalendarsForCustomer(customerId, cancellationToken);
         return Ok(calendars);
     }
 
