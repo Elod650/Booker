@@ -37,6 +37,21 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
         return Ok(calendars);
     }
 
+    [HttpDelete("{id:int}"), Authorize(Roles = "Admin, Provider")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteService(int id, CancellationToken cancellationToken)
+    {
+        var errorMessage = await calendarService.DeleteCalendar(id, cancellationToken);
+
+        if (errorMessage is not null)
+        {
+            return BadRequest(errorMessage);
+        }
+
+        return Ok();
+    }
+
     [HttpPost, Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

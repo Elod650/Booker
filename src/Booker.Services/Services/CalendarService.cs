@@ -43,4 +43,18 @@ public class CalendarService(ICalendarRepository calendarRepository, IMapper map
 
         return null;
     }
+
+    public async Task<string?> DeleteCalendar(int calendarId, CancellationToken cancellationToken = default)
+    {
+        var calendarToDelete = await calendarRepository.GetCalendarByIdAsync(calendarId, cancellationToken);
+
+        if (calendarToDelete is null)
+        {
+            return "There is no calendar with the provided Id.";
+        }
+
+        await calendarRepository.DeleteCalendarAsync(calendarToDelete, cancellationToken);
+
+        return null;
+    }
 }

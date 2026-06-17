@@ -3,6 +3,8 @@
 public interface ICalendarRepository
 {
     Task AddCalendarAsync(Calendar newCalendar, CancellationToken cancellationToken = default);
+    Task DeleteCalendarAsync(Calendar calendarToDelete, CancellationToken cancellationToken = default);
+    Task<Calendar?> GetCalendarByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<List<int>> GetCalendarIdsAsync(
         Expression<Func<Calendar, bool>>? predicate = null,
         CancellationToken cancellationToken = default

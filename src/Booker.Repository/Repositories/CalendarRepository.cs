@@ -52,4 +52,15 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
         await context.AddAsync(newCalendar, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<Calendar?> GetCalendarByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await context.Calendars.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public async Task DeleteCalendarAsync(Calendar calendarToDelete, CancellationToken cancellationToken = default)
+    {
+        context.Calendars.Remove(calendarToDelete);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

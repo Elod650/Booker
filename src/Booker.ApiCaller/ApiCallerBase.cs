@@ -210,7 +210,7 @@ public class ApiCallerBase : IApiCallerBase
 
             return response;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             var refreshToken = await getRefreshToken();
 

@@ -45,4 +45,11 @@ public class CalendarApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerO
             cancellationToken: cancellationToken
         );
     }
+
+    public async Task DeleteCalendar(int id, CancellationToken cancellationToken = default)
+    {
+        string url = $"{_apiUrl}/{id}";
+
+        await apiCallerBase.SendAsync(ApiRequest.CreateDelete(url), cancellationToken: cancellationToken);
+    }
 }
