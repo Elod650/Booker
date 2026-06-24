@@ -55,12 +55,68 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     [HttpPost, Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddService(
+    public async Task<IActionResult> AddCalendar(
         [FromBody] EditCalendarRequest newCalendar,
         CancellationToken cancellationToken
     )
     {
         var result = await calendarService.AddCalendar(newCalendar, cancellationToken);
+
+        if (result is not null)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok();
+    }
+
+    [HttpPost, Authorize(Roles = "Admin, Provider")]
+    [Route("addCustomer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddCustomerToCalendar(
+        [FromBody] AddCustomerToCalendarRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await calendarService.AddCustomerToCalendar(request, cancellationToken);
+
+        if (result is not null)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok();
+    }
+
+    [HttpGet]
+    [Route("{calendarId}/customers")]
+    [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<UserDto>>> GetCustomersForCalendar(
+        [FromRoute] int calendarId,
+        CancellationToken cancellationToken
+    )
+    {
+        var users = await calendarService.GetCustomersForCalendar(calendarId, cancellationToken);
+
+        if (users is null)
+        {
+            return BadRequest("Invalid calendar Id.");
+        }
+
+        return Ok(users);
+    }
+
+    [HttpPost, Authorize(Roles = "Admin, Provider")]
+    [Route("removeCustomer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RemoveCustomerFromCalendar(
+        [FromBody] RemoveCustomerFromCalendarRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await calendarService.RemoveCustomerFromCalendar(request, cancellationToken);
 
         if (result is not null)
         {

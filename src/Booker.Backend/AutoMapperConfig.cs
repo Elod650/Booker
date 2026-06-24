@@ -16,5 +16,7 @@ public class AutoMapperConfig : Profile
 
         CreateMap<Service, ServiceDto>();
         CreateMap<EditServiceRequest, Service>();
+
+        CreateMap<ApplicationUser, UserDto>();
     }
 }

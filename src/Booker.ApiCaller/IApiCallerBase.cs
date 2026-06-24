@@ -9,7 +9,7 @@ public interface IApiCallerBase
         CancellationToken cancellationToken = default
     )
         where T : class, new();
-    Task<string> SendWithResponseAsync(
+    Task<string?> SendWithResponseAsync(
         ApiRequest request,
         bool withBearer = true,
         CancellationToken cancellationToken = default

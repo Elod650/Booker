@@ -33,7 +33,7 @@ else
                     <td>@calendar.StartTime</td>
                     <td>@calendar.EndTime</td>
                     <td>
-                        <a href="calendars/users" class="btn btn-outline-success">Add user to calendar</a>
+                        <a href="calendars/customers/@calendar.Id" class="btn btn-outline-success">Manage customers</a>
                         <button class="btn btn-outline-danger" @onclick="@(() => OnDelete(calendar.Id))">Delete</button>
                         <a href="/services/edit/@calendar.Id" class="btn btn-outline-secondary">Update</a>
                     </td>

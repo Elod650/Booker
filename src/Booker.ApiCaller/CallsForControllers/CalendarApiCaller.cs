@@ -52,4 +52,47 @@ public class CalendarApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerO
 
         await apiCallerBase.SendAsync(ApiRequest.CreateDelete(url), cancellationToken: cancellationToken);
     }
+
+    public async Task<string?> AddCustomerToCalendar(
+        AddCustomerToCalendarRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        string url = $"{_apiUrl}/addCustomer";
+
+        string? response = await apiCallerBase.SendWithResponseAsync(
+            ApiRequest.CreatePost(url, request),
+            cancellationToken: cancellationToken
+        );
+
+        return response;
+    }
+
+    public async Task<List<UserDto>> GetCustomersForCalendar(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        string url = $"{_apiUrl}/{calendarId}/customers";
+
+        return await apiCallerBase.SendWithResponseAsync<List<UserDto>>(
+            ApiRequest.CreateGet(url),
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public async Task<string?> RemoveCustomerFromCalendarAsync(
+        RemoveCustomerFromCalendarRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        string url = $"{_apiUrl}/removeCustomer";
+
+        string? response = await apiCallerBase.SendWithResponseAsync(
+            ApiRequest.CreatePost(url, request),
+            cancellationToken: cancellationToken
+        );
+
+        return response;
+    }
 }

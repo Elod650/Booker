@@ -8,8 +8,7 @@
 /// responses, or protocol violations. The exception message should provide details about the nature of the API call
 /// failure.
 /// </remarks>
-public class ApiCallerException : Exception
+public class ApiCallerException(string errorMessage, string? apiResponseMessage = null) : Exception(errorMessage)
 {
-    public ApiCallerException(string errorMessage)
-        : base(errorMessage) { }
+    public string? ApiResponseMessage { get; } = apiResponseMessage;
 }

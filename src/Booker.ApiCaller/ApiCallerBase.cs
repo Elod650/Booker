@@ -75,7 +75,7 @@ public class ApiCallerBase : IApiCallerBase
     /// <param name="request">The API request containing the neceserry data to include in the request.</param>
     /// <returns>The task result contains the respons content as string.</returns>
     /// <exception cref="ApiCallerException">Thrown when the there was an error during the API call.</exception>
-    public async Task<string> SendWithResponseAsync(
+    public async Task<string?> SendWithResponseAsync(
         ApiRequest request,
         bool withBearer = true,
         CancellationToken cancellationToken = default
@@ -84,7 +84,8 @@ public class ApiCallerBase : IApiCallerBase
         try
         {
             var responseMessage = await SendMessageAsync(request, withBearer, cancellationToken);
-            return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+            var content = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+            return string.IsNullOrEmpty(content) ? null : content;
         }
         catch (ApiCallerException)
         {
@@ -162,8 +163,11 @@ public class ApiCallerBase : IApiCallerBase
 
         if (!responseMessage.IsSuccessStatusCode)
         {
+            var apiResponseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+
             throw new ApiCallerException(
-                $"Status code: {(int)responseMessage.StatusCode}, Reason phrase: {responseMessage.ReasonPhrase}"
+                $"Status code: {(int)responseMessage.StatusCode}, Reason phrase: {responseMessage.ReasonPhrase}",
+                apiResponseContent
             );
         }
 

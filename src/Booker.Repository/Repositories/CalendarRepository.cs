@@ -1,4 +1,7 @@
-﻿namespace Booker.Repository.Repositories;
+﻿using AutoMapper;
+using Booker.Models.DTOs;
+
+namespace Booker.Repository.Repositories;
 
 public class CalendarRepository(AppDbContext context) : ICalendarRepository
 {
@@ -61,6 +64,43 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
     public async Task DeleteCalendarAsync(Calendar calendarToDelete, CancellationToken cancellationToken = default)
     {
         context.Calendars.Remove(calendarToDelete);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task AddCustomerToCalendarAsync(
+        CalendarsXCustomers toAdd,
+        CancellationToken cancellationToken = default
+    )
+    {
+        await context.CalendarsXCustomers.AddAsync(toAdd, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<ApplicationUser?>> GetCustomersForCalendarAsync(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var query = context
+            .CalendarsXCustomers.AsNoTracking()
+            .Where(x => x.CalendarId == calendarId)
+            .Include(x => x.Customer)
+            .Select(x => x.Customer);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task RemoveCustomerFromCalendarAsync(
+        string userId,
+        int calendarId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var connection = context
+            .CalendarsXCustomers.AsNoTracking()
+            .FirstOrDefault(x => x.CustomerId == userId && x.CalendarId == calendarId);
+
+        context.CalendarsXCustomers.Remove(connection);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

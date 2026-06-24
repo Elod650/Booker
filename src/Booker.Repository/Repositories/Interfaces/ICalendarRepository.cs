@@ -3,6 +3,7 @@
 public interface ICalendarRepository
 {
     Task AddCalendarAsync(Calendar newCalendar, CancellationToken cancellationToken = default);
+    Task AddCustomerToCalendarAsync(CalendarsXCustomers toAdd, CancellationToken cancellationToken = default);
     Task DeleteCalendarAsync(Calendar calendarToDelete, CancellationToken cancellationToken = default);
     Task<Calendar?> GetCalendarByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<List<int>> GetCalendarIdsAsync(
@@ -14,4 +15,9 @@ public interface ICalendarRepository
         CancellationToken cancellationToken = default
     );
     Task<List<Calendar>> GetCalendarsForCustomerAsync(string customerId, CancellationToken cancellationToken = default);
+    Task<List<ApplicationUser?>> GetCustomersForCalendarAsync(
+        int calendarId,
+        CancellationToken cancellationToken = default
+    );
+    Task RemoveCustomerFromCalendarAsync(string userId, int calendarId, CancellationToken cancellationToken = default);
 }

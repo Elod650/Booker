@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Services.UnitTests.TestData;
+﻿namespace Services.UnitTests.TestData;
 
 internal static class UserTestData
 {
