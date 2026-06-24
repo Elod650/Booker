@@ -75,7 +75,7 @@ public class ServiceService(
             return "There is no service with the provided Id.";
         }
 
-        serviceToUpdate = mapper.Map<Service>(updatedService);
+        mapper.Map(updatedService, serviceToUpdate);
 
         await serviceRepository.UpdateServiceAsync(serviceToUpdate, cancellationToken);
 
