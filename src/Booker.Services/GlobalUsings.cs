@@ -10,5 +10,6 @@ global using Booker.Repository.Entities;
 global using Booker.Repository.Repositories.Interfaces;
 global using Booker.Services.Interfaces;
 global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;

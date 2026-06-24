@@ -71,7 +71,10 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         CancellationToken cancellationToken = default
     )
     {
-        var user = userManager.Users.FirstOrDefault(u => u.RefreshToken == request.RefreshToken);
+        var user = await userManager.Users.FirstOrDefaultAsync(
+            u => u.RefreshToken == request.RefreshToken,
+            cancellationToken
+        );
 
         if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {

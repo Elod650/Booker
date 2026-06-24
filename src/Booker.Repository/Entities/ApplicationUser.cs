@@ -1,5 +1,6 @@
 namespace Booker.Repository.Entities;
 
+[Index(nameof(RefreshToken))]
 public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
