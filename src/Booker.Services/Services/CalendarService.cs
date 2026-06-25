@@ -35,6 +35,7 @@ public class CalendarService(
 
     public async Task<string?> AddCalendar(
         EditCalendarRequest newCalendar,
+        string userId,
         CancellationToken cancellationToken = default
     )
     {
@@ -43,7 +44,10 @@ public class CalendarService(
             return "The Id has to be 0 when adding a new calendar.";
         }
 
-        await calendarRepository.AddCalendarAsync(mapper.Map<Calendar>(newCalendar), cancellationToken);
+        var newCalendarEntity = new Calendar { OwnerId = userId };
+        mapper.Map(newCalendar, newCalendarEntity);
+
+        await calendarRepository.AddCalendarAsync(newCalendarEntity, cancellationToken);
 
         return null;
     }

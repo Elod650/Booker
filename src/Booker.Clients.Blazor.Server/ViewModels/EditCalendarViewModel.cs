@@ -13,17 +13,14 @@ public class EditCalendarViewModel
     [Required]
     public TimeOnly? EndTime { get; set; } = null!;
 
-    public string OwnerId { get; set; }
-
     public EditCalendarRequest ToRequest()
     {
         return new EditCalendarRequest
         {
-            Id = this.Id,
-            Name = this.Name,
-            StartTime = this.StartTime.ToString(),
-            EndTime = this.EndTime.ToString(),
-            OwnerId = this.OwnerId,
+            Id = Id,
+            Name = Name,
+            StartTime = StartTime.ToString(),
+            EndTime = EndTime.ToString(),
         };
     }
 }

@@ -9,7 +9,4 @@ public class EditAppointmentRequest
 
     public int ServiceId { get; set; }
     public int CalendarId { get; set; }
-
-    [Required]
-    public string UserId { get; set; } = null!;
 }

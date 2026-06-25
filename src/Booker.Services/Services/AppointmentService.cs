@@ -14,10 +14,14 @@ public class AppointmentService(IAppointmentRepository appointmentRepository, IM
 
     public async Task AddAppointment(
         EditAppointmentRequest newAppointment,
+        string userId,
         CancellationToken cancellationToken = default
     )
     {
-        await appointmentRepository.AddAppointmentAsync(mapper.Map<Appointment>(newAppointment), cancellationToken);
+        var newAppointmentEntity = new Appointment { UserId = userId };
+        mapper.Map(newAppointment, newAppointmentEntity);
+
+        await appointmentRepository.AddAppointmentAsync(newAppointmentEntity, cancellationToken);
     }
 
     public async Task<string?> DeleteAppointment(int appointmentId, CancellationToken cancellationToken = default)

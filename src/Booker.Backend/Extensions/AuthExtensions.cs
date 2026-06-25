@@ -27,6 +27,7 @@ internal static class AuthExtensions
             })
             .AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false; // Disable default claims mapping to avoid claim type conflicts
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,

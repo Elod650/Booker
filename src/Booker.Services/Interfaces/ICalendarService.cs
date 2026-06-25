@@ -2,7 +2,11 @@
 
 public interface ICalendarService
 {
-    Task<string?> AddCalendar(EditCalendarRequest newCalendar, CancellationToken cancellationToken = default);
+    Task<string?> AddCalendar(
+        EditCalendarRequest newCalendar,
+        string userId,
+        CancellationToken cancellationToken = default
+    );
     Task<string?> AddCustomerToCalendar(
         AddCustomerToCalendarRequest request,
         CancellationToken cancellationToken = default

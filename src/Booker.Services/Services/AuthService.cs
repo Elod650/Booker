@@ -21,18 +21,18 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         }
 
         var roles = await userManager.GetRolesAsync(user);
-        string accessToken = this.GenerateAccessToken(user, roles);
+        string accessToken = GenerateAccessToken(user, roles);
         string refreshToken = GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(this._jwtOptions.RefreshTokenExpirationDays);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays);
         await userManager.UpdateAsync(user);
 
         return new AuthResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,
-            Expiration = DateTime.UtcNow.AddMinutes(this._jwtOptions.AccessTokenExpirationMinutes),
+            Expiration = DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpirationMinutes),
         };
     }
 
@@ -82,18 +82,18 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         }
 
         var roles = await userManager.GetRolesAsync(user);
-        string accessToken = this.GenerateAccessToken(user, roles);
+        string accessToken = GenerateAccessToken(user, roles);
         string refreshToken = GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(this._jwtOptions.RefreshTokenExpirationDays);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays);
         await userManager.UpdateAsync(user);
 
         return new AuthResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,
-            Expiration = DateTime.UtcNow.AddMinutes(this._jwtOptions.AccessTokenExpirationMinutes),
+            Expiration = DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpirationMinutes),
         };
     }
 
@@ -112,14 +112,14 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._jwtOptions.SecretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: this._jwtOptions.Issuer,
-            audience: this._jwtOptions.Audience,
+            issuer: _jwtOptions.Issuer,
+            audience: _jwtOptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(this._jwtOptions.AccessTokenExpirationMinutes),
+            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpirationMinutes),
             signingCredentials: credentials
         );
 

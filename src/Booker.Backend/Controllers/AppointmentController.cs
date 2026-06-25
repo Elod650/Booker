@@ -23,7 +23,11 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
         CancellationToken cancellationToken
     )
     {
-        await appointmentService.AddAppointment(newAppointment, cancellationToken);
+        await appointmentService.AddAppointment(
+            newAppointment,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
+            cancellationToken
+        );
         return Ok();
     }
 

@@ -60,7 +60,11 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
         CancellationToken cancellationToken
     )
     {
-        var result = await calendarService.AddCalendar(newCalendar, cancellationToken);
+        var result = await calendarService.AddCalendar(
+            newCalendar,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
+            cancellationToken
+        );
 
         if (result is not null)
         {

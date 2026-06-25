@@ -1,6 +1,4 @@
-﻿using Syncfusion.Blazor.Schedule.Internal;
-
-namespace Booker.Clients.Blazor.Server.ViewModels;
+﻿namespace Booker.Clients.Blazor.Server.ViewModels;
 
 public class SchedulerAppointmentViewModel
 {
@@ -11,7 +9,6 @@ public class SchedulerAppointmentViewModel
 
     public int ServiceId { get; set; }
     public int CalendarId { get; set; }
-    public string UserId { get; set; } = null!;
     public string? BookingUser { get; set; }
 
     public EditAppointmentRequest ToRequest()
@@ -24,7 +21,6 @@ public class SchedulerAppointmentViewModel
             IsReadonly = IsReadonly,
             ServiceId = ServiceId,
             CalendarId = CalendarId,
-            UserId = UserId,
         };
     }
 

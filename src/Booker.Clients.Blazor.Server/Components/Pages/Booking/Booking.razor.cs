@@ -72,7 +72,6 @@ public partial class Booking
             }
 
             newAppointment.CalendarId = selectedCalendarId;
-            newAppointment.UserId = await AuthStateProvider.GetUserId();
             await AppointmentApiCaller.AddAppointment(newAppointment.ToRequest());
             appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)

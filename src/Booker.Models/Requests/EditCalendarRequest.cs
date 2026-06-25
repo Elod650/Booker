@@ -7,7 +7,4 @@ public class EditCalendarRequest
     public string Name { get; set; }
     public string StartTime { get; set; }
     public string EndTime { get; set; }
-
-    [Required]
-    public string OwnerId { get; set; } = null!;
 }

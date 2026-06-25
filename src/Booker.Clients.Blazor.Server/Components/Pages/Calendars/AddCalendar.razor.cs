@@ -8,7 +8,6 @@ public partial class AddCalendar
     {
         try
         {
-            model.OwnerId = await AuthStateProvider.GetUserId();
             await CalendarApiCaller.AddCalendar(model.ToRequest());
             NavigationManager.NavigateTo("calendars");
         }

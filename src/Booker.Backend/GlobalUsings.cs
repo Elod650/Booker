@@ -1,4 +1,6 @@
-﻿global using System.Text;
+﻿global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
 global using AutoMapper;
 global using Booker.Backend.Extensions;
 global using Booker.Backend.Middlewares;
