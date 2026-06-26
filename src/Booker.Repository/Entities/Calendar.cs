@@ -2,8 +2,6 @@
 
 public class Calendar : EntityBase
 {
-    public Guid Code { get; set; }
-
     [Required]
     public string Name { get; set; }
 
@@ -18,5 +16,5 @@ public class Calendar : EntityBase
 
     public virtual ApplicationUser? Owner { get; set; }
 
-    public ICollection<CalendarsXCustomers> CalendarsXCustomers;
+    public virtual ICollection<CalendarsXCustomers> CalendarsXCustomers { get; set; }
 }

@@ -96,9 +96,14 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
         CancellationToken cancellationToken = default
     )
     {
-        var connection = context
-            .CalendarsXCustomers.AsNoTracking()
-            .FirstOrDefault(x => x.CustomerId == userId && x.CalendarId == calendarId);
+        var connection = await context.CalendarsXCustomers.FirstOrDefaultAsync(x =>
+            x.CustomerId == userId && x.CalendarId == calendarId
+        );
+
+        if (connection is null)
+        {
+            return;
+        }
 
         context.CalendarsXCustomers.Remove(connection);
         await context.SaveChangesAsync(cancellationToken);
