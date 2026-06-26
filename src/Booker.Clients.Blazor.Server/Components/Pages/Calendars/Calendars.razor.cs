@@ -11,7 +11,7 @@ public partial class Calendars
     {
         try
         {
-            calendars = await CalendarApiCaller.GetCalendarsByOwnerId(await AuthStateProvider.GetUserId());
+            calendars = await CalendarApiCaller.GetCalendarsByOwnerId();
         }
         catch (Exception ex)
         {
@@ -38,7 +38,7 @@ public partial class Calendars
         {
             await CalendarApiCaller.DeleteCalendar(calendarIdToDelete.Value);
 
-            calendars = await CalendarApiCaller.GetCalendarsByOwnerId(await AuthStateProvider.GetUserId());
+            calendars = await CalendarApiCaller.GetCalendarsByOwnerId();
 
             await JSRuntime.SuccessToast("Calendar deleted");
         }

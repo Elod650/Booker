@@ -20,7 +20,7 @@ public partial class Booking
     {
         try
         {
-            calendars = await CalendarApiCaller.GetCalendarsForCustomer(await AuthStateProvider.GetUserId());
+            calendars = await CalendarApiCaller.GetCalendarsForCustomer();
             selectedCalendarId = calendars.FirstOrDefault()?.Id ?? 0;
             appointments = SchedulerAppointmentViewModel.Create(
                 await AppointmentApiCaller.GetAppointments(selectedCalendarId)

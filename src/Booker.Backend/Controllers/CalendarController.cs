@@ -6,6 +6,7 @@
 public class CalendarController(ICalendarService calendarService) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<CalendarDto>>> GetCalendars(CancellationToken cancellationToken)
     {
@@ -14,26 +15,26 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     }
 
     [HttpGet]
-    [Route("forOwner/{ownerId}")]
+    [Route("forOwner")]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsByOwnerId(
-        [FromRoute] string ownerId,
-        CancellationToken cancellationToken
-    )
+    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsByOwnerId(CancellationToken cancellationToken)
     {
-        var calendars = await calendarService.GetCalendarsByOwnerId(ownerId, cancellationToken);
+        var calendars = await calendarService.GetCalendarsByOwnerId(
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
+            cancellationToken
+        );
         return Ok(calendars);
     }
 
     [HttpGet]
-    [Route("forCustomer/{customerId}")]
+    [Route("forCustomer")]
     [ProducesResponseType(typeof(List<CalendarDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsForCustomer(
-        [FromRoute] string customerId,
-        CancellationToken cancellationToken
-    )
+    public async Task<ActionResult<List<CalendarDto>>> GetCalendarsForCustomer(CancellationToken cancellationToken)
     {
-        var calendars = await calendarService.GetCalendarsForCustomer(customerId, cancellationToken);
+        var calendars = await calendarService.GetCalendarsForCustomer(
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
+            cancellationToken
+        );
         return Ok(calendars);
     }
 
