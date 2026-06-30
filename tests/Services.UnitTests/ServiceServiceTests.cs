@@ -1,4 +1,4 @@
-﻿namespace Services.UnitTests;
+namespace Services.UnitTests;
 
 public class ServiceServiceTests
 {
@@ -133,11 +133,9 @@ public class ServiceServiceTests
     [Arguments(2)]
     public async Task DeleteServiceAsync_ShouldDeleteService_WhenIdIsValid(int id)
     {
-        var serviceToDelete = ServiceTestData.Services.First(a => a.Id == id);
+        await serviceService.DeleteService(id);
 
-        var result = await serviceService.DeleteService(id);
-
-        await serviceRepository.Received(1).DeleteServiceAsync(serviceToDelete);
+        await serviceRepository.Received(1).DeleteServiceAsync(Arg.Is<Service>(s => s.Id == id));
     }
 
     [Test]

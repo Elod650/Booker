@@ -88,7 +88,6 @@ public static class SeedData
             new Calendar
             {
                 Id = 1,
-                Code = Guid.NewGuid(),
                 Name = "Admin's calendar",
                 StartTime = "08:00",
                 EndTime = "16:00",
@@ -97,7 +96,6 @@ public static class SeedData
             new Calendar
             {
                 Id = 2,
-                Code = Guid.NewGuid(),
                 Name = "Provider's calendar",
                 StartTime = "10:00",
                 EndTime = "18:00",
@@ -106,7 +104,6 @@ public static class SeedData
             new Calendar
             {
                 Id = 3,
-                Code = Guid.NewGuid(),
                 Name = "Provider's calendar 2",
                 StartTime = "10:00",
                 EndTime = "18:00",

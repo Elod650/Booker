@@ -9,10 +9,10 @@ public class AuthServiceTests
     [Before(Test)]
     public void SetUp()
     {
-        this.SetUpUserManager();
-        this.SetUpJwtOptions();
+        SetUpUserManager();
+        SetUpJwtOptions();
 
-        this.authService = new AuthService(this.userManager, this.jwtOptions);
+        authService = new AuthService(userManager, jwtOptions);
     }
 
     [Test]
@@ -20,7 +20,7 @@ public class AuthServiceTests
     {
         var request = new LoginRequest { Email = "test@booker.com", Password = "Test123!" };
 
-        var result = await this.authService.LoginAsync(request);
+        var result = await authService.LoginAsync(request);
 
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.AccessToken).IsNotEmpty();
@@ -32,7 +32,7 @@ public class AuthServiceTests
     {
         var request = new LoginRequest { Email = "notfound@booker.com", Password = "Test123!" };
 
-        var result = await this.authService.LoginAsync(request);
+        var result = await authService.LoginAsync(request);
 
         await Assert.That(result).IsNull();
     }
@@ -42,7 +42,7 @@ public class AuthServiceTests
     {
         var request = new LoginRequest { Email = "test@booker.com", Password = "WrongPassword!" };
 
-        var result = await this.authService.LoginAsync(request);
+        var result = await authService.LoginAsync(request);
 
         await Assert.That(result).IsNull();
     }
@@ -59,7 +59,7 @@ public class AuthServiceTests
             LastName = "User",
         };
 
-        var result = await this.authService.RegisterAsync(request);
+        var result = await authService.RegisterAsync(request);
 
         await Assert.That(result).IsNull();
     }
@@ -76,7 +76,7 @@ public class AuthServiceTests
             LastName = "User",
         };
 
-        var result = await this.authService.RegisterAsync(request);
+        var result = await authService.RegisterAsync(request);
 
         await Assert.That(result).IsNotNull();
         await Assert.That(result!).Contains("already exists");
@@ -87,12 +87,12 @@ public class AuthServiceTests
     {
         // First login to get a refresh token
         var loginRequest = new LoginRequest { Email = "test@booker.com", Password = "Test123!" };
-        var loginResult = await this.authService.LoginAsync(loginRequest);
+        var loginResult = await authService.LoginAsync(loginRequest);
         string refreshToken = loginResult!.RefreshToken;
 
         var refreshRequest = new RefreshTokenRequest { RefreshToken = refreshToken };
 
-        var result = await this.authService.RefreshTokenAsync(refreshRequest);
+        var result = await authService.RefreshTokenAsync(refreshRequest);
 
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.AccessToken).IsNotEmpty();
@@ -104,7 +104,7 @@ public class AuthServiceTests
     {
         var request = new RefreshTokenRequest { RefreshToken = "invalid-refresh-token" };
 
-        var result = await this.authService.RefreshTokenAsync(request);
+        var result = await authService.RefreshTokenAsync(request);
 
         await Assert.That(result).IsNull();
     }
@@ -112,7 +112,7 @@ public class AuthServiceTests
     private void SetUpUserManager()
     {
         var store = Substitute.For<IUserStore<ApplicationUser>>();
-        this.userManager = Substitute.For<UserManager<ApplicationUser>>(
+        userManager = Substitute.For<UserManager<ApplicationUser>>(
             store,
             null,
             null,
@@ -124,24 +124,25 @@ public class AuthServiceTests
             null
         );
 
-        this.userManager.FindByEmailAsync("test@booker.com").Returns(UserTestData.Users.First());
-        this.userManager.FindByEmailAsync("notfound@booker.com").Returns((ApplicationUser?)null);
-        this.userManager.FindByEmailAsync("new@booker.com").Returns((ApplicationUser?)null);
+        var testUser = UserTestData.Users.First();
 
-        this.userManager.CheckPasswordAsync(UserTestData.Users.First(), "Test123!").Returns(true);
-        this.userManager.CheckPasswordAsync(UserTestData.Users.First(), "WrongPassword!").Returns(false);
+        userManager.FindByEmailAsync("test@booker.com").Returns(testUser);
+        userManager.FindByEmailAsync("notfound@booker.com").Returns((ApplicationUser?)null);
+        userManager.FindByEmailAsync("new@booker.com").Returns((ApplicationUser?)null);
 
-        this.userManager.GetRolesAsync(UserTestData.Users.First())
-            .Returns(new List<string> { RolesEnum.Customer.ToString() });
+        userManager.CheckPasswordAsync(testUser, "Test123!").Returns(true);
+        userManager.CheckPasswordAsync(testUser, "WrongPassword!").Returns(false);
 
-        this.userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
+        userManager.GetRolesAsync(testUser).Returns(new List<string> { RolesEnum.Customer.ToString() });
 
-        this.userManager.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        userManager.UpdateAsync(Arg.Any<ApplicationUser>()).Returns(IdentityResult.Success);
 
-        this.userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+        userManager.CreateAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
+
+        userManager.AddToRoleAsync(Arg.Any<ApplicationUser>(), Arg.Any<string>()).Returns(IdentityResult.Success);
 
         // Setup Users queryable for RefreshToken lookup
-        this.userManager.Users.Returns(new List<ApplicationUser> { UserTestData.Users.First() }.AsQueryable());
+        userManager.Users.Returns(new TestAsyncEnumerable<ApplicationUser>([testUser]));
     }
 
     private void SetUpJwtOptions()
@@ -155,6 +156,6 @@ public class AuthServiceTests
             RefreshTokenExpirationDays = 7,
         };
 
-        this.jwtOptions = Options.Create(options);
+        jwtOptions = Options.Create(options);
     }
 }

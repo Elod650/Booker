@@ -29,7 +29,7 @@ public class CalendarServiceTests
     {
         var newCalendar = Substitute.For<EditCalendarRequest>();
 
-        var result = await calendarService.AddCalendar(newCalendar);
+        var result = await calendarService.AddCalendar(newCalendar, string.Empty);
 
         await Assert.That(result).IsNull();
         await calendarRepository.Received(1).AddCalendarAsync(Arg.Any<Calendar>());
@@ -41,9 +41,10 @@ public class CalendarServiceTests
     public async Task AddCalendar_ShouldReturnError_WhenIdIsNotZero(int id)
     {
         var newCalendar = Substitute.For<EditCalendarRequest>();
+
         newCalendar.Id = id;
 
-        var result = await calendarService.AddCalendar(newCalendar);
+        var result = await calendarService.AddCalendar(newCalendar, string.Empty);
 
         await Assert.That(result).EqualTo("The Id has to be 0 when adding a new calendar.");
     }

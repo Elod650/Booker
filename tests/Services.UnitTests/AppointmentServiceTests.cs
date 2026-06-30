@@ -1,4 +1,4 @@
-﻿namespace Services.UnitTests;
+namespace Services.UnitTests;
 
 public class AppointmentServiceTests
 {
@@ -39,7 +39,7 @@ public class AppointmentServiceTests
     {
         var newAppointment = Substitute.For<EditAppointmentRequest>();
 
-        await appointmentService.AddAppointment(newAppointment);
+        await appointmentService.AddAppointment(newAppointment, string.Empty);
 
         await appointmentRepository.Received(1).AddAppointmentAsync(Arg.Any<Appointment>());
     }
@@ -50,11 +50,9 @@ public class AppointmentServiceTests
     [Arguments(3)]
     public async Task DeleteAppointmentAsync_ShouldDeleteAppointment_WhenIdIsValid(int id)
     {
-        var appointmentToDelete = AppointmentTestData.Appointments.First(a => a.Id == id);
+        await appointmentService.DeleteAppointment(id);
 
-        var result = await appointmentService.DeleteAppointment(id);
-
-        await appointmentRepository.Received(1).DeleteAppointmentAsync(appointmentToDelete);
+        await appointmentRepository.Received(1).DeleteAppointmentAsync(Arg.Is<Appointment>(a => a.Id == id));
     }
 
     [Test]
