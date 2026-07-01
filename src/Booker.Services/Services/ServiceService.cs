@@ -42,7 +42,7 @@ public class ServiceService(
     {
         if (newService.Id is not null)
         {
-            return "The Id has to be 0 when adding a new service.";
+            return "The Id has to be null when adding a new service.";
         }
 
         await serviceRepository.AddServiceAsync(mapper.Map<Service>(newService), cancellationToken);

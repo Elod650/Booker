@@ -41,7 +41,7 @@ public class CalendarService(
     {
         if (newCalendar.Id is not null)
         {
-            return "The Id has to be 0 when adding a new calendar.";
+            return "The Id has to be null when adding a new calendar.";
         }
 
         var newCalendarEntity = new Calendar { OwnerId = userId };
