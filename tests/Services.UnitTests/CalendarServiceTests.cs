@@ -17,11 +17,23 @@ public class CalendarServiceTests
     }
 
     [Test]
-    public async Task GetAppointments_ShouldReturnDTOs()
+    public async Task GetCalendars_ShouldReturnCalendars_WhenCalendarsExist()
     {
         var result = await calendarService.GetCalendars();
 
         await Assert.That(result.Count).IsEqualTo(2);
+    }
+
+    [Test]
+    public async Task GetCalendars_ShouldReturnEmptyList_WhenNoCalendarsExist()
+    {
+        calendarRepository
+            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .Returns([]);
+
+        var result = await calendarService.GetCalendars();
+
+        await Assert.That(result).IsEmpty();
     }
 
     [Test]
@@ -173,6 +185,47 @@ public class CalendarServiceTests
         await calendarRepository.Received(1).RemoveCustomerFromCalendarAsync("user-1", 1, Arg.Any<CancellationToken>());
     }
 
+    [Test]
+    public async Task GetCalendarsForCustomer_ShouldReturnCalendars_WhenCustomerHasCalendars()
+    {
+        var result = await calendarService.GetCalendarsForCustomer("user-1");
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Count).IsEqualTo(1);
+    }
+
+    [Test]
+    public async Task GetCalendarsForCustomer_ShouldReturnEmptyList_WhenCustomerHasNoCalendars()
+    {
+        var result = await calendarService.GetCalendarsForCustomer("user-none");
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    [Arguments(1)]
+    [Arguments(2)]
+    public async Task DeleteCalendar_ShouldDeleteCalendar_WhenIdIsValid(int calendarId)
+    {
+        var result = await calendarService.DeleteCalendar(calendarId);
+
+        await Assert.That(result).IsNull();
+        await calendarRepository.Received(1).DeleteCalendarAsync(Arg.Is<Calendar>(c => c.Id == calendarId));
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task DeleteCalendar_ShouldReturnError_WhenCalendarNotFound(int calendarId)
+    {
+        var result = await calendarService.DeleteCalendar(calendarId);
+
+        await Assert.That(result).IsEqualTo("There is no calendar with the provided Id.");
+        await calendarRepository.DidNotReceiveWithAnyArgs().DeleteCalendarAsync(default!, default);
+    }
+
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();
@@ -199,6 +252,18 @@ public class CalendarServiceTests
             {
                 var id = callInfo.ArgAt<int>(0);
                 return CalendarTestData.Calendars.FirstOrDefault(x => x.Id == id);
+            });
+
+        calendarRepository
+            .GetCalendarsForCustomerAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var customerId = callInfo.ArgAt<string>(0);
+                if (customerId == "user-1")
+                {
+                    return CalendarTestData.Calendars.Take(1).ToList();
+                }
+                return [];
             });
     }
 

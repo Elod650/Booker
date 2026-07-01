@@ -38,10 +38,11 @@ public class AppointmentServiceTests
     public async Task AddAppointment_ShouldPass()
     {
         var newAppointment = Substitute.For<EditAppointmentRequest>();
+        var userId = "test-user-id";
 
-        await appointmentService.AddAppointment(newAppointment, string.Empty);
+        await appointmentService.AddAppointment(newAppointment, userId);
 
-        await appointmentRepository.Received(1).AddAppointmentAsync(Arg.Any<Appointment>());
+        await appointmentRepository.Received(1).AddAppointmentAsync(Arg.Is<Appointment>(a => a.UserId == userId));
     }
 
     [Test]
@@ -50,8 +51,9 @@ public class AppointmentServiceTests
     [Arguments(3)]
     public async Task DeleteAppointmentAsync_ShouldDeleteAppointment_WhenIdIsValid(int id)
     {
-        await appointmentService.DeleteAppointment(id);
+        var result = await appointmentService.DeleteAppointment(id);
 
+        await Assert.That(result).IsNull();
         await appointmentRepository.Received(1).DeleteAppointmentAsync(Arg.Is<Appointment>(a => a.Id == id));
     }
 

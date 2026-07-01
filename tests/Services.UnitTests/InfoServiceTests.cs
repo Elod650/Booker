@@ -1,5 +1,3 @@
-﻿using NSubstitute.ReturnsExtensions;
-
 namespace Services.UnitTests;
 
 public class InfoServiceTests
@@ -16,11 +14,11 @@ public class InfoServiceTests
     }
 
     [Test]
-    public async Task GetCurrency_ShouldReturnCurrency()
+    public async Task GetCurrency_ShouldReturnExactCurrencyValue_WhenInfoExists()
     {
         var result = await infoService.GetCurrency();
 
-        await Assert.That(result.Count).IsEqualTo(2);
+        await Assert.That(result).IsEqualTo("FT");
     }
 
     [Test]
@@ -29,6 +27,18 @@ public class InfoServiceTests
         infoRepository.GetInfoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).ReturnsNull();
 
         await Assert.ThrowsAsync(infoService.GetCurrency());
+    }
+
+    [Test]
+    public async Task GetCurrency_ShouldReturnEmptyString_WhenCurrencyValueIsEmpty()
+    {
+        infoRepository
+            .GetInfoAsync("Currency", Arg.Any<CancellationToken>())
+            .Returns(new Info { Key = "Currency", Value = string.Empty });
+
+        var result = await infoService.GetCurrency();
+
+        await Assert.That(result).IsEmpty();
     }
 
     private void SetUpRepository()

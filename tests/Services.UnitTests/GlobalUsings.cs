@@ -13,5 +13,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Query;
 global using Microsoft.Extensions.Options;
 global using NSubstitute;
+global using NSubstitute.ReturnsExtensions;
 global using Services.UnitTests.Helpers;
 global using Services.UnitTests.TestData;
