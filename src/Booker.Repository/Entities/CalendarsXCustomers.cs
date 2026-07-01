@@ -3,7 +3,8 @@
 [PrimaryKey(nameof(CustomerId), nameof(CalendarId))]
 public class CalendarsXCustomers
 {
-    public string CustomerId { get; set; }
+    [Required]
+    public required string CustomerId { get; set; }
     public int CalendarId { get; set; }
 
     public virtual ApplicationUser? Customer { get; set; }

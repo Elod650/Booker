@@ -3,18 +3,18 @@
 public class Calendar : EntityBase
 {
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Required]
-    public string StartTime { get; set; }
+    public string StartTime { get; set; } = null!;
 
     [Required]
-    public string EndTime { get; set; }
+    public string EndTime { get; set; } = null!;
 
     [Required]
-    public string OwnerId { get; set; } = null!;
+    public required string OwnerId { get; set; }
 
     public virtual ApplicationUser? Owner { get; set; }
 
-    public virtual ICollection<CalendarsXCustomers> CalendarsXCustomers { get; set; }
+    public virtual ICollection<CalendarsXCustomers>? CalendarsXCustomers { get; set; }
 }
