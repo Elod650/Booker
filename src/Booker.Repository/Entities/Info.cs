@@ -2,7 +2,9 @@
 
 public class Info
 {
-    [Key]
-    public string Key { get; set; }
-    public string Value { get; set; }
+    [Key, Required]
+    public required string Key { get; set; }
+
+    [Required]
+    public required string Value { get; set; }
 }

@@ -30,6 +30,7 @@ public class CustomAuthStateProvider(IStorageManager storageManager, NavigationM
     public async Task LogoutAsync()
     {
         await storageManager.DeleteAsync(ACCESS_TOKEN);
+        await storageManager.DeleteAsync(REFRESH_TOKEN);
 
         var state = new AuthenticationState(new());
         NotifyAuthenticationStateChanged(Task.FromResult(state));

@@ -39,7 +39,7 @@ public class CalendarService(
         CancellationToken cancellationToken = default
     )
     {
-        if (newCalendar.Id != 0)
+        if (newCalendar.Id is not null)
         {
             return "The Id has to be 0 when adding a new calendar.";
         }

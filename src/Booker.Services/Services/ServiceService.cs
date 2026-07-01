@@ -1,4 +1,4 @@
-﻿namespace Booker.Services.Services;
+namespace Booker.Services.Services;
 
 public class ServiceService(
     IServiceRepository serviceRepository,
@@ -40,7 +40,7 @@ public class ServiceService(
 
     public async Task<string?> AddService(EditServiceRequest newService, CancellationToken cancellationToken = default)
     {
-        if (newService.Id != 0)
+        if (newService.Id is not null)
         {
             return "The Id has to be 0 when adding a new service.";
         }
@@ -69,7 +69,12 @@ public class ServiceService(
         CancellationToken cancellationToken = default
     )
     {
-        var serviceToUpdate = await serviceRepository.GetServiceByIdAsync(updatedService.Id, cancellationToken);
+        if (updatedService.Id is null)
+        {
+            return "The Id must be specified when updating a service.";
+        }
+
+        var serviceToUpdate = await serviceRepository.GetServiceByIdAsync(updatedService.Id.Value, cancellationToken);
         if (serviceToUpdate is null)
         {
             return "There is no service with the provided Id.";

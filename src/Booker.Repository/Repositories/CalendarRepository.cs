@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Booker.Models.DTOs;
-
-namespace Booker.Repository.Repositories;
+﻿namespace Booker.Repository.Repositories;
 
 public class CalendarRepository(AppDbContext context) : ICalendarRepository
 {
