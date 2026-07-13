@@ -5,7 +5,7 @@ public class EditServiceRequest
     public int? Id { get; set; }
 
     [Required(ErrorMessage = "Calendar is required")]
-    public int? CalendarId { get; set; }
+    public int CalendarId { get; set; }
 
     [Required(ErrorMessage = "Name is required")]
     public string? Name { get; set; }

@@ -20,6 +20,7 @@ internal static class ServiceExtensions
             .AddScoped<IAppointmentService, AppointmentService>()
             .AddScoped<ICalendarService, CalendarService>()
             .AddScoped<IInfoService, InfoService>()
-            .AddScoped<IServiceService, ServiceService>();
+            .AddScoped<IServiceService, ServiceService>()
+            .AddScoped<IValidatorService, ValidatorService>();
     }
 }

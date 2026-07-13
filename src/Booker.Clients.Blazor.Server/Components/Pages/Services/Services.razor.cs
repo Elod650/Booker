@@ -14,7 +14,7 @@ public partial class Services
 
         try
         {
-            services = await ServiceApiCaller.GetServicesForUser(await AuthStateProvider.GetUserId());
+            services = await ServiceApiCaller.GetServicesForUser();
             currency = await InfoApiCaller.GetCurrency();
         }
         catch (Exception ex)
@@ -42,7 +42,7 @@ public partial class Services
         {
             await ServiceApiCaller.DeleteServices(serviceIdToDelete.Value);
 
-            services = await ServiceApiCaller.GetServicesForUser(await AuthStateProvider.GetUserId());
+            services = await ServiceApiCaller.GetServicesForUser();
 
             await JSRuntime.SuccessToast("Service deleted");
         }

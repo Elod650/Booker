@@ -17,9 +17,9 @@ public class ServiceApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerOp
         );
     }
 
-    public async Task<List<ServiceDto>> GetServicesForUser(string userId, CancellationToken cancellationToken = default)
+    public async Task<List<ServiceDto>> GetServicesForUser(CancellationToken cancellationToken = default)
     {
-        string url = $"{_apiUrl}/{userId}";
+        string url = $"{_apiUrl}";
         return await apiCallerBase.SendWithResponseAsync<List<ServiceDto>>(
             ApiRequest.CreateGet(url),
             cancellationToken: cancellationToken

@@ -3,7 +3,7 @@
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class CalendarController(ICalendarService calendarService) : ControllerBase
+public class CalendarController(ICalendarService calendarService, IValidatorService validatorService) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -41,8 +41,18 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     [HttpDelete("{id:int}"), Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteService(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteCalendar(int id, CancellationToken cancellationToken)
     {
+        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+            id,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to edit this calendar.");
+        }
+
         var errorMessage = await calendarService.DeleteCalendar(id, cancellationToken);
 
         if (errorMessage is not null)
@@ -79,11 +89,22 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     [Route("addCustomer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> AddCustomerToCalendar(
         [FromBody] AddCustomerToCalendarRequest request,
         CancellationToken cancellationToken
     )
     {
+        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+            request.CalendarId,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to edit this calendar.");
+        }
+
         var result = await calendarService.AddCustomerToCalendar(request, cancellationToken);
 
         if (result is not null)
@@ -97,11 +118,22 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     [HttpGet]
     [Route("{calendarId}/customers")]
     [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<List<UserDto>>> GetCustomersForCalendar(
         [FromRoute] int calendarId,
         CancellationToken cancellationToken
     )
     {
+        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+            calendarId,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to access this calendar.");
+        }
+
         var users = await calendarService.GetCustomersForCalendar(calendarId, cancellationToken);
 
         if (users is null)
@@ -116,11 +148,22 @@ public class CalendarController(ICalendarService calendarService) : ControllerBa
     [Route("removeCustomer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> RemoveCustomerFromCalendar(
         [FromBody] RemoveCustomerFromCalendarRequest request,
         CancellationToken cancellationToken
     )
     {
+        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+            request.CalendarId,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to edit this calendar.");
+        }
+
         var result = await calendarService.RemoveCustomerFromCalendar(request, cancellationToken);
 
         if (result is not null)
