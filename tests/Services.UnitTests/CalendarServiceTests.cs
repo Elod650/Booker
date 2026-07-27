@@ -37,28 +37,46 @@ public class CalendarServiceTests
     }
 
     [Test]
-    public async Task AddCalendar_ShouldPass_WhenIdIsZero()
+    public async Task AddCalendar_ShouldPass_WhenIdIsNull()
     {
-        var newCalendar = Substitute.For<EditCalendarRequest>();
+        var newCalendar = new EditCalendarRequest
+        {
+            Name = "New Calendar",
+            StartTime = "08:00",
+            EndTime = "17:00",
+        };
 
-        var result = await calendarService.AddCalendar(newCalendar, string.Empty);
+        var result = await calendarService.AddCalendar(newCalendar, "user-1");
 
         await Assert.That(result).IsNull();
-        await calendarRepository.Received(1).AddCalendarAsync(Arg.Any<Calendar>());
+        await calendarRepository
+            .Received(1)
+            .AddCalendarAsync(
+                Arg.Is<Calendar>(c =>
+                    c.OwnerId == "user-1" && c.Name == "New Calendar" && c.StartTime == "08:00" && c.EndTime == "17:00"
+                ),
+                Arg.Any<CancellationToken>()
+            );
     }
 
     [Test]
+    [Arguments(0)]
     [Arguments(1)]
     [Arguments(-1)]
-    public async Task AddCalendar_ShouldReturnError_WhenIdIsNotZero(int id)
+    public async Task AddCalendar_ShouldReturnError_WhenIdIsNotNull(int id)
     {
-        var newCalendar = Substitute.For<EditCalendarRequest>();
+        var newCalendar = new EditCalendarRequest
+        {
+            Id = id,
+            Name = "New Calendar",
+            StartTime = "08:00",
+            EndTime = "17:00",
+        };
 
-        newCalendar.Id = id;
+        var result = await calendarService.AddCalendar(newCalendar, "user-1");
 
-        var result = await calendarService.AddCalendar(newCalendar, string.Empty);
-
-        await Assert.That(result).EqualTo("The Id has to be 0 when adding a new calendar.");
+        await Assert.That(result).IsEqualTo("The Id has to be null when adding a new calendar.");
+        await calendarRepository.DidNotReceiveWithAnyArgs().AddCalendarAsync(default!, default);
     }
 
     [Test]
@@ -291,6 +309,18 @@ public class CalendarServiceTests
     private IMapper SetUpMapper()
     {
         var mapper = Substitute.For<IMapper>();
+
+        mapper
+            .When(x => x.Map(Arg.Any<EditCalendarRequest>(), Arg.Any<Calendar>()))
+            .Do(callInfo =>
+            {
+                var source = callInfo.ArgAt<EditCalendarRequest>(0);
+                var destination = callInfo.ArgAt<Calendar>(1);
+
+                destination.Name = source.Name;
+                destination.StartTime = source.StartTime;
+                destination.EndTime = source.EndTime;
+            });
 
         mapper
             .Map<List<CalendarDto>>(Arg.Any<List<Calendar>>())

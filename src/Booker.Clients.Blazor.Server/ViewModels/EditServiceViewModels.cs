@@ -37,7 +37,7 @@ public class EditServiceViewModels
         return new EditServiceRequest
         {
             Id = Id,
-            CalendarId = CalendarId,
+            CalendarId = CalendarId ?? 0,
             Name = Name,
             Duration = Duration,
             Price = Price,

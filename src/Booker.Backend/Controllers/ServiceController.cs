@@ -6,7 +6,6 @@
 public class ServiceController(IServiceService serviceService, IValidatorService validatorService) : ControllerBase
 {
     [HttpGet]
-    [Route("{userId}")]
     [ProducesResponseType(typeof(List<ServiceDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ServiceDto>>> GetServicesForUser(CancellationToken cancellationToken)
     {

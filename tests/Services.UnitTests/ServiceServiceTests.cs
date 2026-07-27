@@ -78,27 +78,44 @@ public class ServiceServiceTests
     }
 
     [Test]
-    public async Task AddService_ShouldPass_WhenIdIsZero()
+    public async Task AddService_ShouldPass_WhenIdIsNull()
     {
-        var newService = Substitute.For<EditServiceRequest>();
+        var newService = new EditServiceRequest
+        {
+            CalendarId = 1,
+            Name = "New Service",
+            Duration = "00:45",
+            Price = 150,
+        };
 
         var result = await serviceService.AddService(newService);
 
         await Assert.That(result).IsNull();
-        await serviceRepository.Received(1).AddServiceAsync(Arg.Any<Service>());
+        await serviceRepository
+            .Received(1)
+            .AddServiceAsync(
+                Arg.Is<Service>(s =>
+                    s.Name == "New Service"
+                    && s.CalendarId == 1
+                    && s.Price == 150
+                    && s.Duration == TimeSpan.FromMinutes(45)
+                ),
+                Arg.Any<CancellationToken>()
+            );
     }
 
     [Test]
+    [Arguments(0)]
     [Arguments(1)]
     [Arguments(-1)]
-    public async Task AddService_ShouldReturnError_WhenIdIsNotZero(int id)
+    public async Task AddService_ShouldReturnError_WhenIdIsNotNull(int id)
     {
-        var newService = Substitute.For<EditServiceRequest>();
-        newService.Id = id;
+        var newService = CreateRequest(id);
 
         var result = await serviceService.AddService(newService);
 
-        await Assert.That(result).EqualTo("The Id has to be 0 when adding a new service.");
+        await Assert.That(result).IsEqualTo("The Id has to be null when adding a new service.");
+        await serviceRepository.DidNotReceiveWithAnyArgs().AddServiceAsync(default!, default);
     }
 
     [Test]
@@ -106,35 +123,64 @@ public class ServiceServiceTests
     [Arguments(2)]
     public async Task UpdateService_ShouldPass_WhenIdIsValid(int id)
     {
-        var serviceToUpdate = Substitute.For<EditServiceRequest>();
-        serviceToUpdate.Id = id;
+        var serviceToUpdate = new EditServiceRequest
+        {
+            Id = id,
+            CalendarId = 1,
+            Name = "Updated Service",
+            Duration = "01:15",
+            Price = 250,
+        };
 
         var result = await serviceService.UpdateService(serviceToUpdate);
 
         await Assert.That(result).IsNull();
-        await serviceRepository.Received(1).UpdateServiceAsync(Arg.Any<Service>());
+        await serviceRepository
+            .Received(1)
+            .UpdateServiceAsync(
+                Arg.Is<Service>(s =>
+                    s.Id == id
+                    && s.Name == "Updated Service"
+                    && s.Price == 250
+                    && s.Duration == TimeSpan.FromMinutes(75)
+                ),
+                Arg.Any<CancellationToken>()
+            );
     }
 
     [Test]
-    [Arguments(1)]
-    [Arguments(-1)]
-    public async Task UpdateService_ShouldReturnError_WhenIdIsNotZero(int id)
+    public async Task UpdateService_ShouldReturnError_WhenIdIsNull()
     {
-        var newService = Substitute.For<EditServiceRequest>();
-        newService.Id = id;
+        var serviceToUpdate = CreateRequest(null);
 
-        var result = await serviceService.AddService(newService);
+        var result = await serviceService.UpdateService(serviceToUpdate);
 
-        await Assert.That(result).EqualTo("The Id has to be 0 when adding a new service.");
+        await Assert.That(result).IsEqualTo("The Id must be specified when updating a service.");
+        await serviceRepository.DidNotReceiveWithAnyArgs().UpdateServiceAsync(default!, default);
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task UpdateService_ShouldReturnError_WhenServiceNotFound(int id)
+    {
+        var serviceToUpdate = CreateRequest(id);
+
+        var result = await serviceService.UpdateService(serviceToUpdate);
+
+        await Assert.That(result).IsEqualTo("There is no service with the provided Id.");
+        await serviceRepository.DidNotReceiveWithAnyArgs().UpdateServiceAsync(default!, default);
     }
 
     [Test]
     [Arguments(1)]
     [Arguments(2)]
-    public async Task DeleteServiceAsync_ShouldDeleteService_WhenIdIsValid(int id)
+    public async Task DeleteService_ShouldDeleteService_WhenIdIsValid(int id)
     {
-        await serviceService.DeleteService(id);
+        var result = await serviceService.DeleteService(id);
 
+        await Assert.That(result).IsNull();
         await serviceRepository.Received(1).DeleteServiceAsync(Arg.Is<Service>(s => s.Id == id));
     }
 
@@ -142,12 +188,23 @@ public class ServiceServiceTests
     [Arguments(0)]
     [Arguments(-1)]
     [Arguments(int.MaxValue)]
-    public async Task DeleteAppointmentAsync_ShouldReturnErrorMessage_WhenThereIsNoServiceWithId(int id)
+    public async Task DeleteService_ShouldReturnErrorMessage_WhenThereIsNoServiceWithId(int id)
     {
         var result = await serviceService.DeleteService(id);
 
         await Assert.That(result).IsEqualTo("There is no service with the provided Id.");
+        await serviceRepository.DidNotReceiveWithAnyArgs().DeleteServiceAsync(default!, default);
     }
+
+    private static EditServiceRequest CreateRequest(int? id) =>
+        new()
+        {
+            Id = id,
+            CalendarId = 1,
+            Name = "Service",
+            Duration = "00:30",
+            Price = 100,
+        };
 
     private void SetUpRepository()
     {
@@ -215,6 +272,34 @@ public class ServiceServiceTests
     private IMapper SetUpMapper()
     {
         var mapper = Substitute.For<IMapper>();
+
+        mapper
+            .Map<Service>(Arg.Any<EditServiceRequest>())
+            .Returns(callInfo =>
+            {
+                var request = callInfo.ArgAt<EditServiceRequest>(0);
+
+                return new Service
+                {
+                    Name = request.Name!,
+                    CalendarId = request.CalendarId,
+                    Duration = TimeSpan.Parse(request.Duration!),
+                    Price = request.Price!.Value,
+                };
+            });
+
+        mapper
+            .When(x => x.Map(Arg.Any<EditServiceRequest>(), Arg.Any<Service>()))
+            .Do(callInfo =>
+            {
+                var source = callInfo.ArgAt<EditServiceRequest>(0);
+                var destination = callInfo.ArgAt<Service>(1);
+
+                destination.Name = source.Name!;
+                destination.CalendarId = source.CalendarId;
+                destination.Duration = TimeSpan.Parse(source.Duration!);
+                destination.Price = source.Price!.Value;
+            });
 
         mapper
             .Map<List<ServiceDto>>(Arg.Any<List<Service>>())
