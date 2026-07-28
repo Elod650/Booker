@@ -1,9 +1,7 @@
 ﻿namespace Booker.Repository.Entities;
 
-[PrimaryKey(nameof(CustomerId), nameof(CalendarId))]
 public class CalendarsXCustomers
 {
-    [Required]
     public required string CustomerId { get; set; }
     public int CalendarId { get; set; }
 

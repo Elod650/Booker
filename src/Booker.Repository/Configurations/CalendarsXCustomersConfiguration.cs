@@ -4,6 +4,10 @@ internal class CalendarsXCustomersConfiguration : IEntityTypeConfiguration<Calen
 {
     public void Configure(EntityTypeBuilder<CalendarsXCustomers> builder)
     {
+        builder.HasKey(cc => new { cc.CustomerId, cc.CalendarId });
+
+        builder.Property(cc => cc.CustomerId).IsRequired();
+
         builder
             .HasOne(cc => cc.Customer)
             .WithMany(u => u.CalendarsXCustomers)

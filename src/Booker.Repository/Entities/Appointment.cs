@@ -9,7 +9,6 @@ public class Appointment : EntityBase
     public int ServiceId { get; set; }
     public int CalendarId { get; set; }
 
-    [Required]
     public string UserId { get; set; } = null!;
 
     public virtual Service? Service { get; set; }
