@@ -1,4 +1,4 @@
-﻿namespace Booker.Repository.Entities;
+namespace Booker.Repository.Entities;
 
 public abstract class EntityBase
 {
