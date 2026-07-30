@@ -1,7 +1,10 @@
 ﻿namespace Booker.Services.Services;
 
-public class ValidatorService(ICalendarRepository calendarRepository, IServiceRepository serviceRepository)
-    : IValidatorService
+public class ValidatorService(
+    ICalendarRepository calendarRepository,
+    IServiceRepository serviceRepository,
+    IAppointmentRepository appointmentRepository
+) : IValidatorService
 {
     public async Task<bool> ValidateCalendarOwnership(int calendarId, string userId)
     {
@@ -30,5 +33,22 @@ public class ValidatorService(ICalendarRepository calendarRepository, IServiceRe
         }
 
         return await ValidateCalendarOwnership(service.CalendarId, userId);
+    }
+
+    public async Task<bool> ValidateAppointmentOwnership(int appointmentId, string userId)
+    {
+        var appointment = await appointmentRepository.GetAppointmentByIdAsync(appointmentId);
+
+        if (appointment is null)
+        {
+            return false;
+        }
+
+        if (appointment.UserId != userId)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

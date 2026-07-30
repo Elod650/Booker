@@ -3,7 +3,8 @@
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class AppointmentController(IAppointmentService appointmentService) : ControllerBase
+public class AppointmentController(IAppointmentService appointmentService, IValidatorService validatorService)
+    : ControllerBase
 {
     [HttpGet("{calendarId:int}")]
     [ProducesResponseType(typeof(List<AppointmentDto>), StatusCodes.Status200OK)]
@@ -33,9 +34,20 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
 
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteAppointment(int id, CancellationToken cancellationToken)
     {
+        var userIsOwner = await validatorService.ValidateAppointmentOwnership(
+            id,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to delete this appointment.");
+        }
+
         var errorMessage = await appointmentService.DeleteAppointment(id, cancellationToken);
 
         if (errorMessage is not null)
