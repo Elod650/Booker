@@ -8,19 +8,10 @@ internal class AppointmentConfiguration : EntityBaseConfiguration<Appointment>
 
         builder.Property(a => a.UserId).IsRequired();
 
-        builder
-            .HasOne(a => a.Service)
-            .WithMany()
-            .HasForeignKey(a => a.ServiceId);
+        builder.HasOne(a => a.Service).WithMany().HasForeignKey(a => a.ServiceId);
 
-        builder
-            .HasOne(a => a.Calendar)
-            .WithMany()
-            .HasForeignKey(a => a.CalendarId);
+        builder.HasOne(a => a.Calendar).WithMany().HasForeignKey(a => a.CalendarId);
 
-        builder
-            .HasOne(a => a.User)
-            .WithMany()
-            .HasForeignKey(a => a.UserId);
+        builder.HasOne(a => a.User).WithMany().HasForeignKey(a => a.UserId);
     }
 }

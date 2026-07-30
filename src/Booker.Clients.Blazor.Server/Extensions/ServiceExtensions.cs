@@ -20,8 +20,12 @@ internal static class ServiceExtensions
 
     private static void ConfigureApiCallers(this IServiceCollection services)
     {
+        services.AddHttpClient(nameof(ApiCallerBase));
+
         services
-            .AddScoped<IApiCallerBase, ApiCallerBase>()
+            .AddScoped<IApiCallerBase>(serviceProvider => new ApiCallerBase(
+                serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(ApiCallerBase))
+            ))
             .AddScoped<IAppointmentApiCaller, AppointmentApiCaller>()
             .AddScoped<IAuthApiCaller, AuthApiCaller>()
             .AddScoped<IServiceApiCaller, ServiceApiCaller>()

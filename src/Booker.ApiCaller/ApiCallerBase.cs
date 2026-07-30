@@ -1,6 +1,6 @@
 ﻿namespace Booker.ApiCaller;
 
-public class ApiCallerBase : IApiCallerBase
+public class ApiCallerBase(HttpClient httpClient) : IApiCallerBase
 {
     private const string ACCEPT = "accept";
     private const string APPLICATION_JSON = "application/json";
@@ -10,7 +10,6 @@ public class ApiCallerBase : IApiCallerBase
     {
         PropertyNameCaseInsensitive = true,
     };
-    private static HttpClient httpClient = new();
 
     private string _refreshUrl;
 
@@ -133,33 +132,11 @@ public class ApiCallerBase : IApiCallerBase
         CancellationToken cancellationToken = default
     )
     {
-        HttpRequestMessage message = new(request.Method, request.Url);
-
-        message.Headers.Add("Accept", APPLICATION_JSON);
-
-        if (request.Data is not null)
-        {
-            message.Content = new StringContent(
-                JsonSerializer.Serialize(request.Data),
-                Encoding.UTF8,
-                APPLICATION_JSON
-            );
-        }
-
-        if (withBearer)
-        {
-            var bearerToken = await getAccessToken();
-
-            if (bearerToken is not null && !string.IsNullOrWhiteSpace(bearerToken)) { }
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-        }
-
-        var messageFactory = () => BuildHttpRequestMessage(request);
+        var messageFactory = (string? accessToken) => BuildHttpRequestMessage(request, accessToken);
 
         HttpResponseMessage responseMessage = withBearer
-            ? await SendWithBearerToken(httpClient, messageFactory, cancellationToken)
-            : await httpClient.SendAsync(messageFactory(), cancellationToken);
+            ? await SendWithBearerToken(messageFactory, cancellationToken)
+            : await httpClient.SendAsync(messageFactory(null), cancellationToken);
 
         if (!responseMessage.IsSuccessStatusCode)
         {
@@ -177,66 +154,73 @@ public class ApiCallerBase : IApiCallerBase
     /// <summary>
     /// Retrieve the bearer token and send a request with it.
     /// </summary>
-    /// <param name="httpClient"></param>
-    /// <param name="httpRequestMessageFactory"></param>
-    /// <param name="withBearer"></param>
-    /// <returns></returns>
+    /// <param name="messageFactory">Creates a fresh request message carrying the supplied access token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The response message.</returns>
     private async Task<HttpResponseMessage> SendWithBearerToken(
-        HttpClient httpClient,
-        Func<HttpRequestMessage> messageFactory,
+        Func<string?, HttpRequestMessage> messageFactory,
         CancellationToken cancellationToken = default
     )
     {
         var accessToken = await getAccessToken();
 
-        //If we have an access token add it to request header.
-        if (accessToken is not null && !string.IsNullOrWhiteSpace(accessToken))
-        {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(BEARER, accessToken);
-        }
-
         try
         {
-            var response = await httpClient.SendAsync(messageFactory(), cancellationToken);
+            var response = await httpClient.SendAsync(messageFactory(accessToken), cancellationToken);
 
             //If the response code is unauthorized then try to get a new one with the refresh token, then try the request again.
-            if (!response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.Unauthorized)
+            if (response.StatusCode is not HttpStatusCode.Unauthorized)
             {
-                var refreshToken = await getRefreshToken();
-
-                //If we have an access token add it to request header.
-                if (refreshToken is not null && !string.IsNullOrWhiteSpace(refreshToken))
-                {
-                    await InvokeRefreshTokensEndpoint(httpClient, refreshToken, cancellationToken);
-                    response = await httpClient.SendAsync(messageFactory(), cancellationToken);
-                }
+                return response;
             }
 
-            return response;
+            var refreshedToken = await RefreshAccessTokenAsync(cancellationToken);
+
+            if (refreshedToken is null)
+            {
+                return response;
+            }
+
+            return await httpClient.SendAsync(messageFactory(refreshedToken), cancellationToken);
         }
         catch (HttpRequestException)
         {
-            var refreshToken = await getRefreshToken();
+            var refreshedToken = await RefreshAccessTokenAsync(cancellationToken);
 
-            //If we have an access token add it to request header.
-            if (refreshToken is not null && !string.IsNullOrWhiteSpace(refreshToken))
+            if (refreshedToken is null)
             {
-                await InvokeRefreshTokensEndpoint(httpClient, refreshToken, cancellationToken);
-                return await httpClient.SendAsync(messageFactory(), cancellationToken);
+                throw;
             }
-            throw;
+
+            return await httpClient.SendAsync(messageFactory(refreshedToken), cancellationToken);
         }
+    }
+
+    /// <summary>
+    /// Exchange the stored refresh token for a new access token.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The new access token, or null when no refresh could be performed.</returns>
+    private async Task<string?> RefreshAccessTokenAsync(CancellationToken cancellationToken)
+    {
+        var refreshToken = await getRefreshToken();
+
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return null;
+        }
+
+        return await InvokeRefreshTokensEndpoint(refreshToken, cancellationToken);
     }
 
     /// <summary>
     /// Get refreshed tokens from the API.
     /// </summary>
-    /// <param name="httpClient">The http client.</param>
-    /// <param name="tokens">The tokens.</param>
-    /// <returns></returns>
+    /// <param name="refreshToken">The refresh token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The new access token, or null when the client was logged out.</returns>
     /// <exception cref="Exception"></exception>
-    private async Task InvokeRefreshTokensEndpoint(
-        HttpClient httpClient,
+    private async Task<string?> InvokeRefreshTokensEndpoint(
         string refreshToken,
         CancellationToken cancellationToken = default
     )
@@ -259,7 +243,7 @@ public class ApiCallerBase : IApiCallerBase
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
             await logout();
-            return;
+            return null;
         }
 
         var responseContentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -270,27 +254,32 @@ public class ApiCallerBase : IApiCallerBase
 
         var tokens = JsonSerializer.Deserialize<AuthResponse>(responseContentStream, _jsonOptions) ?? new();
 
-        //If get the new tokens update the clients tokens and set it in the http client header.
-        if (tokens is not null)
-        {
-            await updateTokens(tokens.AccessToken, tokens.RefreshToken);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(BEARER, tokens.AccessToken);
-        }
+        //If we got the new tokens update the clients tokens.
+        await updateTokens(tokens.AccessToken, tokens.RefreshToken);
+
+        return string.IsNullOrWhiteSpace(tokens.AccessToken) ? null : tokens.AccessToken;
     }
 
     /// <summary>
     /// Create a <see cref="HttpRequestMessage"/> based on a <see cref="ApiRequest"/>.
     /// </summary>
     /// <param name="request">The parameters of the message.</param>
+    /// <param name="accessToken">The bearer token to attach to this single message, if any.</param>
     /// <returns>The message.</returns>
-    private HttpRequestMessage BuildHttpRequestMessage(ApiRequest request)
+    private HttpRequestMessage BuildHttpRequestMessage(ApiRequest request, string? accessToken)
     {
         HttpRequestMessage message = new HttpRequestMessage();
         message.Headers.Add(ACCEPT, APPLICATION_JSON);
         message.RequestUri = new Uri(request.Url);
         message.Method = request.Method;
 
-        if (request.Data != null)
+        //The token is set on the message itself so concurrent callers never share auth state through the HttpClient.
+        if (!string.IsNullOrWhiteSpace(accessToken))
+        {
+            message.Headers.Authorization = new AuthenticationHeaderValue(BEARER, accessToken);
+        }
+
+        if (request.Data is not null)
         {
             var data = new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, APPLICATION_JSON);
             message.Content = data;

@@ -11,9 +11,6 @@ internal class CalendarConfiguration : EntityBaseConfiguration<Calendar>
         builder.Property(c => c.EndTime).IsRequired();
         builder.Property(c => c.OwnerId).IsRequired();
 
-        builder
-            .HasOne(c => c.Owner)
-            .WithMany()
-            .HasForeignKey(c => c.OwnerId);
+        builder.HasOne(c => c.Owner).WithMany().HasForeignKey(c => c.OwnerId);
     }
 }
