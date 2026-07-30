@@ -99,7 +99,7 @@ public class ServiceController(IServiceService serviceService, IValidatorService
     [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteService(int id, CancellationToken cancellationToken)
     {
-        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+        var userIsOwner = await validatorService.ValidateServiceOwnership(
             id,
             User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
         );
