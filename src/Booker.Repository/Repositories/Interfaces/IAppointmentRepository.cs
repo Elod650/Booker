@@ -9,4 +9,10 @@ public interface IAppointmentRepository
         int calendarId,
         CancellationToken cancellationToken = default
     );
+    Task<bool> HasOverlappingAppointmentAsync(
+        int calendarId,
+        DateTime startTime,
+        DateTime endTime,
+        CancellationToken cancellationToken = default
+    );
 }

@@ -2,7 +2,7 @@
 
 public interface IAppointmentService
 {
-    Task AddAppointment(
+    Task<string?> AddAppointment(
         EditAppointmentRequest newAppointment,
         string userId,
         CancellationToken cancellationToken = default

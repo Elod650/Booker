@@ -19,16 +19,23 @@ public class AppointmentController(IAppointmentService appointmentService, IVali
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAppointment(
         [FromBody] EditAppointmentRequest newAppointment,
         CancellationToken cancellationToken
     )
     {
-        await appointmentService.AddAppointment(
+        var errorMessage = await appointmentService.AddAppointment(
             newAppointment,
             User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
             cancellationToken
         );
+
+        if (errorMessage is not null)
+        {
+            return BadRequest(errorMessage);
+        }
+
         return Ok();
     }
 

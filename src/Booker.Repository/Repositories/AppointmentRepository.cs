@@ -14,6 +14,21 @@ public class AppointmentRepository(AppDbContext context) : IAppointmentRepositor
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> HasOverlappingAppointmentAsync(
+        int calendarId,
+        DateTime startTime,
+        DateTime endTime,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await context
+            .Appointments.AsNoTracking()
+            .AnyAsync(
+                x => x.CalendarId == calendarId && x.StartTime < endTime && startTime < x.EndTime,
+                cancellationToken
+            );
+    }
+
     public async Task<Appointment?> GetAppointmentByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await context.Appointments.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

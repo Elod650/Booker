@@ -4,13 +4,15 @@ public class ValidatorServiceTests
 {
     private ValidatorService validatorService = null!;
     private ICalendarRepository calendarRepository = null!;
+    private IServiceRepository serviceRepository = null!;
+    private IAppointmentRepository appointmentRepository = null!;
 
     [Before(Test)]
     public void SetUp()
     {
         SetUpRepository();
 
-        validatorService = new ValidatorService(calendarRepository);
+        validatorService = new ValidatorService(calendarRepository, serviceRepository, appointmentRepository);
     }
 
     [Test]
@@ -58,6 +60,8 @@ public class ValidatorServiceTests
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();
+        serviceRepository = Substitute.For<IServiceRepository>();
+        appointmentRepository = Substitute.For<IAppointmentRepository>();
 
         calendarRepository
             .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
@@ -65,6 +69,22 @@ public class ValidatorServiceTests
             {
                 var id = callInfo.ArgAt<int>(0);
                 return CalendarTestData.Calendars.FirstOrDefault(x => x.Id == id);
+            });
+
+        serviceRepository
+            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var id = callInfo.ArgAt<int>(0);
+                return ServiceTestData.Services.FirstOrDefault(x => x.Id == id);
+            });
+
+        appointmentRepository
+            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var id = callInfo.ArgAt<int>(0);
+                return AppointmentTestData.Appointments.FirstOrDefault(x => x.Id == id);
             });
     }
 }
