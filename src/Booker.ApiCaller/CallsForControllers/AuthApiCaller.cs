@@ -39,4 +39,15 @@ public class AuthApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerOptio
             cancellationToken: cancellationToken
         );
     }
+
+    public async Task LogoutAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default)
+    {
+        string url = $"{this._apiUrl}/logout";
+
+        await apiCallerBase.SendAsync(
+            ApiRequest.CreatePost(url, request),
+            withBearer: false,
+            cancellationToken: cancellationToken
+        );
+    }
 }

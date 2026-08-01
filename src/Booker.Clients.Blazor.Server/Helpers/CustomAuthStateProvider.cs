@@ -1,8 +1,10 @@
 ﻿namespace Booker.Clients.Blazor.Server.Helpers;
 
-public class CustomAuthStateProvider(IStorageManager storageManager, NavigationManager navigationManager)
-    : AuthenticationStateProvider,
-        ICustomAuthStateProvider
+public class CustomAuthStateProvider(
+    IStorageManager storageManager,
+    NavigationManager navigationManager,
+    IAuthApiCaller authApiCaller
+) : AuthenticationStateProvider, ICustomAuthStateProvider
 {
     private const string ACCESS_TOKEN = "accessToken";
     private const string REFRESH_TOKEN = "refreshToken";
@@ -28,10 +30,17 @@ public class CustomAuthStateProvider(IStorageManager storageManager, NavigationM
 
     public async Task LogoutAsync()
     {
+        string? refreshToken = await storageManager.GetAsync<string>(REFRESH_TOKEN);
+
+        if (!string.IsNullOrWhiteSpace(refreshToken))
+        {
+            await authApiCaller.LogoutAsync(new RefreshTokenRequest { RefreshToken = refreshToken });
+        }
+
         await storageManager.DeleteAsync(ACCESS_TOKEN);
         await storageManager.DeleteAsync(REFRESH_TOKEN);
 
-        var state = new AuthenticationState(new());
+        var state = new AuthenticationState(this._anonymous);
         NotifyAuthenticationStateChanged(Task.FromResult(state));
 
         navigationManager.NavigateTo("/", forceLoad: true);

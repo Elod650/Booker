@@ -31,6 +31,7 @@ internal static class DatabaseExtensions
             .AddScoped<IAppointmentRepository, AppointmentRepository>()
             .AddScoped<ICalendarRepository, CalendarRepository>()
             .AddScoped<IInfoRepository, InfoRepository>()
+            .AddScoped<IRefreshTokenRepository, RefreshTokenRepository>()
             .AddScoped<IServiceRepository, ServiceRepository>();
     }
 }

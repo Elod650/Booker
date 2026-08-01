@@ -40,7 +40,16 @@ internal static class ServiceExtensions
         services.AddAuthentication();
         services.AddCascadingAuthenticationState();
         services.AddScoped<IStorageManager, SessionStorageManager>();
-        services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
-        services.AddScoped<ICustomAuthStateProvider, CustomAuthStateProvider>();
+
+        //One instance per circuit, with both handles forwarding to it. Registering the type twice
+        //would create two independent instances, so state changes notified through one would not
+        //reach the components subscribed to the other.
+        services.AddScoped<CustomAuthStateProvider>();
+        services.AddScoped<AuthenticationStateProvider>(serviceProvider =>
+            serviceProvider.GetRequiredService<CustomAuthStateProvider>()
+        );
+        services.AddScoped<ICustomAuthStateProvider>(serviceProvider =>
+            serviceProvider.GetRequiredService<CustomAuthStateProvider>()
+        );
     }
 }

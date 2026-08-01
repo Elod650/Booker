@@ -13,5 +13,14 @@ internal static class UserTestData
                 LastName = "User",
                 EmailConfirmed = true,
             },
+            new ApplicationUser
+            {
+                Id = "user-2",
+                UserName = "other@booker.com",
+                Email = "other@booker.com",
+                FirstName = "Other",
+                LastName = "User",
+                EmailConfirmed = true,
+            },
         ];
 }

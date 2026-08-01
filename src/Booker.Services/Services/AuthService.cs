@@ -1,6 +1,10 @@
 namespace Booker.Services.Services;
 
-public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions) : IAuthService
+public class AuthService(
+    UserManager<ApplicationUser> userManager,
+    IRefreshTokenRepository refreshTokenRepository,
+    IOptions<JwtOptions> jwtOptions
+) : IAuthService
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
@@ -24,9 +28,18 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         string accessToken = GenerateAccessToken(user, roles);
         string refreshToken = GenerateRefreshToken();
 
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays);
-        await userManager.UpdateAsync(user);
+        await refreshTokenRepository.DeleteExpiredTokensForUserAsync(user.Id, cancellationToken);
+
+        await refreshTokenRepository.AddRefreshTokenAsync(
+            new RefreshToken
+            {
+                TokenHash = TokenHasher.ComputeHash(refreshToken),
+                UserId = user.Id,
+                SessionId = Guid.NewGuid(),
+                ExpiresAt = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays),
+            },
+            cancellationToken
+        );
 
         return new AuthResponse
         {
@@ -71,12 +84,40 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         CancellationToken cancellationToken = default
     )
     {
-        var user = await userManager.Users.FirstOrDefaultAsync(
-            u => u.RefreshToken == request.RefreshToken,
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+        {
+            return null;
+        }
+
+        var storedToken = await refreshTokenRepository.GetRefreshTokenByHashAsync(
+            TokenHasher.ComputeHash(request.RefreshToken),
             cancellationToken
         );
 
-        if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        if (storedToken is null)
+        {
+            return null;
+        }
+
+        //Reuse detection: a revoked token means it was already rotated (or explicitly revoked),
+        //so presenting it again means the token was replayed and the session is compromised.
+        //Revoke only that session - revoking every session would let anyone holding one stale
+        //token log the user out everywhere.
+        if (storedToken.RevokedAt is not null)
+        {
+            await refreshTokenRepository.RevokeSessionAsync(storedToken.SessionId, cancellationToken);
+
+            return null;
+        }
+
+        if (storedToken.ExpiresAt <= DateTime.UtcNow)
+        {
+            return null;
+        }
+
+        var user = await userManager.FindByIdAsync(storedToken.UserId);
+
+        if (user is null)
         {
             return null;
         }
@@ -84,10 +125,19 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
         var roles = await userManager.GetRolesAsync(user);
         string accessToken = GenerateAccessToken(user, roles);
         string refreshToken = GenerateRefreshToken();
+        string newTokenHash = TokenHasher.ComputeHash(refreshToken);
 
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays);
-        await userManager.UpdateAsync(user);
+        storedToken.RevokedAt = DateTime.UtcNow;
+
+        var newToken = new RefreshToken
+        {
+            TokenHash = newTokenHash,
+            UserId = storedToken.UserId,
+            SessionId = storedToken.SessionId,
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationDays),
+        };
+
+        await refreshTokenRepository.RotateRefreshTokenAsync(storedToken, newToken, cancellationToken);
 
         return new AuthResponse
         {
@@ -95,6 +145,30 @@ public class AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtO
             RefreshToken = refreshToken,
             Expiration = DateTime.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpirationMinutes),
         };
+    }
+
+    /// <summary>
+    /// Revokes the session the given refresh token belongs to. Idempotent - an unknown token is
+    /// not an error, so the forced-logout path can safely replay an already-invalid token.
+    /// </summary>
+    public async Task LogoutAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+        {
+            return;
+        }
+
+        var storedToken = await refreshTokenRepository.GetRefreshTokenByHashAsync(
+            TokenHasher.ComputeHash(request.RefreshToken),
+            cancellationToken
+        );
+
+        if (storedToken is null)
+        {
+            return;
+        }
+
+        await refreshTokenRepository.RevokeSessionAsync(storedToken.SessionId, cancellationToken);
     }
 
     private string GenerateAccessToken(ApplicationUser user, IList<string> roles)

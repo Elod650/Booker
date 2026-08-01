@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Service> Services { get; set; }
     public DbSet<Info> Infos { get; set; }
     public DbSet<CalendarsXCustomers> CalendarsXCustomers { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

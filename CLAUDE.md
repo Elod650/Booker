@@ -21,17 +21,21 @@ dotnet run --project src/Booker.Clients.Blazor.Server
 
 ### Run all tests
 ```powershell
-dotnet test Booker.slnx
+dotnet run --project tests/Services.UnitTests
 ```
 
-### Run a single test file
+The test projects are TUnit/Microsoft.Testing.Platform executables. `dotnet test` currently fails on
+the .NET 10 SDK ("Testing with VSTest target is no longer supported") because the solution has not
+opted into the new `dotnet test` experience — run the test project directly instead.
+
+### Run a single test class
 ```powershell
-dotnet test tests/Services.UnitTests --filter "FullyQualifiedName~CalendarServiceTests"
+dotnet run --project tests/Services.UnitTests --treenode-filter "/*/*/CalendarServiceTests/*"
 ```
 
 ### Format code (CSharpier)
 ```powershell
-dotnet csharpier .
+dotnet csharpier format .
 ```
 
 ## Architecture
@@ -53,8 +57,10 @@ Business logic layer. Each domain area has an interface (`Interfaces/`) and impl
 
 `AuthService` handles JWT + refresh token generation. JWT config is bound from `appsettings.json` into `JwtOptions`.
 
+**Refresh tokens** are stored one row per session in the `RefreshTokens` table, never in plaintext — only a SHA-256 hash (`TokenHasher.ComputeHash`) is persisted. A `SessionId` is stamped at login and carried through every rotation, so one user can hold several concurrent sessions (web + mobile) and a single session can be revoked on its own. Every refresh rotates the token and marks the old row `RevokedAt`; presenting an already-revoked token is treated as a replay and revokes that whole session. Expired/revoked rows are cleaned up opportunistically on login.
+
 ### `src/Booker.Repository`
-EF Core data layer. `AppDbContext` extends `IdentityDbContext<ApplicationUser>` and exposes `DbSet`s for `Appointments`, `Calendars`, `Services`, `Infos`, and `CalendarsXCustomers`.
+EF Core data layer. `AppDbContext` extends `IdentityDbContext<ApplicationUser>` and exposes `DbSet`s for `Appointments`, `Calendars`, `Services`, `Infos`, `CalendarsXCustomers`, and `RefreshTokens`.
 
 Entities inherit from `EntityBase` (auto-increment `int Id`). Repositories follow an interface-per-aggregate pattern (`IAppointmentRepository`, `ICalendarRepository`, etc.).
 
