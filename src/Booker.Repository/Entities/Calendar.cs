@@ -16,4 +16,8 @@ public class Calendar : EntityBase, IAuditable
     public virtual ApplicationUser? Owner { get; set; }
 
     public virtual ICollection<CalendarsXCustomers>? CalendarsXCustomers { get; set; }
+
+    public virtual ICollection<Appointment>? Appointments { get; set; }
+
+    public virtual ICollection<Service>? Services { get; set; }
 }

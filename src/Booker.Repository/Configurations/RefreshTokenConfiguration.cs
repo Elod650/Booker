@@ -17,6 +17,6 @@ internal class RefreshTokenConfiguration : EntityBaseConfiguration<RefreshToken>
 
         builder.HasIndex(r => r.UserId);
 
-        builder.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+        builder.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId).OnDelete(DeleteBehavior.Cascade);
     }
 }

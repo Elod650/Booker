@@ -1,4 +1,4 @@
-﻿namespace Booker.Services.Services;
+namespace Booker.Services.Services;
 
 public class AppointmentService(
     IAppointmentRepository appointmentRepository,
@@ -13,7 +13,10 @@ public class AppointmentService(
     )
     {
         return mapper.Map<List<AppointmentDto>>(
-            await appointmentRepository.GetAppointmentsForCalendarAsync(calendarId, cancellationToken)
+            await appointmentRepository.GetAppointmentsForCalendarAsync(
+                calendarId,
+                cancellationToken: cancellationToken
+            )
         );
     }
 
@@ -42,7 +45,11 @@ public class AppointmentService(
 
     public async Task<string?> DeleteAppointment(int appointmentId, CancellationToken cancellationToken = default)
     {
-        var appointmentToDelete = await appointmentRepository.GetAppointmentByIdAsync(appointmentId, cancellationToken);
+        var appointmentToDelete = await appointmentRepository.GetAppointmentByIdAsync(
+            appointmentId,
+            asNoTracking: false,
+            cancellationToken
+        );
 
         if (appointmentToDelete is null)
         {
@@ -59,14 +66,20 @@ public class AppointmentService(
         CancellationToken cancellationToken
     )
     {
-        var calendar = await calendarRepository.GetCalendarByIdAsync(newAppointment.CalendarId, cancellationToken);
+        var calendar = await calendarRepository.GetCalendarByIdAsync(
+            newAppointment.CalendarId,
+            cancellationToken: cancellationToken
+        );
 
         if (calendar is null)
         {
             return "There is no calendar with the provided Id.";
         }
 
-        var service = await serviceRepository.GetServiceByIdAsync(newAppointment.ServiceId, cancellationToken);
+        var service = await serviceRepository.GetServiceByIdAsync(
+            newAppointment.ServiceId,
+            cancellationToken: cancellationToken
+        );
 
         if (service is null)
         {

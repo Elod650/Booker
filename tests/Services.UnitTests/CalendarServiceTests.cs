@@ -28,7 +28,11 @@ public class CalendarServiceTests
     public async Task GetCalendars_ShouldReturnEmptyList_WhenNoCalendarsExist()
     {
         calendarRepository
-            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .GetCalendarsAsync(
+                Arg.Any<Expression<Func<Calendar, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()
+            )
             .Returns([]);
 
         var result = await calendarService.GetCalendars();
@@ -126,7 +130,9 @@ public class CalendarServiceTests
         var request = new AddCustomerToCalendarRequest { CustomerEmail = "test@booker.com", CalendarId = 1 };
 
         var user = UserTestData.Users.First();
-        calendarRepository.GetCustomersForCalendarAsync(1, Arg.Any<CancellationToken>()).Returns([user]);
+        calendarRepository
+            .GetCustomersForCalendarAsync(1, Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns([user]);
 
         var result = await calendarService.AddCustomerToCalendar(request);
 
@@ -138,7 +144,7 @@ public class CalendarServiceTests
     {
         var request = new AddCustomerToCalendarRequest { CustomerEmail = "test@booker.com", CalendarId = 1 };
 
-        calendarRepository.GetCustomersForCalendarAsync(1, Arg.Any<CancellationToken>()).Returns([]);
+        calendarRepository.GetCustomersForCalendarAsync(1, Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns([]);
 
         var result = await calendarService.AddCustomerToCalendar(request);
 
@@ -163,7 +169,9 @@ public class CalendarServiceTests
     public async Task GetCustomersForCalendar_ShouldReturnCustomers_WhenCalendarExists()
     {
         var user = UserTestData.Users.First();
-        calendarRepository.GetCustomersForCalendarAsync(1, Arg.Any<CancellationToken>()).Returns([user]);
+        calendarRepository
+            .GetCustomersForCalendarAsync(1, Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns([user]);
 
         var result = await calendarService.GetCustomersForCalendar(1);
 
@@ -249,7 +257,11 @@ public class CalendarServiceTests
         calendarRepository = Substitute.For<ICalendarRepository>();
 
         calendarRepository
-            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .GetCalendarsAsync(
+                Arg.Any<Expression<Func<Calendar, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()
+            )
             .Returns(callInfo =>
             {
                 var predicate = callInfo.ArgAt<Expression<Func<Calendar, bool>>>(0);
@@ -265,7 +277,7 @@ public class CalendarServiceTests
             });
 
         calendarRepository
-            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -273,7 +285,7 @@ public class CalendarServiceTests
             });
 
         calendarRepository
-            .GetCalendarsForCustomerAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .GetCalendarsForCustomerAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var customerId = callInfo.ArgAt<string>(0);

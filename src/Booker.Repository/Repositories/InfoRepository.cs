@@ -1,9 +1,15 @@
-﻿namespace Booker.Repository.Repositories;
+namespace Booker.Repository.Repositories;
 
 public class InfoRepository(AppDbContext context) : IInfoRepository
 {
-    public async Task<Info> GetInfoAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<Info> GetInfoAsync(
+        string key,
+        bool asNoTracking = true,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await context.Infos.AsNoTracking().FirstAsync(x => x.Key == key, cancellationToken);
+        var query = asNoTracking ? context.Infos.AsNoTracking() : context.Infos;
+
+        return await query.FirstAsync(x => x.Key == key, cancellationToken);
     }
 }

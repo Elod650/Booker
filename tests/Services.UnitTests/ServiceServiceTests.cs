@@ -211,7 +211,7 @@ public class ServiceServiceTests
         serviceRepository = Substitute.For<IServiceRepository>();
 
         serviceRepository
-            .GetServicesAsync(Arg.Any<Expression<Func<Service, bool>>>(), Arg.Any<CancellationToken>())
+            .GetServicesAsync(Arg.Any<Expression<Func<Service, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var predicate = callInfo.ArgAt<Expression<Func<Service, bool>>>(0);
@@ -227,7 +227,7 @@ public class ServiceServiceTests
             });
 
         serviceRepository
-            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -237,7 +237,11 @@ public class ServiceServiceTests
         calendarRepository = Substitute.For<ICalendarRepository>();
 
         calendarRepository
-            .GetCalendarsAsync(Arg.Any<Expression<Func<Calendar, bool>>>(), Arg.Any<CancellationToken>())
+            .GetCalendarsAsync(
+                Arg.Any<Expression<Func<Calendar, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()
+            )
             .Returns(callInfo =>
             {
                 var predicate = callInfo.ArgAt<Expression<Func<Calendar, bool>>>(0);

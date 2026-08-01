@@ -1,4 +1,4 @@
-﻿namespace Booker.Services.Services;
+namespace Booker.Services.Services;
 
 public class CalendarService(
     ICalendarRepository calendarRepository,
@@ -19,7 +19,7 @@ public class CalendarService(
     )
     {
         return mapper.Map<List<CalendarDto>>(
-            await calendarRepository.GetCalendarsAsync(x => x.OwnerId == ownerId, cancellationToken)
+            await calendarRepository.GetCalendarsAsync(x => x.OwnerId == ownerId, cancellationToken: cancellationToken)
         );
     }
 
@@ -29,7 +29,7 @@ public class CalendarService(
     )
     {
         return mapper.Map<List<CalendarDto>>(
-            await calendarRepository.GetCalendarsForCustomerAsync(customerId, cancellationToken)
+            await calendarRepository.GetCalendarsForCustomerAsync(customerId, cancellationToken: cancellationToken)
         );
     }
 
@@ -54,7 +54,11 @@ public class CalendarService(
 
     public async Task<string?> DeleteCalendar(int calendarId, CancellationToken cancellationToken = default)
     {
-        var calendarToDelete = await calendarRepository.GetCalendarByIdAsync(calendarId, cancellationToken);
+        var calendarToDelete = await calendarRepository.GetCalendarByIdAsync(
+            calendarId,
+            asNoTracking: false,
+            cancellationToken
+        );
 
         if (calendarToDelete is null)
         {
@@ -78,14 +82,20 @@ public class CalendarService(
             return "There is no user with this email.";
         }
 
-        var calendar = await calendarRepository.GetCalendarByIdAsync(request.CalendarId, cancellationToken);
+        var calendar = await calendarRepository.GetCalendarByIdAsync(
+            request.CalendarId,
+            cancellationToken: cancellationToken
+        );
 
         if (calendar is null)
         {
             return "There is no calendar with the provided Id.";
         }
 
-        var connections = await calendarRepository.GetCustomersForCalendarAsync(calendar.Id, cancellationToken);
+        var connections = await calendarRepository.GetCustomersForCalendarAsync(
+            calendar.Id,
+            cancellationToken: cancellationToken
+        );
 
         if (connections.Any(x => x.Id == user.Id))
         {
@@ -104,7 +114,7 @@ public class CalendarService(
         CancellationToken cancellationToken = default
     )
     {
-        var calendar = await calendarRepository.GetCalendarByIdAsync(calendarId, cancellationToken);
+        var calendar = await calendarRepository.GetCalendarByIdAsync(calendarId, cancellationToken: cancellationToken);
 
         if (calendar is null)
         {
@@ -112,7 +122,7 @@ public class CalendarService(
         }
 
         return mapper.Map<List<UserDto>>(
-            await calendarRepository.GetCustomersForCalendarAsync(calendar.Id, cancellationToken)
+            await calendarRepository.GetCustomersForCalendarAsync(calendar.Id, cancellationToken: cancellationToken)
         );
     }
 
@@ -128,7 +138,10 @@ public class CalendarService(
             return "There is no user with this email.";
         }
 
-        var calendar = await calendarRepository.GetCalendarByIdAsync(request.CalendarId, cancellationToken);
+        var calendar = await calendarRepository.GetCalendarByIdAsync(
+            request.CalendarId,
+            cancellationToken: cancellationToken
+        );
 
         if (calendar is null)
         {

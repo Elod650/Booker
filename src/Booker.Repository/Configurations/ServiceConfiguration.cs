@@ -7,5 +7,11 @@ internal class ServiceConfiguration : EntityBaseConfiguration<Service>
         base.Configure(builder);
 
         builder.Property(s => s.Name).IsRequired();
+
+        builder
+            .HasOne(s => s.Calendar)
+            .WithMany(c => c.Services)
+            .HasForeignKey(s => s.CalendarId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

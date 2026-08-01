@@ -242,7 +242,7 @@ public class AppointmentServiceTests
         ];
 
         calendarRepository
-            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -250,7 +250,7 @@ public class AppointmentServiceTests
             });
 
         serviceRepository
-            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -276,7 +276,7 @@ public class AppointmentServiceTests
             });
 
         appointmentRepository
-            .GetAppointmentsForCalendarAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetAppointmentsForCalendarAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var calendarId = callInfo.ArgAt<int>(0);
@@ -284,7 +284,7 @@ public class AppointmentServiceTests
             });
 
         appointmentRepository
-            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);

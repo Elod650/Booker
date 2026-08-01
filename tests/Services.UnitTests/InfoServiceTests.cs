@@ -24,7 +24,7 @@ public class InfoServiceTests
     [Test]
     public async Task GetCurrency_ShouldThrowException_WhenInfoIsMissing()
     {
-        infoRepository.GetInfoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).ReturnsNull();
+        infoRepository.GetInfoAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>()).ReturnsNull();
 
         await Assert.ThrowsAsync(infoService.GetCurrency());
     }
@@ -33,7 +33,7 @@ public class InfoServiceTests
     public async Task GetCurrency_ShouldReturnEmptyString_WhenCurrencyValueIsEmpty()
     {
         infoRepository
-            .GetInfoAsync("Currency", Arg.Any<CancellationToken>())
+            .GetInfoAsync("Currency", Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(new Info { Key = "Currency", Value = string.Empty });
 
         var result = await infoService.GetCurrency();
@@ -46,7 +46,7 @@ public class InfoServiceTests
         infoRepository = Substitute.For<IInfoRepository>();
 
         infoRepository
-            .GetInfoAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .GetInfoAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var key = callInfo.ArgAt<string>(0);

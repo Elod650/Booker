@@ -64,6 +64,10 @@ EF Core data layer. `AppDbContext` extends `IdentityDbContext<ApplicationUser>` 
 
 Entities inherit from `EntityBase` (auto-increment `int Id`). Repositories follow an interface-per-aggregate pattern (`IAppointmentRepository`, `ICalendarRepository`, etc.).
 
+**Tracking**: every entity-returning `Get…Async` takes an optional `bool asNoTracking = false`. The default is **tracked**, so entities fetched for an update or delete work without extra ceremony; read-only paths (anything that just maps to a DTO) pass `asNoTracking: true`. `GetCalendarIdsAsync` has no such parameter because it projects to a scalar.
+
+**Cascade deletes** are declared once, in the EF model (`Configurations/`): `Appointment → Calendar`, `Appointment → Service`, `Service → Calendar`, `CalendarsXCustomers → Calendar`/`Customer` and `RefreshToken → User` are all `DeleteBehavior.Cascade`. Repositories never delete dependents by hand — `DeleteCalendarAsync`/`DeleteServiceAsync` just `Load()` the dependent navigations so the change tracker can apply that cascade, because the in-memory provider only cascades to dependents it already tracks. The one deliberate exception is `RemoveCustomerFromCalendarAsync`, which drops the customer's *upcoming* appointments — that's a business rule, not a cascade.
+
 ### `src/Booker.Models`
 Shared model library (no ASP.NET dependency). Contains:
 - **DTOs** (`AppointmentDto`, `CalendarDto`, `ServiceDto`, `UserDto`, `AuthResponse`) — outgoing responses

@@ -91,6 +91,7 @@ public class AuthService(
 
         var storedToken = await refreshTokenRepository.GetRefreshTokenByHashAsync(
             TokenHasher.ComputeHash(request.RefreshToken),
+            asNoTracking: false,
             cancellationToken
         );
 
@@ -160,6 +161,7 @@ public class AuthService(
 
         var storedToken = await refreshTokenRepository.GetRefreshTokenByHashAsync(
             TokenHasher.ComputeHash(request.RefreshToken),
+            asNoTracking: false,
             cancellationToken
         );
 

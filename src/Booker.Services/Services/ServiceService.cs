@@ -19,7 +19,10 @@ public class ServiceService(
         }
 
         return mapper.Map<List<ServiceDto>>(
-            await serviceRepository.GetServicesAsync(x => calendarsForUser.Contains(x.CalendarId), cancellationToken)
+            await serviceRepository.GetServicesAsync(
+                x => calendarsForUser.Contains(x.CalendarId),
+                cancellationToken: cancellationToken
+            )
         );
     }
 
@@ -29,13 +32,18 @@ public class ServiceService(
     )
     {
         return mapper.Map<List<ServiceDto>>(
-            await serviceRepository.GetServicesAsync(x => x.CalendarId == calendarId, cancellationToken)
+            await serviceRepository.GetServicesAsync(
+                x => x.CalendarId == calendarId,
+                cancellationToken: cancellationToken
+            )
         );
     }
 
     public async Task<ServiceDto> GetServiceById(int serviceId, CancellationToken cancellationToken = default)
     {
-        return mapper.Map<ServiceDto>(await serviceRepository.GetServiceByIdAsync(serviceId, cancellationToken));
+        return mapper.Map<ServiceDto>(
+            await serviceRepository.GetServiceByIdAsync(serviceId, cancellationToken: cancellationToken)
+        );
     }
 
     public async Task<string?> AddService(EditServiceRequest newService, CancellationToken cancellationToken = default)
@@ -52,7 +60,11 @@ public class ServiceService(
 
     public async Task<string?> DeleteService(int serviceId, CancellationToken cancellationToken = default)
     {
-        var serviceToDelete = await serviceRepository.GetServiceByIdAsync(serviceId, cancellationToken);
+        var serviceToDelete = await serviceRepository.GetServiceByIdAsync(
+            serviceId,
+            asNoTracking: false,
+            cancellationToken
+        );
 
         if (serviceToDelete is null)
         {
@@ -74,7 +86,11 @@ public class ServiceService(
             return "The Id must be specified when updating a service.";
         }
 
-        var serviceToUpdate = await serviceRepository.GetServiceByIdAsync(updatedService.Id.Value, cancellationToken);
+        var serviceToUpdate = await serviceRepository.GetServiceByIdAsync(
+            updatedService.Id.Value,
+            asNoTracking: false,
+            cancellationToken
+        );
         if (serviceToUpdate is null)
         {
             return "There is no service with the provided Id.";

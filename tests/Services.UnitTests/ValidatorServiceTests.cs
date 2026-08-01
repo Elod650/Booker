@@ -64,7 +64,7 @@ public class ValidatorServiceTests
         appointmentRepository = Substitute.For<IAppointmentRepository>();
 
         calendarRepository
-            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetCalendarByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -72,7 +72,7 @@ public class ValidatorServiceTests
             });
 
         serviceRepository
-            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetServiceByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);
@@ -80,7 +80,7 @@ public class ValidatorServiceTests
             });
 
         appointmentRepository
-            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .GetAppointmentByIdAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var id = callInfo.ArgAt<int>(0);

@@ -573,7 +573,7 @@ public class AuthServiceTests
         );
 
         refreshTokenRepository
-            .GetRefreshTokenByHashAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .GetRefreshTokenByHashAsync(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
             .Returns(callInfo =>
             {
                 var tokenHash = callInfo.ArgAt<string>(0);

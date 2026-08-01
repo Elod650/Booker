@@ -1,17 +1,16 @@
-﻿namespace Booker.Repository.Repositories;
+namespace Booker.Repository.Repositories;
 
 public class AppointmentRepository(AppDbContext context) : IAppointmentRepository
 {
     public async Task<List<Appointment>> GetAppointmentsForCalendarAsync(
         int calendarId,
+        bool asNoTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        return await context
-            .Appointments.Where(x => x.CalendarId == calendarId)
-            .AsNoTracking()
-            .Include(x => x.User)
-            .ToListAsync(cancellationToken);
+        var query = asNoTracking ? context.Appointments.AsNoTracking() : context.Appointments;
+
+        return await query.Where(x => x.CalendarId == calendarId).Include(x => x.User).ToListAsync(cancellationToken);
     }
 
     public async Task<bool> HasOverlappingAppointmentAsync(
@@ -29,9 +28,15 @@ public class AppointmentRepository(AppDbContext context) : IAppointmentRepositor
             );
     }
 
-    public async Task<Appointment?> GetAppointmentByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Appointment?> GetAppointmentByIdAsync(
+        int id,
+        bool asNoTracking = true,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await context.Appointments.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var query = asNoTracking ? context.Appointments.AsNoTracking() : context.Appointments;
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public async Task AddAppointmentAsync(Appointment newAppointment, CancellationToken cancellationToken = default)

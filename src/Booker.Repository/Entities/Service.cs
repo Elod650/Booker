@@ -10,4 +10,8 @@ public class Service : EntityBase, IAuditable
 
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
+
+    public virtual Calendar? Calendar { get; set; }
+
+    public virtual ICollection<Appointment>? Appointments { get; set; }
 }

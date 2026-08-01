@@ -10,10 +10,13 @@ public class RefreshTokenRepository(AppDbContext context) : IRefreshTokenReposit
 
     public async Task<RefreshToken?> GetRefreshTokenByHashAsync(
         string tokenHash,
+        bool asNoTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        return await context.RefreshTokens.FirstOrDefaultAsync(x => x.TokenHash == tokenHash, cancellationToken);
+        var query = asNoTracking ? context.RefreshTokens.AsNoTracking() : context.RefreshTokens;
+
+        return await query.FirstOrDefaultAsync(x => x.TokenHash == tokenHash, cancellationToken);
     }
 
     public async Task RotateRefreshTokenAsync(
