@@ -103,6 +103,17 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> IsCustomerOnCalendarAsync(
+        int calendarId,
+        string customerId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await context
+            .CalendarsXCustomers.AsNoTracking()
+            .AnyAsync(x => x.CalendarId == calendarId && x.CustomerId == customerId, cancellationToken);
+    }
+
     public async Task RemoveCustomerFromCalendarAsync(
         string userId,
         int calendarId,

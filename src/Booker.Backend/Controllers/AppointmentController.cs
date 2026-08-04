@@ -19,12 +19,23 @@ public class AppointmentController(IAppointmentService appointmentService, IVali
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAppointment(
         [FromBody] EditAppointmentRequest newAppointment,
         CancellationToken cancellationToken
     )
     {
+        var userHasAccess = await validatorService.ValidateCalendarAccess(
+            newAppointment.CalendarId,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userHasAccess)
+        {
+            return Forbid("The user does not have permission to add appointment to this calendar.");
+        }
+
         var errorMessage = await appointmentService.AddAppointment(
             newAppointment,
             User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,

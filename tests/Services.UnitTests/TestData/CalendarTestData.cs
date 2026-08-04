@@ -21,4 +21,8 @@ internal static class CalendarTestData
                 OwnerId = "2",
             },
         ];
+
+    //Customer "3" is invited to calendar 1 only; customer "4" is invited to nothing.
+    internal static List<CalendarsXCustomers> CalendarsXCustomers =>
+        [new CalendarsXCustomers { CalendarId = 1, CustomerId = "3" }];
 }

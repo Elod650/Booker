@@ -57,6 +57,49 @@ public class ValidatorServiceTests
         await Assert.That(result).IsFalse();
     }
 
+    [Test]
+    [Arguments(1, "1")]
+    [Arguments(2, "2")]
+    public async Task ValidateCalendarAccess_ShouldReturnTrue_WhenUserOwnsTheCalendar(int calendarId, string userId)
+    {
+        var result = await validatorService.ValidateCalendarAccess(calendarId, userId);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    public async Task ValidateCalendarAccess_ShouldReturnTrue_WhenUserIsAnInvitedCustomer()
+    {
+        var result = await validatorService.ValidateCalendarAccess(1, "3");
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    [Arguments(1, "4")]
+    [Arguments(2, "3")]
+    [Arguments(1, "user-999")]
+    public async Task ValidateCalendarAccess_ShouldReturnFalse_WhenUserIsNeitherOwnerNorCustomer(
+        int calendarId,
+        string userId
+    )
+    {
+        var result = await validatorService.ValidateCalendarAccess(calendarId, userId);
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task ValidateCalendarAccess_ShouldReturnFalse_WhenCalendarNotFound(int calendarId)
+    {
+        var result = await validatorService.ValidateCalendarAccess(calendarId, "1");
+
+        await Assert.That(result).IsFalse();
+    }
+
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();
@@ -69,6 +112,18 @@ public class ValidatorServiceTests
             {
                 var id = callInfo.ArgAt<int>(0);
                 return CalendarTestData.Calendars.FirstOrDefault(x => x.Id == id);
+            });
+
+        calendarRepository
+            .IsCustomerOnCalendarAsync(Arg.Any<int>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo =>
+            {
+                var calendarId = callInfo.ArgAt<int>(0);
+                var customerId = callInfo.ArgAt<string>(1);
+
+                return CalendarTestData.CalendarsXCustomers.Any(x =>
+                    x.CalendarId == calendarId && x.CustomerId == customerId
+                );
             });
 
         serviceRepository

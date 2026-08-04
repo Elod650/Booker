@@ -47,7 +47,10 @@ ASP.NET Core Web API. Entry point (`Program.cs`) wires up three extension method
 
 Controllers: `AppointmentController`, `AuthController`, `CalendarController`, `InfoController`, `ServiceController`. All are `[Authorize]` by default; some actions further restrict to `"Admin"` or `"Admin, Provider"` roles. The user identity sub-claim (`JwtRegisteredClaimNames.Sub`) is used throughout to scope actions to the current user.
 
-`ValidatorService` is used by controllers to enforce calendar ownership — any mutation on a calendar first checks that the requesting user is the calendar's owner.
+`ValidatorService` is used by controllers to enforce access to a calendar. Two levels exist:
+
+- **Ownership** (`ValidateCalendarOwnership` / `ValidateServiceOwnership` / `ValidateAppointmentOwnership`) — the requesting user must be the calendar's owner. Used for anything that mutates the calendar itself, its services, or its customer list.
+- **Access** (`ValidateCalendarAccess`) — the calendar's owner *or* a customer invited to it via `CalendarsXCustomers`. Booking is invite-only, so `AppointmentController.AddAppointment` gates on this rather than ownership. Backed by `ICalendarRepository.IsCustomerOnCalendarAsync`, an `AnyAsync` membership probe.
 
 AutoMapper maps between entities and DTOs/requests. All mappings are declared in `AutoMapperConfig.cs`.
 

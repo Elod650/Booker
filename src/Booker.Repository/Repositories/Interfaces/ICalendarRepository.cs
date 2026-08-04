@@ -29,5 +29,10 @@ public interface ICalendarRepository
         bool asNoTracking = true,
         CancellationToken cancellationToken = default
     );
+    Task<bool> IsCustomerOnCalendarAsync(
+        int calendarId,
+        string customerId,
+        CancellationToken cancellationToken = default
+    );
     Task RemoveCustomerFromCalendarAsync(string userId, int calendarId, CancellationToken cancellationToken = default);
 }

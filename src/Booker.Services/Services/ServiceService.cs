@@ -15,7 +15,7 @@ public class ServiceService(
 
         if (calendarsForUser.Count == 0)
         {
-            return new();
+            return [];
         }
 
         return mapper.Map<List<ServiceDto>>(

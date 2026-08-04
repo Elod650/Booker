@@ -23,6 +23,16 @@ public class ValidatorService(
         return true;
     }
 
+    public async Task<bool> ValidateCalendarAccess(int calendarId, string userId)
+    {
+        if (await ValidateCalendarOwnership(calendarId, userId))
+        {
+            return true;
+        }
+
+        return await calendarRepository.IsCustomerOnCalendarAsync(calendarId, userId);
+    }
+
     public async Task<bool> ValidateServiceOwnership(int serviceId, string userId)
     {
         var service = await serviceRepository.GetServiceByIdAsync(serviceId);
