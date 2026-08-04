@@ -100,6 +100,68 @@ public class ValidatorServiceTests
         await Assert.That(result).IsFalse();
     }
 
+    [Test]
+    [Arguments(1, "3")]
+    [Arguments(3, "3")]
+    public async Task ValidateAppointmentOwnership_ShouldReturnTrue_WhenUserBookedTheAppointment(
+        int appointmentId,
+        string userId
+    )
+    {
+        var result = await validatorService.ValidateAppointmentOwnership(appointmentId, userId);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    [Arguments(1, "1")]
+    [Arguments(3, "2")]
+    public async Task ValidateAppointmentOwnership_ShouldReturnTrue_WhenUserOwnsTheCalendar(
+        int appointmentId,
+        string userId
+    )
+    {
+        var result = await validatorService.ValidateAppointmentOwnership(appointmentId, userId);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    [Test]
+    [Arguments(1, "2")]
+    [Arguments(3, "1")]
+    [Arguments(1, "4")]
+    [Arguments(1, "user-999")]
+    public async Task ValidateAppointmentOwnership_ShouldReturnFalse_WhenUserIsNeitherBookerNorCalendarOwner(
+        int appointmentId,
+        string userId
+    )
+    {
+        var result = await validatorService.ValidateAppointmentOwnership(appointmentId, userId);
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(-1)]
+    [Arguments(int.MaxValue)]
+    public async Task ValidateAppointmentOwnership_ShouldReturnFalse_WhenAppointmentNotFound(int appointmentId)
+    {
+        var result = await validatorService.ValidateAppointmentOwnership(appointmentId, "1");
+
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    [Arguments("")]
+    [Arguments(null)]
+    public async Task ValidateAppointmentOwnership_ShouldReturnFalse_WhenUserIdIsMissing(string? userId)
+    {
+        var result = await validatorService.ValidateAppointmentOwnership(1, userId!);
+
+        await Assert.That(result).IsFalse();
+    }
+
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();

@@ -54,11 +54,12 @@ public class ValidatorService(
             return false;
         }
 
-        if (appointment.UserId != userId)
+        if (appointment.UserId == userId)
         {
-            return false;
+            return true;
         }
 
-        return true;
+        //The provider owning the calendar can also manage appointments booked on it.
+        return await ValidateCalendarOwnership(appointment.CalendarId, userId);
     }
 }
