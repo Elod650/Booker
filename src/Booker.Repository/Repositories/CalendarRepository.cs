@@ -132,7 +132,7 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
         //Not a cascade but a business rule: the customer loses access to the calendar, so their
         //upcoming bookings on it are dropped. Appointments that already started are kept as history.
         var upcomingAppointments = await context
-            .Appointments.Where(x => x.CalendarId == calendarId && x.UserId == userId && x.StartTime >= DateTime.UtcNow)
+            .Appointments.Where(x => x.CalendarId == calendarId && x.UserId == userId && x.StartTime >= DateTime.Now)
             .ToListAsync(cancellationToken);
 
         context.Appointments.RemoveRange(upcomingAppointments);

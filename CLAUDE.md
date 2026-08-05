@@ -60,6 +60,8 @@ Business logic layer. Each domain area has an interface (`Interfaces/`) and impl
 
 `AuthService` handles JWT + refresh token generation. JWT config is bound from `appsettings.json` into `JwtOptions`.
 
+**Appointment times are local wall-clock.** `Appointment.StartTime`/`EndTime` carry no timezone and are interpreted in the deployment's local zone (single-region: Hungary). This is deliberate — `Calendar.StartTime`/`EndTime` work hours are zone-less strings (`"08:00"`), and `ValidateBookingRules` compares the two directly, so converting appointments to UTC would offset the work-hours check. Anything comparing against `Appointment.StartTime` must use `DateTime.Now`, not `DateTime.UtcNow`. Unrelated: token expiry (`AuthService`, `RefreshTokenRepository`) and audit columns (`AppDbContext.ApplyTimestamps`) are absolute instants and correctly stay on `DateTime.UtcNow`. Going multi-region means adding a `TimeZoneId` to `Calendar` and converting at the boundary — not flipping these comparisons to UTC.
+
 **Refresh tokens** are stored one row per session in the `RefreshTokens` table, never in plaintext — only a SHA-256 hash (`TokenHasher.ComputeHash`) is persisted. A `SessionId` is stamped at login and carried through every rotation, so one user can hold several concurrent sessions (web + mobile) and a single session can be revoked on its own. Every refresh rotates the token and marks the old row `RevokedAt`; presenting an already-revoked token is treated as a replay and revokes that whole session. Expired/revoked rows are cleaned up opportunistically on login.
 
 ### `src/Booker.Repository`
