@@ -13,3 +13,6 @@ global using Booker.Services.Interfaces;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
+// Aliased instead of importing System.Globalization wholesale: that namespace also
+// contains a Calendar type, which would clash with Booker.Repository.Entities.Calendar.
+global using CultureInfo = System.Globalization.CultureInfo;

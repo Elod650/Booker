@@ -19,8 +19,8 @@ public class EditCalendarViewModel
         {
             Id = Id,
             Name = Name,
-            StartTime = StartTime.ToString(),
-            EndTime = EndTime.ToString(),
+            StartTime = StartTime?.ToString("HH:mm", CultureInfo.InvariantCulture),
+            EndTime = EndTime?.ToString("HH:mm", CultureInfo.InvariantCulture),
         };
     }
 }

@@ -107,8 +107,8 @@ public class AppointmentService(
         }
 
         if (
-            !TimeOnly.TryParse(calendar.StartTime, out var workStart)
-            || !TimeOnly.TryParse(calendar.EndTime, out var workEnd)
+            !TimeOnly.TryParse(calendar.StartTime, CultureInfo.InvariantCulture, out var workStart)
+            || !TimeOnly.TryParse(calendar.EndTime, CultureInfo.InvariantCulture, out var workEnd)
         )
         {
             return "The work hours of the calendar are misconfigured.";

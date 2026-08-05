@@ -19,3 +19,6 @@ global using Microsoft.JSInterop;
 global using Serilog;
 global using Syncfusion.Blazor;
 global using Syncfusion.Blazor.Schedule;
+// Aliased instead of importing System.Globalization wholesale: that namespace also
+// contains a Calendar type, which would clash with the app's calendar types.
+global using CultureInfo = System.Globalization.CultureInfo;

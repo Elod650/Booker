@@ -132,8 +132,8 @@ public partial class Booking
     private bool IsAppointmentWithinWorkHours(SchedulerAppointmentViewModel appointment)
     {
         if (
-            !TimeOnly.TryParse(currentCalendarStarTime, out var workStart)
-            || !TimeOnly.TryParse(currentCalendarEndTime, out var workEnd)
+            !TimeOnly.TryParse(currentCalendarStarTime, CultureInfo.InvariantCulture, out var workStart)
+            || !TimeOnly.TryParse(currentCalendarEndTime, CultureInfo.InvariantCulture, out var workEnd)
         )
         {
             return false;
