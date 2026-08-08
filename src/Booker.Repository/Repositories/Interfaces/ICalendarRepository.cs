@@ -35,4 +35,5 @@ public interface ICalendarRepository
         CancellationToken cancellationToken = default
     );
     Task RemoveCustomerFromCalendarAsync(string userId, int calendarId, CancellationToken cancellationToken = default);
+    Task UpdateCalendarAsync(Calendar calendarToUpdate, CancellationToken cancellationToken = default);
 }

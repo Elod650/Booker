@@ -38,6 +38,21 @@ public class CalendarController(ICalendarService calendarService, IValidatorServ
         return Ok(calendars);
     }
 
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(CalendarDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CalendarDto>> GetCalendarById(int id, CancellationToken cancellationToken)
+    {
+        var calendar = await calendarService.GetCalendarById(id, cancellationToken);
+
+        if (calendar is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(calendar);
+    }
+
     [HttpDelete("{id:int}"), Authorize(Roles = "Admin, Provider")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -76,6 +91,40 @@ public class CalendarController(ICalendarService calendarService, IValidatorServ
             User.FindFirstValue(JwtRegisteredClaimNames.Sub)!,
             cancellationToken
         );
+
+        if (result is not null)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok();
+    }
+
+    [HttpPut, Authorize(Roles = "Admin, Provider")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateCalendar(
+        [FromBody] EditCalendarRequest updatedCalendar,
+        CancellationToken cancellationToken
+    )
+    {
+        if (updatedCalendar.Id is null)
+        {
+            return BadRequest("The Id must be specified when updating a calendar.");
+        }
+
+        var userIsOwner = await validatorService.ValidateCalendarOwnership(
+            updatedCalendar.Id.Value,
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub)!
+        );
+
+        if (!userIsOwner)
+        {
+            return Forbid("The user does not have permission to edit this calendar.");
+        }
+
+        var result = await calendarService.UpdateCalendar(updatedCalendar, cancellationToken);
 
         if (result is not null)
         {

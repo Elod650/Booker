@@ -4,16 +4,18 @@ public class CalendarServiceTests
 {
     private CalendarService calendarService = null!;
     private ICalendarRepository calendarRepository = null!;
+    private IAppointmentRepository appointmentRepository = null!;
     private UserManager<ApplicationUser> userManager = null!;
 
     [Before(Test)]
     public void SetUp()
     {
         SetUpRepository();
+        SetUpAppointmentRepository();
         SetUpUserManager();
         var mapper = SetUpMapper();
 
-        calendarService = new CalendarService(calendarRepository, userManager, mapper);
+        calendarService = new CalendarService(calendarRepository, appointmentRepository, userManager, mapper);
     }
 
     [Test]
@@ -252,6 +254,187 @@ public class CalendarServiceTests
         await calendarRepository.DidNotReceiveWithAnyArgs().DeleteCalendarAsync(default!, default);
     }
 
+    [Test]
+    public async Task UpdateCalendar_ShouldReturnError_WhenIdIsNull()
+    {
+        var request = new EditCalendarRequest
+        {
+            Id = null,
+            Name = "Updated",
+            StartTime = "08:00",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsEqualTo("The Id must be specified when updating a calendar.");
+        await calendarRepository.DidNotReceive().UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldReturnError_WhenCalendarDoesNotExist()
+    {
+        var request = new EditCalendarRequest
+        {
+            Id = 99,
+            Name = "Updated",
+            StartTime = "08:00",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsEqualTo("There is no calendar with the provided Id.");
+        await calendarRepository.DidNotReceive().UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    [Arguments("17:00", "08:00")]
+    [Arguments("08:00", "08:00")]
+    public async Task UpdateCalendar_ShouldReturnError_WhenStartTimeIsNotBeforeEndTime(string startTime, string endTime)
+    {
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated",
+            StartTime = startTime,
+            EndTime = endTime,
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsEqualTo("The start time must be earlier than the end time.");
+        await calendarRepository.DidNotReceive().UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldReturnError_WhenWorkHoursAreMalformed()
+    {
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated",
+            StartTime = "not a time",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsEqualTo("The format of the work hours is invalid. The correct format: HH:mm");
+        await calendarRepository.DidNotReceive().UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldReturnError_WhenUpcomingAppointmentsFallOutsideNewHours()
+    {
+        //Booked tomorrow 08:00-09:00, but the owner is narrowing the calendar to start at 10:00.
+        StubAppointmentsForCalendar(1, AppointmentAt(1, dayOffset: 1, "08:00", "09:00"));
+
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated",
+            StartTime = "10:00",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert
+            .That(result)
+            .IsEqualTo(
+                "1 upcoming appointment(s) fall outside the new work hours. "
+                    + "Move or cancel them before changing the hours."
+            );
+        await calendarRepository.DidNotReceive().UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldPass_WhenOnlyPastAppointmentsFallOutsideNewHours()
+    {
+        //Same 08:00 booking, but yesterday - history is not a reason to block the edit.
+        StubAppointmentsForCalendar(1, AppointmentAt(1, dayOffset: -1, "08:00", "09:00"));
+
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated",
+            StartTime = "10:00",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsNull();
+        await calendarRepository.Received(1).UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldPass_WhenUpcomingAppointmentsFitInsideNewHours()
+    {
+        StubAppointmentsForCalendar(1, AppointmentAt(1, dayOffset: 1, "11:00", "12:00"));
+
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated",
+            StartTime = "10:00",
+            EndTime = "17:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsNull();
+        await calendarRepository.Received(1).UpdateCalendarAsync(Arg.Any<Calendar>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task UpdateCalendar_ShouldPass_WhenValid()
+    {
+        var request = new EditCalendarRequest
+        {
+            Id = 1,
+            Name = "Updated Calendar",
+            StartTime = "07:00",
+            EndTime = "19:00",
+        };
+
+        var result = await calendarService.UpdateCalendar(request);
+
+        await Assert.That(result).IsNull();
+        await calendarRepository
+            .Received(1)
+            .UpdateCalendarAsync(
+                //OwnerId is not on the request, so the tracked entity must keep its original owner.
+                Arg.Is<Calendar>(c =>
+                    c.Id == 1
+                    && c.Name == "Updated Calendar"
+                    && c.StartTime == "07:00"
+                    && c.EndTime == "19:00"
+                    && c.OwnerId == "1"
+                ),
+                Arg.Any<CancellationToken>()
+            );
+    }
+
+    [Test]
+    public async Task GetCalendarById_ShouldReturnCalendar_WhenCalendarExists()
+    {
+        var result = await calendarService.GetCalendarById(1);
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result!.Name).IsEqualTo("Calendar 1");
+        await Assert.That(result.StartTime).IsEqualTo("08:00");
+    }
+
+    [Test]
+    public async Task GetCalendarById_ShouldReturnNull_WhenCalendarDoesNotExist()
+    {
+        var result = await calendarService.GetCalendarById(99);
+
+        await Assert.That(result).IsNull();
+    }
+
     private void SetUpRepository()
     {
         calendarRepository = Substitute.For<ICalendarRepository>();
@@ -297,6 +480,42 @@ public class CalendarServiceTests
             });
     }
 
+    //Default: no appointments on any calendar, so the work-hours conflict check is a no-op unless a
+    //test opts in by re-stubbing this.
+    private void SetUpAppointmentRepository()
+    {
+        appointmentRepository = Substitute.For<IAppointmentRepository>();
+
+        appointmentRepository
+            .GetAppointmentsForCalendarAsync(Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns([]);
+    }
+
+    private void StubAppointmentsForCalendar(int calendarId, params Appointment[] appointments)
+    {
+        appointmentRepository
+            .GetAppointmentsForCalendarAsync(calendarId, Arg.Any<bool>(), Arg.Any<CancellationToken>())
+            .Returns(appointments.ToList());
+    }
+
+    //Builds an appointment on a fixed wall-clock time relative to today, so the assertions do not
+    //depend on the hour the test happens to run at.
+    private static Appointment AppointmentAt(int calendarId, int dayOffset, string startTime, string endTime)
+    {
+        var day = DateTime.Now.Date.AddDays(dayOffset);
+
+        return new Appointment
+        {
+            Id = 1,
+            CalendarId = calendarId,
+            ServiceId = 1,
+            UserId = "3",
+            StartTime = day.Add(TimeOnly.Parse(startTime).ToTimeSpan()),
+            EndTime = day.Add(TimeOnly.Parse(endTime).ToTimeSpan()),
+            IsReadonly = false,
+        };
+    }
+
     private void SetUpUserManager()
     {
         var store = Substitute.For<IUserStore<ApplicationUser>>();
@@ -332,6 +551,21 @@ public class CalendarServiceTests
                 destination.Name = source.Name;
                 destination.StartTime = source.StartTime;
                 destination.EndTime = source.EndTime;
+            });
+
+        mapper
+            .Map<CalendarDto>(Arg.Any<Calendar>())
+            .Returns(callInfo =>
+            {
+                var entity = callInfo.ArgAt<Calendar>(0);
+
+                return new CalendarDto
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    StartTime = entity.StartTime,
+                    EndTime = entity.EndTime,
+                };
             });
 
         mapper

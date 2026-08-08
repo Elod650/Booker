@@ -40,6 +40,24 @@ public class CalendarApiCaller(IApiCallerBase apiCallerBase, IOptions<ApiCallerO
         );
     }
 
+    public async Task UpdateCalendar(EditCalendarRequest updatedCalendar, CancellationToken cancellationToken = default)
+    {
+        await apiCallerBase.SendAsync(
+            ApiRequest.CreatePut(_apiUrl, updatedCalendar),
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public async Task<CalendarDto> GetCalendarById(int calendarId, CancellationToken cancellationToken = default)
+    {
+        string url = $"{_apiUrl}/{calendarId}";
+
+        return await apiCallerBase.SendWithResponseAsync<CalendarDto>(
+            ApiRequest.CreateGet(url),
+            cancellationToken: cancellationToken
+        );
+    }
+
     public async Task DeleteCalendar(int id, CancellationToken cancellationToken = default)
     {
         string url = $"{_apiUrl}/{id}";

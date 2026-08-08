@@ -3,6 +3,8 @@
 public interface ICalendarApiCaller
 {
     Task AddCalendar(EditCalendarRequest newCalendar, CancellationToken cancellationToken = default);
+    Task UpdateCalendar(EditCalendarRequest updatedCalendar, CancellationToken cancellationToken = default);
+    Task<CalendarDto> GetCalendarById(int calendarId, CancellationToken cancellationToken = default);
     Task<List<CalendarDto>> GetCalendarsByOwnerId(CancellationToken cancellationToken = default);
     Task<List<CalendarDto>> GetCalendars(CancellationToken cancellationToken = default);
     Task<List<CalendarDto>> GetCalendarsForCustomer(CancellationToken cancellationToken = default);

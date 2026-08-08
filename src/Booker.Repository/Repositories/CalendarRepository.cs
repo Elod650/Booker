@@ -140,4 +140,11 @@ public class CalendarRepository(AppDbContext context) : ICalendarRepository
 
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task UpdateCalendarAsync(Calendar calendarToUpdate, CancellationToken cancellationToken = default)
+    {
+        context.Calendars.Update(calendarToUpdate);
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }
